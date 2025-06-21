@@ -21,6 +21,8 @@ import "./index.css";
 import { router } from "./router";
 import { socket } from "./socket";
 import { posthogPlugin } from "./telemetry";
+import translationPlugin from "./translation";
+
 
 const globalComponents = {
   Badge,
@@ -49,6 +51,8 @@ app.use(resourcesPlugin);
 app.use(pinia);
 app.use(router);
 app.use(posthogPlugin);
+app.use(translationPlugin);
+
 for (const c in globalComponents) {
   app.component(c, globalComponents[c]);
 }
