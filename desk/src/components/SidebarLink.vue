@@ -42,7 +42,7 @@
         '-z-50': !isExpanded,
       }"
     >
-      {{ label }}
+      {{ __(label) }}
       <slot name="right" />
     </div>
   </div>

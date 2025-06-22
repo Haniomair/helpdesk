@@ -21,7 +21,7 @@
           "
         >
           <div class="text-base font-medium leading-none text-gray-900">
-            Helpdesk
+            {{ __('Helpdesk') }}
           </div>
           <div class="mt-1 text-sm leading-none text-gray-700">
             {{ authStore.userName }}

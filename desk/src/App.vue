@@ -18,7 +18,11 @@ import WifiOff from "~icons/lucide/wifi-off";
 import { useAuthStore } from "./stores/auth";
 useConfigStore();
 
+
 onMounted(() => {
+
+
+
   window.addEventListener("online", () => {
     toast.create({
       message: "You are now online",

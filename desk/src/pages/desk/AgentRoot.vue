@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+
 import { useAuthStore } from "@/stores/auth";
 import { computed, defineAsyncComponent, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";

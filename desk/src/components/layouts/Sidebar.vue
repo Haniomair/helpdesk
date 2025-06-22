@@ -9,7 +9,7 @@
     <UserMenu class="mb-2" :options="profileSettings" />
     <SidebarLink
       v-if="!isCustomerPortal"
-      label="Search"
+      :label="__('Search')"
       class="my-0.5"
       :icon="LucideSearch"
       :on-click="() => openCommandPalette()"
@@ -18,14 +18,14 @@
       <template #right>
         <span class="flex items-center gap-0.5 font-medium text-gray-600">
           <component :is="device.modifierIcon" class="h-3 w-3" />
-          <span>K</span>
         </span>
       </template>
     </SidebarLink>
+    
     <SidebarLink
       v-if="!isCustomerPortal"
       class="relative my-0.5 min-h-7"
-      label="Dashboard"
+      :label="__('Dashboard')"
       :icon="LucideLayoutDashboard"
       :to="'Dashboard'"
       :is-active="isActiveTab('Dashboard')"
@@ -40,7 +40,7 @@
       />
       <SidebarLink
         class="relative my-0.5"
-        label="Notifications"
+        :label="__('Notifications')"
         :icon="LucideBell"
         :on-click="() => notificationStore.toggle()"
         :is-expanded="isExpanded"
@@ -84,7 +84,7 @@
                 class="h-4 text-ink-gray-9 transition-all duration-300 ease-in-out"
                 :class="{ 'rotate-90': opened }"
               />
-              <span>{{ view.label }}</span>
+              <span>{{ __(view.label) }}</span>
             </div>
           </template>
           <nav class="flex flex-col">
@@ -167,6 +167,7 @@
 import HDLogo from "@/assets/logos/HDLogo.vue";
 import { Section, SidebarLink } from "@/components";
 import Apps from "@/components/Apps.vue";
+import Languages from "@/components/Languages.vue";
 import { FrappeCloudIcon, InviteCustomer } from "@/components/icons";
 import { showNewAgentsDialog } from "@/components/Settings/agents";
 import SettingsModal from "@/components/Settings/SettingsModal.vue";
@@ -302,6 +303,9 @@ const customerPortalDropdown = computed(() => [
 const agentPortalDropdown = computed(() => [
   {
     component: markRaw(Apps),
+  },
+  {
+    component: markRaw(Languages),
   },
   {
     label: "Customer portal",

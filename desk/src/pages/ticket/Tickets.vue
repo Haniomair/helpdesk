@@ -2,18 +2,11 @@
   <div>
     <LayoutHeader>
       <template #left-header>
-        <ViewBreadcrumbs
-          label="Tickets"
-          :route-name="isCustomerPortal ? 'TicketsCustomer' : 'TicketsAgent'"
-          :options="dropdownOptions"
-          :dropdown-actions="viewActions"
-          :current-view="currentView"
-        />
+        <ViewBreadcrumbs :label="__('Tickets')" :route-name="isCustomerPortal ? 'TicketsCustomer' : 'TicketsAgent'"
+          :options="dropdownOptions" :dropdown-actions="viewActions" :current-view="currentView" />
       </template>
       <template #right-header>
-        <RouterLink
-          :to="{ name: isCustomerPortal ? 'TicketNew' : 'TicketAgentNew' }"
-        >
+        <RouterLink :to="{ name: isCustomerPortal ? 'TicketNew' : 'TicketAgentNew' }">
           <Button label="Create" theme="gray" variant="solid">
             <template #prefix>
               <LucidePlus class="h-4 w-4" />
@@ -22,35 +15,22 @@
         </RouterLink>
       </template>
     </LayoutHeader>
-    <ListViewBuilder
-      ref="listViewRef"
-      :options="options"
-      @empty-state-action="
-        () =>
-          $router.push({
-            name: isCustomerPortal ? 'TicketNew' : 'TicketAgentNew',
-          })
-      "
-      @row-click="
-        (row) =>
-          $router.push({
-            name: isCustomerPortal ? 'TicketCustomer' : 'TicketAgent',
-            params: { ticketId: row },
-          })
-      "
-    />
-    <ExportModal
-      v-model="showExportModal"
-      :rowCount="$refs.listViewRef?.list?.data?.total_count ?? 0"
-      @update="
-        ({ export_type, export_all }) => exportRows(export_type, export_all)
-      "
-    />
-    <ViewModal
-      v-if="viewDialog.show"
-      v-model="viewDialog"
-      @update="(view, action) => handleView(view, action)"
-    />
+    <ListViewBuilder ref="listViewRef" :options="options" @empty-state-action="
+      () =>
+        $router.push({
+          name: isCustomerPortal ? 'TicketNew' : 'TicketAgentNew',
+        })
+    " @row-click="
+      (row) =>
+        $router.push({
+          name: isCustomerPortal ? 'TicketCustomer' : 'TicketAgent',
+          params: { ticketId: row },
+        })
+    " />
+    <ExportModal v-model="showExportModal" :rowCount="$refs.listViewRef?.list?.data?.total_count ?? 0" @update="
+      ({ export_type, export_all }) => exportRows(export_type, export_all)
+    " />
+    <ViewModal v-if="viewDialog.show" v-model="viewDialog" @update="(view, action) => handleView(view, action)" />
   </div>
 </template>
 
@@ -416,11 +396,10 @@ const viewActions = (view) => {
             $dialog({
               title: `Delete ${_view.label}?`,
               message: `Are you sure you want to delete this view?
-              ${
-                _view.public
+              ${_view.public
                   ? "This view is public, and will be removed for all users."
                   : ""
-              }`,
+                }`,
               actions: [
                 {
                   label: "Confirm",

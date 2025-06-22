@@ -1,4 +1,5 @@
 import { createResource } from "frappe-ui";
+import { getCurrentLanguage } from "./languages";
 
 export default function translationPlugin(app) {
     app.config.globalProperties.__ = translate;
@@ -13,6 +14,7 @@ function format(message, replace) {
 }
 
 function translate(message, replace, context = null) {
+
     let translatedMessages = window.translatedMessages || {};
     let translatedMessage = "";
 
@@ -35,9 +37,13 @@ function translate(message, replace, context = null) {
     return format(translatedMessage, replace);
 }
 
+
 function fetchTranslations(lang) {
     createResource({
         url: "helpdesk.api.get_translations",
+        params: {
+            lang: lang || getCurrentLanguage(),
+        },
         cache: "translations",
         auto: true,
         transform: (data) => {
