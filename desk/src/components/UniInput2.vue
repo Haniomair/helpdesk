@@ -1,8 +1,8 @@
 <template>
   <div class="flex gap-2 px-6 pb-1 leading-5 first:mt-3 items-baseline">
-    <Tooltip :text="field.label">
+    <Tooltip :text="__(field.label)">
       <div class="w-[106px] shrink-0 truncate text-sm text-gray-600">
-        {{ field.label }}
+        {{ __(field.label) }}
         <span v-if="field.required" class="text-red-500"> * </span>
       </div>
     </Tooltip>
@@ -13,7 +13,7 @@
         :is="component"
         :key="field.fieldname"
         class="form-control"
-        :placeholder="`Add ${field.label}`"
+        :placeholder="`${__('Add')} ${__(field.label)}`"
         :model-value="transValue"
         autocomplete="off"
         v-on="
@@ -76,17 +76,17 @@ const component = computed(() => {
     return h(Autocomplete, {
       options: props.field.options
         .split("\n")
-        .map((o) => ({ label: o, value: o })),
+        .map((o) => ({ label: __(o), value: o })),
     });
   } else if (props.field.fieldtype === "Check") {
     return h(Autocomplete, {
       options: [
         {
-          label: "Yes",
+          label: __("Yes"),
           value: 1,
         },
         {
-          label: "No",
+          label: __("No"),
           value: 0,
         },
       ],

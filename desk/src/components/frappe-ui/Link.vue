@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-1.5">
+    
     <label class="block" :class="labelClasses" v-if="attrs.label">
       {{ attrs.label }}
     </label>
@@ -31,14 +32,14 @@
             class="flex flex-col gap-1"
           >
             <div class="flex-1 font-semibold truncate text-ink-gray-7">
-              {{ option.label }}
+              {{ __(option.label) }}
             </div>
             <div class="flex-1 text-sm truncate text-ink-gray-5">
               {{ option.description }}
             </div>
           </div>
           <div v-else class="flex-1 truncate text-ink-gray-7">
-            {{ option.label }}
+            {{ __(option.label) }}
           </div>
         </slot>
       </template>
@@ -48,7 +49,7 @@
           <Button
             variant="ghost"
             class="w-full !justify-start"
-            :label="'Create New'"
+            :label="__('Create New')"
             @click="attrs.onCreate(value, close)"
           >
             <template #prefix>
@@ -60,7 +61,7 @@
           <Button
             variant="ghost"
             class="w-full !justify-start"
-            :label="'Clear'"
+            :label="__('Clear Selection')"
             @click="() => clearValue(close)"
           >
             <template #prefix>

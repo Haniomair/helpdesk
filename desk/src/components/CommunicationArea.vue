@@ -7,7 +7,7 @@
         <Button
           ref="sendEmailRef"
           variant="ghost"
-          label="Reply"
+          :label="__('Reply')"
           :class="[showEmailBox ? '!bg-gray-300 hover:!bg-gray-200' : '']"
           @click="toggleEmailBox()"
         >
@@ -17,7 +17,7 @@
         </Button>
         <Button
           variant="ghost"
-          label="Comment"
+          :label="__('Comment')"
           :class="[showCommentBox ? '!bg-gray-300 hover:!bg-gray-200' : '']"
           @click="toggleCommentBox()"
         >
@@ -36,11 +36,11 @@
       <EmailEditor
         ref="emailEditorRef"
         :label="
-          isMobileView ? 'Send' : isMac ? 'Send (⌘ + ⏎)' : 'Send (Ctrl + ⏎)'
+          isMobileView ? __('Send') : isMac ? `${__('Send')} (⌘ + ⏎)` : `${__('Send')}} (Ctrl + ⏎)`
         "
         v-model="doc"
         v-model:content="content"
-        placeholder="Hi John, we are looking into this issue."
+        :placeholder="__('Hi John, we are looking into this issue.')"
         :to-emails="toEmails"
         :cc-emails="ccEmails"
         :bcc-emails="bccEmails"
@@ -66,15 +66,15 @@
         ref="commentTextEditorRef"
         :label="
           isMobileView
-            ? 'Comment'
+            ? __('Comment')
             : isMac
-            ? 'Comment (⌘ + ⏎)'
-            : 'Comment (Ctrl + ⏎)'
+            ? `${__('Comment')} (⌘ + ⏎)`
+            : `${__('Comment')} (Ctrl + ⏎)`
         "
         v-model="doc"
         :editable="showCommentBox"
         :doctype="doctype"
-        placeholder="@John could you please look into this?"
+        :placeholder="__('@John could you please look into this?')"
         @submit="
           () => {
             showCommentBox = false;

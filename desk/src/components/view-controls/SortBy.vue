@@ -1,13 +1,14 @@
 <template>
+
   <Autocomplete
     v-if="!sortValues?.size"
     :options="options"
     value=""
-    :placeholder="'First Name'"
+    :placeholder="__('First Name')"
     @change="(e) => setSort(e)"
   >
     <template #target="{ togglePopover }">
-      <Button :label="'Sort'" @click="togglePopover()">
+      <Button :label="__('Sort')" @click="togglePopover()">
         <template v-if="hideLabel">
           <SortIcon class="h-4" />
         </template>
@@ -19,15 +20,14 @@
   </Autocomplete>
   <NestedPopover v-else>
     <template #target="{ open }">
-      <Button v-if="sortValues.size > 1" :label="'Sort'">
+      <Button v-if="sortValues.size > 1" :label="__('Sort')">
         <template v-if="hideLabel">
           <SortIcon class="h-4" />
         </template>
         <template v-if="!hideLabel" #prefix><SortIcon class="h-4" /></template>
         <template v-if="sortValues?.size" #suffix>
           <div
-            class="flex h-5 w-5 items-center justify-center rounded-[5px] bg-surface-white pt-px text-xs font-medium text-ink-gray-8 shadow-sm"
-          >
+            class="flex h-5 w-5 items-center justify-center rounded-[5px] bg-surface-white pt-px text-xs font-medium text-ink-gray-8 shadow-sm">
             {{ sortValues.size }}
           </div>
         </template>
@@ -35,7 +35,7 @@
       <div v-else class="flex items-center justify-center">
         <Button
           v-if="sortValues.size"
-          class="rounded-r-none border-r"
+          class="rounded-r-none rtl:rounded-r rtl:rounded-l-none"
           @click.stop="
             () => {
               Array.from(sortValues)[0].direction =
@@ -51,8 +51,8 @@
           <DescendingIcon v-else class="h-4" />
         </Button>
         <Button
-          :label="getSortLabel()"
-          :class="sortValues.size ? 'rounded-l-none' : ''"
+          :label="__(getSortLabel())"
+          :class="sortValues.size ? 'rounded-l-none rtl:rounded-r-none rtl:rounded-l' : ''"
         >
           <template v-if="!hideLabel && !sortValues?.size" #prefix>
             <SortIcon class="h-4" />
@@ -74,6 +74,7 @@
             id="sort-list"
             class="mb-3 flex flex-col gap-2"
           >
+          
             <div
               v-for="(sort, i) in sortValues"
               :key="sort.fieldname"
@@ -85,7 +86,7 @@
               <div class="flex">
                 <Button
                   size="md"
-                  class="rounded-r-none border-r"
+                  class="rounded-r-none rtl:rounded-r rtl:rounded-l-none"
                   @click="
                     () => {
                       sort.direction = sort.direction == 'asc' ? 'desc' : 'asc';
@@ -99,19 +100,19 @@
                 <Autocomplete
                   class="!w-32"
                   :value="sort.fieldname"
-                  :options="sortOptions.data"
+                  :options="allOptions"
                   @change="(e) => updateSort(e, i)"
-                  :placeholder="'First Name'"
+                  :placeholder="__('First Name')"
                 >
                   <template
                     #target="{ togglePopover, selectedValue, displayValue }"
                   >
                     <Button
-                      class="flex w-full items-center justify-between rounded-l-none !text-gray-600 text-xs"
+                      class="flex w-full items-center justify-between rounded-l-none !text-gray-600 text-xs rounded-l-none rtl:rounded-r-none rtl:rounded-l"
                       size="md"
                       @click="togglePopover()"
                     >
-                      {{ displayValue(selectedValue) }}
+                      {{ __(displayValue(selectedValue)) }}
                       <template #suffix>
                         <FeatherIcon
                           name="chevron-down"
@@ -129,13 +130,13 @@
             v-else
             class="mb-3 flex h-7 items-center px-3 text-sm text-gray-600"
           >
-            {{ "Empty - Choose a field to sort by" }}
+            {{ __("Empty - Choose a field to sort by") }}
           </div>
           <div class="flex items-center justify-between gap-2">
             <Autocomplete
               :options="options"
               value=""
-              :placeholder="'First Name'"
+              :placeholder="__('First Name')"
               @change="(e) => setSort(e)"
             >
               <template #target="{ togglePopover }">
@@ -143,7 +144,7 @@
                   class="!text-gray-600"
                   variant="ghost"
                   @click="togglePopover()"
-                  :label="'Add Sort'"
+                  :label="__('Add Sort')"
                 >
                   <template #prefix>
                     <FeatherIcon name="plus" class="h-4" />
@@ -155,7 +156,7 @@
               v-if="sortValues?.size"
               class="!text-gray-600"
               variant="ghost"
-              :label="'Clear Sort'"
+              :label="__('Clear Sort')"
               @click="clearSort(close)"
             />
           </div>
@@ -209,13 +210,33 @@ const sortValues = computed({
   },
 });
 
+const allOptions = computed(() => {
+  if (!sortOptions.data) return [];
+  return sortOptions.data.map((option) => {
+    return {
+      ...option,
+      label: __(option.label),
+    };
+  });
+});
+
 const options = computed(() => {
   if (!sortOptions.data) return [];
-  if (!sortValues.value.size) return sortOptions.data;
+  if (!sortValues.value.size) return sortOptions.data.map((option) => {
+    return {
+      ...option,
+      label: __(option.label),
+    };
+  });
   const selectedOptions = [...sortValues.value].map((sort) => sort.fieldname);
   restartSort();
   return sortOptions.data.filter((option) => {
     return !selectedOptions.includes(option.value);
+  }).map((option) => {
+    return {
+      ...option,
+      label: __(option.label),
+    };
   });
 });
 
@@ -232,7 +253,7 @@ function getSortLabel() {
     (option) => option.value === values[0].fieldname
   )?.label;
 
-  return label || sort.fieldname;
+  return __(label) || sort.fieldname;
 }
 
 function setSort(data) {

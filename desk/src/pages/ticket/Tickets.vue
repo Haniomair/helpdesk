@@ -7,7 +7,7 @@
       </template>
       <template #right-header>
         <RouterLink :to="{ name: isCustomerPortal ? 'TicketNew' : 'TicketAgentNew' }">
-          <Button label="Create" theme="gray" variant="solid">
+          <Button :label="__('Create')" theme="gray" variant="solid">
             <template #prefix>
               <LucidePlus class="h-4 w-4" />
             </template>
@@ -248,7 +248,7 @@ let viewDialog = reactive({
 const dropdownOptions = computed(() => {
   const items = [
     {
-      group: "Default Views",
+      group: __("Default Views"),
       items: [
         {
           label: "List View",
@@ -283,7 +283,7 @@ const dropdownOptions = computed(() => {
   }
 
   items.push({
-    group: "Create View",
+    group: __("Create View"),
     hideLabel: true,
     items: [
       {

@@ -2,7 +2,7 @@
   <div
     class="mx-6 md:mx-10 md:my-2 flex items-center justify-between text-lg font-medium mb-4 !mt-8"
   >
-    Activity
+    {{ __('Activity') }}
   </div>
   <div class="overflow-auto px-6 md:px-10 grow">
     <div

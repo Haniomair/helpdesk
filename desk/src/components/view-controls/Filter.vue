@@ -3,8 +3,8 @@
     <template #target>
       <div class="flex items-center w-fit">
         <Button
-          :label="'Filter'"
-          :class="filters?.size ? 'rounded-r-none' : ''"
+          :label="__('Filter')"
+          :class="filters?.size ? 'rounded-r-none rtl:rounded-l-none rtl:rounded-r' : ''"
         >
           <template #prefix><FilterIcon class="h-4" /></template>
           <template v-if="filters?.size" #suffix>
@@ -15,10 +15,10 @@
             </span>
           </template>
         </Button>
-        <Tooltip v-if="filters?.size" :text="'Clear all Filter'">
+        <Tooltip v-if="filters?.size" :text="__('Clear all Filter')">
           <div>
             <Button
-              class="rounded-l-none border-l"
+              class="rounded-l-none rtl:rounded-r-none rtl:rounded-l"
               icon="x"
               @click.stop="clearfilter(false)"
             />
@@ -39,7 +39,7 @@
             <div v-if="isMobileView" class="flex flex-col gap-2">
               <div class="-mb-2 flex w-full items-center justify-between">
                 <div class="text-base text-gray-600">
-                  {{ i == 0 ? "Where" : "And" }}
+                  {{ i == 0 ? __("Where") : __("And") }}
                 </div>
                 <Button
                   class="flex"
@@ -70,14 +70,14 @@
                   :is="getValueControl(f)"
                   v-model="f.value"
                   @change="(v) => updateValue(v, f)"
-                  :placeholder="'John Doe'"
+                  :placeholder="__('Enter Value')"
                 />
               </div>
             </div>
             <div v-else class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <div class="w-13 pl-2 text-end text-base text-gray-600">
-                  {{ i == 0 ? "Where" : "And" }}
+                  {{ i == 0 ? __("Where") : __("And") }}
                 </div>
                 <div id="fieldname" class="!min-w-[140px]">
                   <AutocompleteNew
@@ -103,7 +103,7 @@
                     :is="getValueControl(f)"
                     v-model="f.value"
                     @change="(v) => updateValue(v, f)"
-                    :placeholder="'John Doe'"
+                    :placeholder="__('Enter Value')"
                   />
                 </div>
               </div>
@@ -119,7 +119,7 @@
             v-else
             class="mb-3 flex h-7 items-center px-3 text-sm text-gray-600"
           >
-            {{ "Empty - Choose a field to filter by" }}
+            {{ __("Empty - Choose a field to filter by") }}
           </div>
           <div class="flex items-center justify-between gap-2">
             <AutocompleteNew
@@ -133,7 +133,7 @@
                   class="!text-gray-600"
                   variant="ghost"
                   @click="togglePopover()"
-                  :label="'Add Filter'"
+                  :label="__('Add Filter')"
                 >
                   <template #prefix>
                     <FeatherIcon name="plus" class="h-4" />
@@ -145,7 +145,7 @@
               v-if="filters?.size"
               class="!text-gray-600"
               variant="ghost"
-              :label="'Clear all Filter'"
+              :label="__('Clear all Filter')"
               @click="clearfilter(close)"
             />
           </div>
@@ -304,7 +304,7 @@ function getOperators(fieldtype, fieldname) {
   if (typeDate.includes(fieldtype)) {
     options.push(
       ...[
-        { label: "Equals", value: "equals" },
+        { label: __("Equals"), value: "equals" },
         { label: "Not Equals", value: "not equals" },
         { label: "Is", value: "is" },
         { label: ">", value: ">" },
@@ -329,7 +329,10 @@ function getOperators(fieldtype, fieldname) {
       ]
     );
   }
-  return options;
+  return options.map((o) => ({
+    label: __(o.label),
+    value: o.value,
+  }));
 }
 
 function getValueControl(f) {
@@ -340,11 +343,11 @@ function getValueControl(f) {
       type: "select",
       options: [
         {
-          label: "Set",
+          label: __("Set"),
           value: "set",
         },
         {
-          label: "Not Set",
+          label: __("Not Set"),
           value: "not set",
         },
       ],
@@ -362,7 +365,7 @@ function getValueControl(f) {
     return h(FormControl, {
       type: "select",
       options: _options.map((o) => ({
-        label: o,
+        label: __(o),
         value: o,
       })),
     });

@@ -9,9 +9,9 @@
       >
         <div class="flex gap-2">
           <AppsIcon />
-          <span class="whitespace-nowrap">Apps</span>
+          <span class="whitespace-nowrap">{{ __('Apps') }}</span>
         </div>
-        <ChevronRight class="h-4 w-4 stroke-1.5" />
+        <ChevronRight class="h-4 w-4 rtl:rotate-180 stroke-1.5" />
       </button>
     </template>
     <template #body>
@@ -25,7 +25,7 @@
           >
             <img class="size-8" :src="app.logo" />
             <div class="text-sm" @click="app.onClick">
-              {{ app.title }}
+              {{ __(app.title) }}
             </div>
           </a>
         </div>

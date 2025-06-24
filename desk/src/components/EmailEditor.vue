@@ -16,12 +16,12 @@
   >
     <template #top>
       <div class="mx-6 md:mx-10 flex items-center gap-2 border-y py-2.5">
-        <span class="text-xs text-gray-500">TO:</span>
+        <span class="text-xs text-gray-500">{{ __('TO') }}:</span>
         <MultiSelectInput
           v-model="toEmailsClone"
           class="flex-1"
           :validate="validateEmail"
-          :error-message="(value) => `${value} is an invalid email address`"
+          :error-message="(value) => `${value} ${__('is an invalid email address')}`"
         />
         <Button
           :label="'CC'"
@@ -45,7 +45,7 @@
           v-model="ccEmailsClone"
           class="flex-1"
           :validate="validateEmail"
-          :error-message="(value) => `${value} is an invalid email address`"
+          :error-message="(value) => `${value} ${__('is an invalid email address')}`"
         />
       </div>
       <div
@@ -59,7 +59,7 @@
           v-model="bccEmailsClone"
           class="flex-1"
           :validate="validateEmail"
-          :error-message="(value) => `${value} is an invalid email address`"
+          :error-message="(value) => `${value} ${__('is an invalid email address')}`"
         />
       </div>
     </template>
@@ -132,7 +132,7 @@
         <div
           class="flex items-center justify-end space-x-2 sm:mt-0 w-[40%] mr-9"
         >
-          <Button label="Discard" @click="handleDiscard" />
+          <Button :label="__('Discard')" @click="handleDiscard" />
           <Button
             variant="solid"
             :disabled="emailEmpty"
@@ -278,7 +278,7 @@ function submitMail() {
   }
   if (!toEmailsClone.value.length) {
     toast.warning(
-      "Email has no recipients. Please add at least one email address in the 'TO' field."
+      __("Email has no recipients. Please add at least one email address in the 'TO' field.")
     );
     return false;
   }

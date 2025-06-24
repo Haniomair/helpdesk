@@ -1,15 +1,17 @@
 <template>
+  
   <div class="flex flex-col gap-3 border-b px-6 py-3">
     <div
       v-for="s in sections"
       :key="s.label"
       class="flex items-center text-base leading-5"
     >
-      <Tooltip :text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">{{ s.label }}</div>
+      <Tooltip :text="__(s.label)">
+        <div class="w-[126px] text-sm text-gray-600">{{ __(s.label) }}</div>
       </Tooltip>
       <div class="flex items-center justify-between">
         <div v-if="s.value">{{ s.value }}</div>
+        
         <Tooltip :text="s.tooltipValue">
           <Badge
             v-if="s.badgeText"
@@ -45,7 +47,7 @@ const firstResponseBadge = computed(() => {
     dayjs().isBefore(dayjs(props.ticket.response_by))
   ) {
     firstResponse = {
-      label: `Due in ${formatTime(
+      label: `${__('Due in')} ${formatTime(
         dayjs(props.ticket.response_by).diff(dayjs(), "s")
       )}`,
       color: "orange",
@@ -87,7 +89,7 @@ const resolutionBadge = computed(() => {
       )
     );
     resolution = {
-      label: `${time_left} left (On Hold)`,
+      label: `${time_left} ${__('left (On Hold)')}`,
       color: "blue",
     };
   } else if (
@@ -95,7 +97,7 @@ const resolutionBadge = computed(() => {
     dayjs().isBefore(props.ticket.resolution_by)
   ) {
     resolution = {
-      label: `Due in ${formatTime(
+      label: `${__('Due in')} ${formatTime(
         dayjs(props.ticket.resolution_by).diff(dayjs(), "s")
       )}`,
       color: "orange",
@@ -104,7 +106,7 @@ const resolutionBadge = computed(() => {
     dayjs(props.ticket.resolution_date).isBefore(props.ticket.resolution_by)
   ) {
     resolution = {
-      label: `Fulfilled in ${formatTime(
+      label: `${__('Fulfilled in')} ${formatTime(
         dayjs(props.ticket.resolution_date).diff(
           dayjs(props.ticket.creation),
           "s"
@@ -114,7 +116,7 @@ const resolutionBadge = computed(() => {
     };
   } else {
     resolution = {
-      label: "Failed",
+      label: __("Failed"),
       color: "red",
     };
   }
@@ -142,7 +144,7 @@ const sections = computed(() => [
   },
   {
     label: "Source",
-    value: props.ticket.via_customer_portal ? "Portal" : "Mail",
+    value: props.ticket.via_customer_portal ? __("Portal") : __("Mail"),
   },
 ]);
 </script>

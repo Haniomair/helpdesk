@@ -7,7 +7,7 @@
     <QuickFilters v-if="!isMobileView" class="flex-1" />
     <div class="flex items-start gap-2 justify-end h-full" v-if="!isMobileView">
       <Button
-        label="Save Changes"
+        :label="__('Save Changes')"
         v-if="isViewUpdated && canSaveView"
         @click="handleViewUpdate"
       />
@@ -52,8 +52,9 @@
         v-for="column in columns"
         :key="column.key"
         :item="column"
-        @columnWidthUpdated="(width) => console.log(width)"
-      />
+        @columnWidthUpdated="(width) => console.log(width)">
+        <span class="truncate" v-text="__(column.label)" />
+      </ListHeaderItem>
     </ListHeader>
     <ListRows
       :rows="rows"
@@ -62,7 +63,7 @@
       @scrollend="handleListScroll"
       class="list-rows"
     >
-      <ListRowItem :item="item" :column="column" :row="row">
+      <ListRowItem :item="item" :column="column" :row="row">       
         <component
           :is="listCell(column, row, item, idx)"
           :key="column.key"
@@ -82,8 +83,7 @@
   <!-- List Footer -->
   <div
     class="p-20 border-t sm:px-5 px-3 py-2"
-    v-if="list.data?.data.length > 0"
-  >
+    v-if="list.data?.data.length > 0">
     <ListFooter
       :options="{
         rowCount: list?.data?.row_count,
@@ -104,6 +104,7 @@
     v-else
     :title="emptyState.title"
     :icon="emptyState.icon"
+    :button="emptyState.button"
     @emptyStateAction="emit('emptyStateAction')"
   />
 </template>
@@ -441,16 +442,35 @@ const quickFilters = createResource({
 });
 
 function listCell(column: any, row: any, item: any, idx: number) {
+
+  console.log(column);
+
   const columnConfig = options.value.columnConfig;
   if (columnConfig && columnConfig[column.key]?.custom) {
     return columnConfig[column.key]?.custom({ column, row, item, idx });
   }
+
   if (idx === 0) {
     return h("span", {
       class: "truncate text-base text-ink-gray-6",
       textContent: item,
     });
   }
+
+  if (column.type === "Link") {
+    return h("span", {
+      class: "truncate text-ink-gray-6",
+      textContent: __(item),
+    });
+  }
+
+  if (column.type === "Select") {
+    return h("span", {
+      class: "truncate",
+      textContent: __(item),
+    });
+  }
+
   if (column.type === "Datetime") {
     return h("span", {
       class: "text-p-xs",

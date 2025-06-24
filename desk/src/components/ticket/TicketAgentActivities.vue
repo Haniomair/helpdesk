@@ -1,7 +1,8 @@
 <template>
-  <ActivityHeader :title="title" />
+  <ActivityHeader :title="__(title)" />
   <FadedScrollableDiv class="flex flex-col flex-1 overflow-y-scroll">
     <div v-if="activities.length" class="activities flex-1 h-full mt-1">
+      
       <div
         v-for="(activity, i) in activities"
         :key="activity.key"
@@ -64,12 +65,12 @@
       <span>{{ emptyText }}</span>
       <Button
         v-if="title == 'Emails'"
-        label="New Email"
+        :label="__('New Email')"
         @click="communicationAreaRef.toggleEmailBox()"
       />
       <Button
         v-else-if="title == 'Comments'"
-        label="New Comment"
+        :label="__('New Comment')"
         @click="communicationAreaRef.toggleCommentBox()"
       />
     </div>
@@ -115,13 +116,13 @@ const { getUser } = useUserStore();
 const communicationAreaRef: Ref = inject("communicationArea");
 
 const emptyText = computed(() => {
-  let text = "No Activities";
+  let text = __("No Activities");
   if (props.title == "Emails") {
-    text = "No Email Communications";
+    text = __("No Email Communications");
   } else if (props.title == "Comments") {
-    text = "No Comments";
-    return text;
+    text = __("No Comments");
   }
+  return text;
 });
 
 const emptyTextIcon = computed(() => {

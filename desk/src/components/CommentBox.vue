@@ -7,20 +7,20 @@
           :label="commenter"
           :image="getUser(commentedBy).user_image"
         />
-        <p>
+        
           <span class="font-medium text-gray-800">
             {{ commenter }}
           </span>
-          <span> added a</span>
+          <span> {{ __('added a') }} </span>
           <span class="max-w-xs truncate font-medium text-gray-800">
-            comment
+            {{ __('comment') }}
           </span>
-        </p>
+        
       </div>
       <div class="flex items-center gap-1">
         <Tooltip :text="dateFormat(creation, dateTooltipFormat)">
           <span class="pl-0.5 text-sm text-gray-600">
-            {{ timeAgo(creation) }}
+            {{ fromNow(creation) }}
           </span>
         </Tooltip>
         <div v-if="authStore.userId === commentedBy && !editable">
@@ -28,13 +28,13 @@
             :placement="'right'"
             :options="[
               {
-                label: 'Edit',
+                label: __('Edit'),
                 onClick: () => handleEditMode(),
                 icon: 'edit-2',
                 condition: () => !isTicketMergedComment,
               },
               {
-                label: 'Delete',
+                label: __('Delete'),
                 onClick: () => (showDialog = true),
                 icon: 'trash-2',
               },
@@ -63,8 +63,8 @@
       >
         <template #bottom v-if="editable">
           <div class="flex flex-row-reverse gap-2">
-            <Button label="Save" @click="handleSaveComment" variant="solid" />
-            <Button label="Discard" @click="handleDiscard" />
+            <Button :label="__('Save')" @click="handleSaveComment" variant="solid" />
+            <Button :label="__('Discard')" @click="handleDiscard" />
           </div>
         </template>
       </TextEditor>
@@ -81,12 +81,12 @@
   <Dialog
     v-model="showDialog"
     :options="{
-      title: 'Delete Comment',
-      message: 'Are you sure you want to confirm this action?',
+      title: __('Delete Comment'),
+      message: __('Are you sure you want to confirm this action?'),
       actions: [
-        { label: 'Cancel', onClick: () => (showDialog = false) },
+        { label: __('Cancel'), onClick: () => (showDialog = false) },
         {
-          label: 'Delete',
+          label: __('Delete'),
           onClick: () => deleteComment.submit(),
           variant: 'solid',
         },
@@ -107,7 +107,7 @@ import {
   getFontFamily,
   isContentEmpty,
   textEditorMenuButtons,
-  timeAgo,
+  fromNow
 } from "@/utils";
 import {
   Avatar,
@@ -162,7 +162,7 @@ const deleteComment = createResource({
   }),
   onSuccess() {
     emit("update");
-    toast.success("Comment deleted");
+    toast.success(__("Comment deleted"));
   },
 });
 
@@ -172,7 +172,7 @@ function handleSaveComment() {
     return;
   }
   if (isContentEmpty(_content.value)) {
-    toast.error("Comment cannot be empty");
+    toast.error(__("Comment cannot be empty"));
     return;
   }
 
@@ -187,7 +187,7 @@ function handleSaveComment() {
       onSuccess: () => {
         editable.value = false;
         emit("update");
-        toast.success("Comment updated");
+        toast.success(__("Comment updated"));
       },
     }
   );

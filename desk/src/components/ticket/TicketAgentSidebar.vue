@@ -14,7 +14,7 @@
         v-if="showMergeOption"
         :options="[
           {
-            label: 'Merge Ticket',
+            label: __('Merge Ticket'),
             onClick: () => (showMergeModal = true),
             icon: LucideMerge,
             condition: () => !ticket.is_merged,

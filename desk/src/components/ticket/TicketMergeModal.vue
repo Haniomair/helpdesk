@@ -1,23 +1,23 @@
 <template>
   <Dialog
-    :options="{ title: `Merge with another ticket` }"
+    :options="{ title: __('Merge with another ticket') }"
     v-model="showDialog"
   >
     <template #body-content>
       <div class="flex flex-col gap-4">
         <p class="text-p-base text-ink-gray-8">
-          All comments and emails of the ticket
+          {{ __('All comments and emails of the ticket') }}
           <span class="whitespace-nowrap font-semibold"
             >#{{ ticket.name }}</span
           >
-          will be moved to the selected ticket.
+          {{ __('will be moved to the selected ticket.') }}
         </p>
         <Link
           class="form-control"
           doctype="HD Ticket"
-          placeholder="Select Ticket"
+          :placeholder="__('Select Ticket')"
           :filters="getDefaultFilters()"
-          label="Ticket"
+          :label="__('Ticket')"
           :page-length="10"
           :value="targetTicket"
           :show-description="true"
@@ -25,7 +25,7 @@
         />
         <FormControl
           v-if="targetTicket"
-          label="Ticket Subject"
+          :label="__('Ticket Subject')"
           type="text"
           v-model="subject"
           :disabled="true"
@@ -39,7 +39,7 @@
           />
 
           <div class="text-wrap text-sm text-gray-700">
-            This action is irreversible.
+            {{ __('This action is irreversible.') }}
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
         class="w-full"
         variant="solid"
         :label="
-          targetTicket ? `Merge with ticket #${targetTicket} ` : 'Select Ticket'
+          targetTicket ? `${__('Merge with ticket')} #${targetTicket} ` : __('Select Ticket')
         "
         :loading="mergeTicket.loading"
         :icon-left="targetTicket && LucideMerge"

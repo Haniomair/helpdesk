@@ -11,7 +11,7 @@
         />
         <Button
           v-if="ticket.data.status !== 'Closed'"
-          label="Close"
+          :label="__('Close')"
           theme="gray"
           variant="solid"
           @click="handleClose()"
@@ -46,7 +46,7 @@
           >
             <template #bottom-right>
               <Button
-                label="Send"
+                :label="__('Send')"
                 theme="gray"
                 variant="solid"
                 :disabled="$refs.editor?.editor.isEmpty || send.loading"

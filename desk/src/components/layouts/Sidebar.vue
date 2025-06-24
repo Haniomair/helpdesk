@@ -308,7 +308,7 @@ const agentPortalDropdown = computed(() => [
     component: markRaw(Languages),
   },
   {
-    label: "Customer portal",
+    label: __("Customer portal"),
     icon: "users",
     onClick: () => {
       const path = router.resolve({ name: "TicketsCustomer" });
@@ -317,22 +317,22 @@ const agentPortalDropdown = computed(() => [
   },
   {
     icon: "life-buoy",
-    label: "Support",
+    label: __("Support"),
     onClick: () => window.open("https://t.me/frappedesk"),
   },
   {
     icon: "book-open",
-    label: "Docs",
+    label: __("Docs"),
     onClick: () => window.open("https://docs.frappe.io/helpdesk"),
   },
   {
-    label: "Login to Frappe Cloud",
+    label: __("Login to Frappe Cloud"),
     icon: FrappeCloudIcon,
     onClick: () => confirmLoginToFrappeCloud(),
     condition: () => !isMobileView.value && window.is_fc_site,
   },
   {
-    label: "Settings",
+    label: __("Settings"),
     icon: "settings",
     onClick: () => (showSettingsModal.value = true),
     condition: () => authStore.isAdmin || authStore.isManager,
@@ -342,7 +342,7 @@ const agentPortalDropdown = computed(() => [
     hideLabel: true,
     items: [
       {
-        label: "Log out",
+        label: __("Log out"),
         icon: "log-out",
         onClick: () => authStore.logout(),
       },

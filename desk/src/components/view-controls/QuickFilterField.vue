@@ -1,7 +1,7 @@
 <template>
   <FormControl
     v-if="filter.type == 'Check'"
-    :label="filter.label"
+    :label="__(filter.label)"
     type="checkbox"
     v-model="filter.value"
     @change.stop="updateFilter(filter, $event.target.checked)"
@@ -13,14 +13,14 @@
     type="select"
     v-model="filter.value"
     :options="filter.options"
-    :placeholder="filter.label"
+    :placeholder="__(filter.label)"
     @change.stop="updateFilter(filter, $event.target.value)"
   />
   <Link
     v-else-if="filter.type === 'Link'"
     :value="filter.value"
     :doctype="filter.options"
-    :placeholder="filter.label"
+    :placeholder="__(filter.label)"
     @change="(data) => updateFilter(filter, data)"
     class="w-44"
   />
@@ -30,13 +30,13 @@
     :is="filter.type === 'Date' ? DatePicker : DateTimePicker"
     :value="filter.value"
     @change="(v) => updateFilter(filter, v)"
-    :placeholder="filter.label"
+    :placeholder="__(filter.label)"
   />
   <TextInput
     v-else
     v-model="filter.value"
     type="text"
-    :placeholder="filter.label"
+    :placeholder="__(filter.label)"
     @input.stop="debouncedFn(filter, $event.target.value)"
   />
 </template>

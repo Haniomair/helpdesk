@@ -10,10 +10,10 @@ const emit = defineEmits<{
 }>();
 
 const {
-  label = "Discard",
+  label = __("Discard"),
   hideDialog = false,
-  title = "Discard?",
-  message = "Are you sure you want to discard this?",
+  title = __("Discard?"),
+  message = __("Are you sure you want to discard this?"),
 } = defineProps<{
   label?: string;
   hideDialog?: boolean;

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-1.5" v-if="field.display_via_depends_on">
     <span class="block text-sm text-gray-700">
-      {{ field.label }}
+      {{ __(field.label) }}
       <span v-if="field.required" class="place-self-center text-red-500">
         *
       </span>
@@ -61,17 +61,17 @@ const component = computed(() => {
     return h(Autocomplete, {
       options: props.field.options
         .split("\n")
-        .map((o) => ({ label: o, value: o })),
+        .map((o) => ({ label: __(o), value: o })),
     });
   } else if (props.field.fieldtype === "Check") {
     return h(Autocomplete, {
       options: [
         {
-          label: "Yes",
+          label: __("Yes"),
           value: 1,
         },
         {
-          label: "No",
+          label: __("No"),
           value: 0,
         },
       ],
@@ -88,23 +88,23 @@ const apiOptions = createResource({
   auto: !!props.field.url_method,
   transform: (data) =>
     data.map((o) => ({
-      label: o,
+      label: __(o),
       value: o,
     })),
 });
 
 const transValue = computed(() => {
   if (props.field.fieldtype === "Check") {
-    return props.value ? "Yes" : "No";
+    return props.value ? __("Yes") : __("No");
   }
   return props.value;
 });
 
 const placeholder = computed(() => {
   if (props.field.fieldtype === "Data" && !props.field.url_method) {
-    return "Type something";
+    return __("Type something");
   }
-  return "Select an option";
+  return __("Select an option");
 });
 
 function emitUpdate(fieldname: Field["fieldname"], value: Value) {

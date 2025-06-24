@@ -1,5 +1,5 @@
 import { useClipboard, useDateFormat, useTimeAgo } from "@vueuse/core";
-import dayjs from "dayjs";
+import { dayjs } from "./dayjs";
 import { toast } from "frappe-ui";
 import { gemoji } from "gemoji";
 import { h, markRaw, ref } from "vue";
@@ -50,6 +50,10 @@ export function dateFormat(date, format) {
 
 export function timeAgo(date) {
   return useTimeAgo(date).value;
+}
+
+export function fromNow(date) {
+  return dayjs(date).fromNow();
 }
 
 export const dateTooltipFormat = "ddd, MMM D, YYYY h:mm A";

@@ -13,11 +13,11 @@
       >
         <BrandLogo />
         <div
-          class="flex flex-1 flex-col text-left duration-300 ease-in-out"
+          class="flex flex-1 flex-col rtl:text-right text-left duration-300 ease-in-out"
           :class="
             !sidebarStore.isExpanded
               ? 'ml-0 w-0 overflow-hidden opacity-0'
-              : 'ml-2 w-auto opacity-100'
+              : 'ml-2 rtl:ml-0 rtl:mr-2 w-auto opacity-100'
           "
         >
           <div class="text-base font-medium leading-none text-gray-900">

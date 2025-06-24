@@ -8,10 +8,10 @@
           @click.prevent="togglePopover()"
         >
           <div class="flex gap-2">
-            <AppsIcon />
+            <GlobIcon />
             <span class="whitespace-nowrap">{{ __('Languages') }}</span>
           </div>
-          <ChevronRight class="h-4 w-4 stroke-1.5" />
+          <ChevronRight class="h-4 w-4  rtl:rotate-180 stroke-1.5" />
         </button>
       </template>
       <template #body>
@@ -36,7 +36,7 @@
   <script setup>
 
   import { Popover, createResource } from "frappe-ui";
-  import AppsIcon from "./icons/AppsIcon.vue";
+  import GlobIcon from "./icons/GlobIcon.vue";
   import ChevronRight from "~icons/lucide/chevron-right";
 
   import { getCurrentLanguage, changeLanguage } from "@/languages";

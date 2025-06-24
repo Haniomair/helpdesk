@@ -7,10 +7,10 @@
       <!-- email design for mobile -->
       <div v-if="isMobileView" class="flex items-center gap-2 text-sm">
         <div class="leading-tight">
-          <p>{{ sender.full_name || "No name found" }}</p>
+          <p>{{ sender.full_name || __("No name found") }}</p>
           <Tooltip :text="dateFormat(creation, dateTooltipFormat)">
             <p class="text-xs md:text-sm text-gray-600">
-              {{ timeAgo(creation) }}
+              {{ fromNow(creation) }}
             </p>
           </Tooltip>
           <p class="sm:flex hidden text-sm text-gray-600" v-if="sender.name">
@@ -20,7 +20,7 @@
       </div>
       <!-- email design for desktop -->
       <div v-else class="flex items-center gap-1">
-        <span>{{ sender.full_name || "No name found" }}</span>
+        <span>{{ sender.full_name || __("No name found") }}</span>
         <span class="sm:flex hidden text-sm text-gray-600" v-if="sender.name">{{
           "<" + sender.name + ">"
         }}</span>
@@ -32,7 +32,7 @@
           v-if="!isMobileView"
         >
           <p class="text-xs md:text-sm text-gray-600">
-            {{ timeAgo(creation) }}
+            {{ fromNow(creation) }}
           </p>
         </Tooltip>
         <Button
@@ -66,7 +66,7 @@
           :placement="'right'"
           :options="[
             {
-              label: 'Split Ticket',
+              label: __('Split Ticket'),
               icon: LucideSplit,
               onClick: () => (showSplitModal = true),
             },
@@ -84,14 +84,14 @@
       {{ subject }}
     </div> -->
     <div class="text-sm leading-5 text-gray-600">
-      <span v-if="to" class="text-2xs mr-1 font-bold text-gray-500">TO:</span>
+      <span v-if="to" class="text-2xs mr-1 font-bold text-gray-500">{{ __('TO') }}:</span>
       <span v-if="to"> {{ to }} </span>
       <span v-if="cc">, </span>
-      <span v-if="cc" class="text-2xs mr-1 font-bold text-gray-500"> CC: </span>
+      <span v-if="cc" class="text-2xs mr-1 font-bold text-gray-500">{{ __('CC') }}:</span>
       <span v-if="cc">{{ cc }}</span>
       <span v-if="bcc">, </span>
       <span v-if="bcc" class="text-2xs mr-1 font-bold text-gray-500">
-        BCC:
+        {{ __('BCC') }}:
       </span>
       <span v-if="bcc">{{ bcc }}</span>
     </div>
@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import { AttachmentItem } from "@/components";
 import { useScreenSize } from "@/composables/screen";
-import { dateFormat, dateTooltipFormat, timeAgo } from "@/utils";
+import { dateFormat, dateTooltipFormat, fromNow } from "@/utils";
 import { Dropdown } from "frappe-ui";
 import { ref } from "vue";
 import LucideSplit from "~icons/lucide/split";

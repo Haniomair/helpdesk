@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-1 flex-col overflow-hidden overflow-y-auto border-b">
+    <div class="flex flex-1 flex-col overflow-hidden overflow-y-auto border-b">
     <UniInput2
       v-for="field in fields"
       :key="field.fieldname"

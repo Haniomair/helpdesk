@@ -13,6 +13,7 @@
         </Breadcrumbs>
       </template>
       <template #right-header>
+        
         <CustomActions
           v-if="ticket.data._customActions"
           :actions="ticket.data._customActions"
@@ -30,11 +31,11 @@
           class="rounded bg-gray-100 px-2 py-1.5 text-base text-gray-800"
           @click="showAssignmentModal = true"
         >
-          Assign
+          __('Assign')
         </button>
         <Dropdown :options="dropdownOptions">
           <template #default="{ open }">
-            <Button :label="ticket.data.status">
+            <Button :label="__(ticket.data.status)">
               <template #prefix>
                 <IndicatorIcon
                   :class="ticketStatusStore.textColorMap[ticket.data.status]"
@@ -112,7 +113,7 @@
       "
     />
     <!-- Rename Subject Dialog -->
-    <Dialog v-model="showSubjectDialog" :options="{ title: 'Rename Subject' }">
+    <Dialog v-model="showSubjectDialog" :options="{ title: __('Rename Subject') }">
       <template #body-content>
         <div class="flex flex-col flex-1 gap-3">
           <FormControl
@@ -125,7 +126,7 @@
           <Button
             variant="solid"
             :loading="isLoading"
-            label="Rename"
+            :label="__('Rename')"
             @click="handleRename"
           />
         </div>
@@ -241,12 +242,12 @@ function updateField(name: string, value: string, callback = () => {}) {
 }
 
 const breadcrumbs = computed(() => {
-  let items = [{ label: "Tickets", route: { name: "TicketsAgent" } }];
+  let items = [{ label: __("Tickets"), route: { name: "TicketsAgent" } }];
   if (route.query.view) {
     const currView: ComputedRef<View> = findView(route.query.view as string);
     if (currView) {
       items.push({
-        label: currView.value?.label,
+        label: __(currView.value?.label),
         icon: getIcon(currView.value?.icon),
         route: { name: "TicketsAgent", query: { view: currView.value?.name } },
       });
@@ -269,7 +270,7 @@ const handleRename = () => {
 
 const dropdownOptions = computed(() =>
   ticketStatusStore.options.map((o) => ({
-    label: o,
+    label: __(o),
     value: o,
     onClick: () => updateTicket("status", o),
     icon: () =>
@@ -292,17 +293,17 @@ const tabIndex = ref(0);
 const tabs: TabObject[] = [
   {
     name: "activity",
-    label: "Activity",
+    label: __("Activity"),
     icon: ActivityIcon,
   },
   {
     name: "email",
-    label: "Emails",
+    label: __("Emails"),
     icon: EmailIcon,
   },
   {
     name: "comment",
-    label: "Comments",
+    label: __("Comments"),
     icon: CommentIcon,
   },
 ];

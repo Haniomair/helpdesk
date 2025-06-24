@@ -7,9 +7,9 @@
         v-if="relatedActivities.length > 1"
         class="inline-flex flex-wrap gap-1.5 text-ink-gray-8 font-medium w-4/5"
       >
-        <span>{{ `${show_others ? "Hide " : "Show "}` }}</span>
+        <!-- <span>{{ `${show_others ? __("Hide") : __("Show")}` }}</span> -->
         <span>+{{ relatedActivities.length }} </span>
-        <span>changes from </span>
+        <span>{{ __('changes from') }}</span>
         <span>{{ user }}</span>
 
         <Button
@@ -31,7 +31,7 @@
 
       <Tooltip :text="dateFormat(creation, dateTooltipFormat)">
         <div class="text-gray-600 text-sm w-2/6 flex justify-end">
-          {{ timeAgo(creation) }}
+          {{ fromNow(creation) }}
         </div>
       </Tooltip>
     </div>
@@ -50,8 +50,8 @@
         <Tooltip
           :text="dateFormat(relatedActivity.creation, dateTooltipFormat)"
         >
-          <div class="text-gray-600 text-sm w-2/6 flex justify-end">
-            {{ timeAgo(relatedActivity.creation) }}
+          <div class="text-gray-600 text-sm flex justify-end">
+            {{ fromNow(relatedActivity.creation) }}
           </div>
         </Tooltip>
       </div>
@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { SelectIcon } from "@/components/icons";
-import { dateFormat, dateTooltipFormat, timeAgo } from "@/utils";
+import { dateFormat, dateTooltipFormat, timeAgo, fromNow } from "@/utils";
 import { ref } from "vue";
 const props = defineProps({
   activity: {
