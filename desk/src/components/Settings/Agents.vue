@@ -2,7 +2,7 @@
   <div v-bind:class="$attrs.class">
     <!-- Header -->
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-lg font-semibold">Agents</h1>
+      <h1 class="text-lg font-semibold">{{ __('Agents') }}</h1>
       <div class="flex item-center space-x-2">
         <FormControl
           v-model="search"
@@ -36,7 +36,7 @@
             >
               <div class="flex items-center justify-between flex-1">
                 <span class="whitespace-nowrap">
-                  {{ item.label }}
+                  {{ __(item.label) }}
                 </span>
                 <FeatherIcon
                   v-if="activeFilter === item.label"
@@ -49,7 +49,7 @@
         </Dropdown>
         <Button
           @click="() => (showNewAgentsDialog = !showNewAgentsDialog)"
-          label="New"
+          :label="__('New')"
           variant="solid"
         >
           <template #prefix>
@@ -157,7 +157,7 @@ function getRoles(agent: string) {
   const agentRole = getUserRole(agent);
   const roles = [
     {
-      label: "Agent",
+      label: __("Agent"),
       component: (props) =>
         RoleOption({
           role: "Agent",
@@ -171,7 +171,7 @@ function getRoles(agent: string) {
   ];
   if (isManager) {
     roles.unshift({
-      label: "Manager",
+      label: __("Manager"),
       component: (props) =>
         RoleOption({
           role: "Manager",
@@ -226,7 +226,7 @@ function getOptions(agent) {
   let filters = agentStore.filters;
   return [
     {
-      label: "Disable Agent",
+      label: __("Disable Agent"),
       icon: "x-circle",
       onClick: async () => {
         await agentStore.updateAgent(agent.name, 0);
@@ -235,7 +235,7 @@ function getOptions(agent) {
       condition: () => agent.is_active,
     },
     {
-      label: "Enable Agent",
+      label: __("Enable Agent"),
       icon: "check-circle",
       onClick: async () => {
         await agentStore.updateAgent(agent.name, 1);
@@ -248,21 +248,21 @@ function getOptions(agent) {
 
 const dropdownOptions = [
   {
-    label: "All",
+    label: __("All"),
     onClick: () => {
       agentStore.filters["is_active"] = ["in", [0, 1]];
       activeFilter.value = "All";
     },
   },
   {
-    label: "Active",
+    label: __("Active"),
     onClick: () => {
       agentStore.filters["is_active"] = ["=", 1];
       activeFilter.value = "Active";
     },
   },
   {
-    label: "Inactive",
+    label: __("Inactive"),
     onClick: () => {
       agentStore.filters["is_active"] = ["=", 0];
       activeFilter.value = "Inactive";

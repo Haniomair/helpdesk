@@ -18,7 +18,7 @@
           >
             <template #default="{ uploading, openFileSelector }">
               <Button
-                :label="contact.doc?.image ? 'Change photo' : 'Upload photo'"
+                :label="contact.doc?.image ? __('Change photo') : __('Upload photo')"
                 :loading="uploading"
                 @click="openFileSelector"
               />
@@ -38,7 +38,7 @@
         </div>
         <div class="w-full space-y-2 text-sm text-gray-700">
           <div class="space-y-1">
-            <div class="text-xs">Emails</div>
+            <div class="text-xs">{{ __('Emails') }}</div>
             <MultiSelect
               v-model:items="emails"
               placeholder="john.doe@example.com"
@@ -46,7 +46,7 @@
             />
           </div>
           <div class="space-y-1">
-            <div class="text-xs">Phone Nos</div>
+            <div class="text-xs">{{ __('Phone Nos') }}</div>
             <MultiSelect
               v-model:items="phones"
               placeholder="+91 98765 43210"
@@ -54,7 +54,7 @@
             />
           </div>
           <div class="space-y-1">
-            <div class="text-xs">Customer</div>
+            <div class="text-xs">{{ __('Customer') }}</div>
             <Autocomplete
               v-model="selectedCustomer"
               :options="customerResource.data"
@@ -227,7 +227,7 @@ const options = computed(() => ({
   title: contact.doc?.name,
   actions: [
     {
-      label: "Save",
+      label: __("Save"),
       theme: "gray",
       variant: "solid",
       onClick: () => update(),

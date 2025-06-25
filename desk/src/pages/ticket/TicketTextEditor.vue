@@ -70,7 +70,7 @@
       size="sm"
     />
     <span class="text-base text-gray-700">
-      {{ placeholder }}
+      {{ __(placeholder) }}
     </span>
   </div>
 </template>

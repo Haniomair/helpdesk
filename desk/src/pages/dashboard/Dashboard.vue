@@ -16,12 +16,12 @@
           :options="options"
           class="form-control !w-48"
           v-model="preset"
-          placeholder="Select Range"
+          :placeholder="__('Select Range')"
           @change="filters.period = preset"
           :button="{
-            label: preset,
+            label: __(preset),
             class:
-              '!w-full justify-start [&>span]:mr-auto [&>svg]:text-ink-gray-5 ',
+              '!w-full justify-start [&>span]:mr-auto rtl:[&>span]:mr-0 rtl:[&>span]:ml-auto [&>svg]:text-ink-gray-5 ',
             variant: 'ghost',
             iconRight: 'chevron-down',
             iconLeft: 'calendar',
@@ -37,7 +37,7 @@
           ref="datePickerRef"
           v-model="filters.period"
           variant="outline"
-          placeholder="Period"
+          :placeholder="__('Period')"
           @update:model-value="
             (e:string) => {
               showDatePicker = false;
@@ -54,7 +54,7 @@
           v-if="isManager"
           class="form-control w-48"
           doctype="HD Team"
-          placeholder="Team"
+          :placeholder="__('Team')"
           v-model="filters.team"
           :page-length="5"
           :hide-me="true"
@@ -67,7 +67,7 @@
           v-if="isManager"
           class="form-control w-48"
           doctype="HD Agent"
-          placeholder="Agent"
+          :placeholder="__('Agent')"
           v-model="filters.agent"
           :page-length="5"
           :filters="agentFilter"
@@ -102,6 +102,7 @@
           v-if="!trendData.loading"
         >
           <div
+          style="direction: ltr;"
             class="border rounded-md min-h-80"
             v-for="(chart, index) in trendData.data"
             :key="index"
@@ -115,6 +116,7 @@
           v-if="!masterData.loading"
         >
           <div
+          style="direction: ltr;"
             class="border rounded-md"
             v-for="(chart, index) in masterData.data"
             :key="index"
@@ -178,6 +180,15 @@ const numberCards = createResource({
     dashboard_type: "number_card",
     filters,
   },
+  transform: (data) => {
+    return data.map((item) => ({
+      ...item,
+      title: __(item.title),
+      suffix: __(item.suffix),
+      deltaSuffix: __(item.deltaSuffix),
+      tooltip: __(item.tooltip),
+    }));
+  },
 });
 
 const masterData = createResource({
@@ -186,6 +197,15 @@ const masterData = createResource({
   params: {
     dashboard_type: "master",
     filters,
+  },
+  transform: (data) => {
+    return data.map((item) => ({
+      ...item,
+      title: __(item.title),
+      suffix: __(item.suffix),
+      deltaSuffix: __(item.deltaSuffix),
+      tooltip: __(item.tooltip),
+    }));
   },
 });
 
@@ -196,7 +216,17 @@ const trendData = createResource({
     dashboard_type: "trend",
     filters,
   },
+  transform: (data) => {
+    return data.map((item) => ({
+      ...item,
+      title: __(item.title),
+      suffix: __(item.suffix),
+      deltaSuffix: __(item.deltaSuffix),
+      tooltip: __(item.tooltip),
+    }));
+  },
 });
+
 
 const agentFilter = ref(null);
 const teamMembers = createResource({
@@ -267,35 +297,35 @@ const options = computed(() => [
     hideLabel: true,
     items: [
       {
-        label: "Today",
+        label: __("Today"),
         onClick: () => {
           preset.value = "Today";
           filters.period = getLastXDays(0);
         },
       },
       {
-        label: "Last 7 Days",
+        label: __("Last 7 Days"),
         onClick: () => {
           preset.value = "Last 7 Days";
           filters.period = getLastXDays(7);
         },
       },
       {
-        label: "Last 30 Days",
+        label: __("Last 30 Days"),
         onClick: () => {
           preset.value = "Last 30 Days";
           filters.period = getLastXDays(30);
         },
       },
       {
-        label: "Last 60 Days",
+        label: __("Last 60 Days"),
         onClick: () => {
           preset.value = "Last 60 Days";
           filters.period = getLastXDays(60);
         },
       },
       {
-        label: "Last 90 Days",
+        label: __("Last 90 Days"),
         onClick: () => {
           preset.value = "Last 90 Days";
           filters.period = getLastXDays(90);
@@ -304,7 +334,7 @@ const options = computed(() => [
     ],
   },
   {
-    label: "Custom Range",
+    label: __("Custom Range"),
     onClick: () => {
       showDatePicker.value = true;
       setTimeout(() => {
@@ -388,7 +418,12 @@ onMounted(() => {
   numberCards.reload();
   masterData.reload();
   trendData.reload();
+
+
+
 });
+
+
 
 usePageMeta(() => {
   return {

@@ -2,11 +2,11 @@
   <div class="flex flex-col">
     <LayoutHeader>
       <template #left-header>
-        <div class="text-lg font-medium text-gray-900">Knowledge Base</div>
+        <div class="text-lg font-medium text-gray-900">{{ __ ('Knowledge Base') }}</div>
       </template>
       <template #right-header>
         <Dropdown :options="headerOptions">
-          <Button label="Add new" variant="solid">
+          <Button :label="__('Add')" variant="solid">
             <template #prefix>
               <LucidePlus class="h-4 w-4" />
             </template>
@@ -92,7 +92,7 @@ const generalCategory = createResource({
 
 const headerOptions = [
   {
-    label: "Category",
+    label: __("Category"),
     icon: "folder",
     onClick: () => {
       resetState();
@@ -101,7 +101,7 @@ const headerOptions = [
     },
   },
   {
-    label: "Article",
+    label: __("Article"),
     icon: "file-text",
     onClick: () => {
       router.push({
@@ -404,15 +404,15 @@ const options = computed(() => {
 
 const statusMap = {
   Published: {
-    label: "Published",
+    label: __("Published"),
     theme: "green",
   },
   Draft: {
-    label: "Draft",
+    label: __("Draft"),
     theme: "orange",
   },
   Archived: {
-    label: "Archived",
+    label: __("Archived"),
     theme: "gray",
   },
 };

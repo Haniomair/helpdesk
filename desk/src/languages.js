@@ -13,15 +13,14 @@ if (lang.value == 'ar') {
 
 function injectRtlCSS() {
   import ('./assets/css/style.rtl.css');
-/*   const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = './css/style.rtl.css';
-  document.head.appendChild(link); */
 }
 
 export function getCurrentLanguage() {
   return lang.value;
+}
+
+export function getDirection() {
+  return lang.value === 'ar' ? 'rtl' : 'ltr';
 }
 
 export function changeLanguage(_lang) {

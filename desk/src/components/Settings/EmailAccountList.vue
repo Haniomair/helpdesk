@@ -2,9 +2,9 @@
   <div>
     <!-- header -->
     <div class="flex items-center justify-between">
-      <h1 class="text-lg font-semibold">Email Accounts</h1>
+      <h1 class="text-lg font-semibold">{{ __('Email Accounts') }}</h1>
       <Button
-        label="Add Account"
+        :label="__('Add')"
         theme="gray"
         variant="solid"
         @click="emit('update:step', 'email-add')"
@@ -28,7 +28,7 @@
     </div>
     <!-- fallback if no email accounts -->
     <div v-else class="flex items-center justify-center h-64 text-gray-500">
-      Please add an email account to continue.
+      {{ __('Please add an email account to continue.') }}
     </div>
   </div>
 </template>

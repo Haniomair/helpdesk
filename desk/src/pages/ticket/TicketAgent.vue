@@ -31,7 +31,7 @@
           class="rounded bg-gray-100 px-2 py-1.5 text-base text-gray-800"
           @click="showAssignmentModal = true"
         >
-          __('Assign')
+          {{ __('Assign') }}
         </button>
         <Dropdown :options="dropdownOptions">
           <template #default="{ open }">

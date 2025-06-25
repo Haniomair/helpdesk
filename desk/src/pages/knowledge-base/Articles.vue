@@ -65,13 +65,13 @@ const categoryTitle = computed(() => {
 const breadcrumbs = computed(() => {
   return [
     {
-      label: "Knowledge Base",
+      label: __("Knowledge Base"),
       route: {
         name: "CustomerKnowledgeBase",
       },
     },
     {
-      label: categoryTitle.value,
+      label: __(categoryTitle.value),
     },
   ];
 });

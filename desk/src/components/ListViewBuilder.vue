@@ -435,6 +435,16 @@ const quickFilters = createResource({
     show_customer_portal_fields: defaultParams.show_customer_portal_fields,
   },
   transform: (data) => {
+    data.forEach((filter) => {
+      if (filter.type === "Select") {
+        filter.options = filter.options.map((option) => {
+          return {
+            label: __(option.label),
+            value: option.value,
+          };
+        });
+      }
+    });
     if (Boolean(data.length)) return;
     data = [{ name: "name", label: "Name", fieldtype: "Data" }];
     return data;
@@ -443,7 +453,6 @@ const quickFilters = createResource({
 
 function listCell(column: any, row: any, item: any, idx: number) {
 
-  console.log(column);
 
   const columnConfig = options.value.columnConfig;
   if (columnConfig && columnConfig[column.key]?.custom) {

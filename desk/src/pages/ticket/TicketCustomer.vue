@@ -40,7 +40,7 @@
             v-model:attachments="attachments"
             v-model:content="editorContent"
             v-model:expand="isExpanded"
-            placeholder="Type a message"
+            :placeholder="__('Type a message')"
             autofocus
             @clear="() => (isExpanded = false)"
           >
@@ -220,7 +220,7 @@ const setValue = createResource({
 });
 
 const breadcrumbs = computed(() => {
-  let items = [{ label: "Tickets", route: { name: "TicketsCustomer" } }];
+  let items = [{ label: __("Tickets"), route: { name: "TicketsCustomer" } }];
   items.push({
     label: ticket.data?.subject,
     route: { name: "TicketCustomer" },

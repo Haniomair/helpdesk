@@ -11,12 +11,11 @@
               v-if="group.group.label != ''"
               class="flex items-end gap-1 w-full"
             >
-              <span>{{ group.group.label }}</span>
-              <span class="text-xs text-ink-gray-5"
+              <span>{{ __(group.group.label) }}</span>
+              <span class="text-xs text-ink-gray-5 rtl:ms-2"
                 >{{
-                  group.rows.length +
-                  " Article" +
-                  (group.rows.length > 1 ? "s" : "")
+                  group.rows.length + " " + __("Article") +
+                  (getCurrentLanguage() == "en" && group.rows.length > 1 ? "s" : "")
                 }}
               </span>
             </div>
@@ -66,7 +65,7 @@ import {
   ListRows,
 } from "frappe-ui";
 import { computed, ref, watch } from "vue";
-
+import { getCurrentLanguage } from "@/languages";
 import IconMoreHorizontal from "~icons/lucide/more-horizontal";
 const props = defineProps({
   rows: {
@@ -85,11 +84,13 @@ const actions = (group) => {
   let _actions = props.groupByActions.map((action) => {
     return {
       ...action,
+      _label: action.label,
+      label: __(action.label),
       onClick: () => action.onClick(group),
     };
   });
   if (group.group.label == "General") {
-    _actions = _actions.filter((action) => action.label === "Add New Article");
+    _actions = _actions.filter((action) => action.label === __("Add New Article"));
   }
   return _actions;
 };

@@ -2,7 +2,7 @@
   <div class="w-full h-full flex flex-col">
     <!-- Header -->
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-lg font-semibold">Teams</h1>
+      <h1 class="text-lg font-semibold">{{ __('Teams') }}</h1>
       <div class="flex item-center space-x-2">
         <FormControl
           v-model="search"
@@ -16,7 +16,7 @@
         </FormControl>
         <Button
           @click="() => (showForm = !showForm)"
-          label="New"
+          :label="__('New')"
           variant="solid"
         >
           <template #prefix>
@@ -59,7 +59,7 @@
       class="flex mt-28 justify-between w-full h-full"
     >
       <p class="text-sm text-gray-500 w-full flex justify-center">
-        No teams found
+       {{ __('No teams found') }}
       </p>
     </div>
   </div>

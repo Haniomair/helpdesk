@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex items-center justify-between">
-      <h1 class="text-lg font-semibold py-[5px]">Customise your Helpdesk</h1>
+      <h1 class="text-lg font-semibold py-[5px]">{{ __('Customise your Helpdesk') }}</h1>
     </div>
 
     <!-- Brand Logo & Favicon -->
     <div v-for="config in brandingConfig" class="flex flex-col gap-2">
-      <p class="text-sm text-gray-600">{{ config.title }}</p>
+      <p class="text-sm text-gray-600">{{ __(config.title) }}</p>
       <div class="flex gap-4 items-center">
         <Avatar
           v-if="config.image && !config.loading"
@@ -26,7 +26,7 @@
             <Button
               @click="openFileSelector()"
               iconLeft="upload"
-              label="Upload Image"
+              :label="__('Upload Image')"
               :loading="config.loading"
             />
           </template>
@@ -34,7 +34,7 @@
 
         <div v-else>
           <Button
-            label="Remove"
+            :label="__('Remove')"
             @click="update('', config.doctype, config.fieldname)"
             iconLeft="trash"
             :loading="config.loading"
@@ -77,7 +77,7 @@ const loadingState = reactive({
 
 const brandingConfig = computed(() => [
   {
-    title: "Brand Logo",
+    title:"Brand Logo",
     image: state.brandLogo,
     doctype: "HD Settings",
     fieldname: "brand_logo",

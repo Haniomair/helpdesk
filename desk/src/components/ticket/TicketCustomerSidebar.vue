@@ -2,7 +2,7 @@
   <div class="flex w-[382px] flex-col border-l gap-4">
     <!-- Ticket ID -->
     <div class="flex items-center justify-between border-b px-5 py-3">
-      <span class="cursor-copy text-lg font-semibold">Ticket details</span>
+      <span class="cursor-copy text-lg font-semibold">{{ __('Ticket details') }}</span>
     </div>
     <!-- user info and sla info -->
     <div class="flex flex-col gap-4 pt-0 px-5 py-3 border-b">
@@ -36,9 +36,9 @@
         class="flex items-center text-base leading-5"
         v-for="field in ticketBasicInfo"
       >
-        <span class="w-[126px] text-sm text-gray-600">{{ field.label }}</span>
+        <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
         <span class="text-base text-gray-800 flex-1">
-          {{ field.value }}
+          {{ __(field.value) }}
         </span>
       </div>
 
@@ -48,11 +48,11 @@
         :key="data.label"
         class="flex items-center text-base"
       >
-        <div class="w-[126px] text-gray-600 text-sm">{{ data.title }}</div>
+        <div class="w-[126px] text-gray-600 text-sm">{{ __(data.title) }}</div>
 
         <div class="break-words text-base text-gray-800">
           <Tooltip :text="dayjs(data.value).long()">
-            <Badge :label="data.label" :theme="data.theme" variant="outline" />
+            <Badge :label="__(data.label)" :theme="data.theme" variant="outline" />
           </Tooltip>
         </div>
       </div>
@@ -68,9 +68,9 @@
         class="flex items-center text-base leading-5"
         v-for="field in ticketAdditionalInfo"
       >
-        <span class="w-[126px] text-sm text-gray-600">{{ field.label }}</span>
+        <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
         <span class="text-base text-gray-800 flex-1">
-          {{ field.value }}
+          {{ __(field.value) }}
         </span>
       </div>
     </div>

@@ -6,7 +6,7 @@
       </template>
       <template #right-header>
         <Button
-          label="Create"
+          :label="__('Create')"
           theme="gray"
           variant="solid"
           @click="
@@ -41,7 +41,7 @@
             <Dropdown
               :options="[
                 {
-                  label: 'Delete',
+                  label: __('Delete'),
                   icon: 'trash-2',
                   onClick: () => deleteItem(cannedResponse.name),
                 },
@@ -133,7 +133,7 @@ import EmptyState from "../components/EmptyState.vue";
 const { getUser } = useUserStore();
 
 const breadcrumbs = [
-  { label: "Canned Responses", route: { name: "CannedResponses" } },
+  { label: __("Canned Responses"), route: { name: "CannedResponses" } },
 ];
 const route = useRoute();
 
@@ -167,7 +167,7 @@ async function deleteItem(name) {
 
 usePageMeta(() => {
   return {
-    title: "Canned Responses",
+    title: __("Canned Responses"),
   };
 });
 </script>

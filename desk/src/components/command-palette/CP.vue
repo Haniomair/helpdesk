@@ -12,7 +12,7 @@
               <LucideSearch class="h-4 w-4" />
             </div>
             <ComboboxInput
-              placeholder="Search"
+              :placeholder="__('Search')"
               class="pl-11.5 pr-4.5 w-full border-none bg-transparent py-3 text-base text-gray-800 placeholder:text-gray-500 focus:ring-0"
               autocomplete="off"
               @input="onInput"
@@ -32,7 +32,7 @@
                 v-if="!group.hideTitle"
                 class="px-4.5 mb-2.5 text-base text-gray-600"
               >
-                {{ group.title }}
+                {{ __(group.title) }}
               </div>
               <ComboboxOption
                 v-for="item in group.items"
@@ -152,11 +152,11 @@ export default {
   computed: {
     navigationItems() {
       return {
-        title: "Jump to",
+        title: __("Jump to"),
         component: "CPGroup",
         items: [
           {
-            title: "Tickets",
+            title: __("Tickets"),
             icon: () => h(LucideTicket),
             route: { name: "TicketsAgent" },
           },
@@ -167,7 +167,7 @@ export default {
           //   condition: () => true,
           // },
           {
-            title: "Knowledge Base",
+            title: __("Knowledge Base"),
             icon: () => h(LucideBookOpen),
             route: {
               name: isCustomerPortal.value

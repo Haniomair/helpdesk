@@ -91,7 +91,7 @@
           ref="editor"
           v-model:attachments="attachments"
           v-model:content="description"
-          placeholder="Detailed explanation"
+          :placeholder="__('Detailed explanation')"
           expand
         >
           <template #bottom-right>

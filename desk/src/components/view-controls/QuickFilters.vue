@@ -9,6 +9,7 @@
         :key="filter.name"
         class="min-w-36"
       >
+      
         <QuickFilterField
           :filter="filter"
           @applyQuickFilter="(f, v) => applyQuickFilter(f, v)"

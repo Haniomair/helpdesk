@@ -2,11 +2,11 @@
   <div class="flex flex-col">
     <LayoutHeader>
       <template #left-header>
-        <div class="text-lg font-medium text-gray-900">Customers</div>
+        <div class="text-lg font-medium text-gray-900">{{ __('Customers') }}</div>
       </template>
       <template #right-header>
         <Button
-          label="New customer"
+          :label="__('New')"
           theme="gray"
           variant="solid"
           @click="isDialogVisible = !isDialogVisible"

@@ -20,7 +20,7 @@
             <div class="mb-3 flex flex-col gap-1">
               <SidebarLink
                 class="relative"
-                label="Notifications"
+                :label="__('Notifications')"
                 :icon="LucideBell"
                 :on-click="() => (sidebarOpened = false)"
                 :is-expanded="true"

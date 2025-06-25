@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dialog v-model="open" :options="{ title: 'Create New Contact' }">
+    <Dialog v-model="open" :options="{ title: __('Create New Contact') }">
       <template #body-content>
         <div class="space-y-4">
           <div
@@ -9,7 +9,7 @@
             class="flex flex-col gap-1"
           >
             <span class="mb-2 block text-sm leading-4 text-gray-700">
-              {{ field.label }}
+              {{ __(field.label) }}
               <span
                 v-if="field.required"
                 class="place-self-center text-red-500"
@@ -33,7 +33,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <Button
-              label="Create"
+              :label="__('Create')"
               :loading="contactResource.loading"
               theme="gray"
               variant="solid"

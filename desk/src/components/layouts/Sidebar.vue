@@ -114,7 +114,7 @@
         :isSidebarCollapsed="!isExpanded"
         appName="helpdesk"
       />
-      <SidebarLink
+      <!-- <SidebarLink
         v-if="isOnboardingStepsCompleted && !isCustomerPortal"
         :icon="HelpIcon"
         :label="'Help'"
@@ -125,10 +125,10 @@
             minimize = !showHelpModal;
           }
         "
-      />
+      /> -->
 
       <SidebarLink
-        :icon="isExpanded ? LucideArrowLeftFromLine : LucideArrowRightFromLine"
+        :icon="isExpanded ? getDirection() == 'rtl' ? LucideArrowRightFromLine : LucideArrowLeftFromLine : getDirection() == 'rtl' ? LucideArrowLeftFromLine : LucideArrowRightFromLine"
         :is-active="false"
         :is-expanded="isExpanded"
         :label="isExpanded ? 'Collapse' : 'Expand'"
@@ -197,7 +197,7 @@ import {
   TrialBanner,
   useOnboarding,
 } from "frappe-ui/frappe";
-import HelpIcon from "frappe-ui/frappe/Icons/HelpIcon.vue";
+//import HelpIcon from "frappe-ui/frappe/Icons/HelpIcon.vue";
 import { storeToRefs } from "pinia";
 import { computed, h, markRaw, onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -221,6 +221,8 @@ import Ticket from "~icons/lucide/ticket";
 import Timer from "~icons/lucide/timer";
 import UserPen from "~icons/lucide/user-pen";
 import LucideUserPlus from "~icons/lucide/user-plus";
+import { getDirection } from "@/languages";
+
 const { isMobileView } = useScreenSize();
 
 const route = useRoute();
@@ -315,22 +317,22 @@ const agentPortalDropdown = computed(() => [
       window.open(path.href);
     },
   },
-  {
+/*   {
     icon: "life-buoy",
     label: __("Support"),
     onClick: () => window.open("https://t.me/frappedesk"),
-  },
-  {
+  }, */
+/*   {
     icon: "book-open",
     label: __("Docs"),
     onClick: () => window.open("https://docs.frappe.io/helpdesk"),
-  },
-  {
+  }, */
+/*   {
     label: __("Login to Frappe Cloud"),
     icon: FrappeCloudIcon,
     onClick: () => confirmLoginToFrappeCloud(),
     condition: () => !isMobileView.value && window.is_fc_site,
-  },
+  }, */
   {
     label: __("Settings"),
     icon: "settings",

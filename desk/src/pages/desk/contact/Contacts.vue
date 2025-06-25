@@ -2,11 +2,11 @@
   <div class="flex flex-col">
     <LayoutHeader>
       <template #left-header>
-        <div class="text-lg font-medium text-gray-900">Contacts</div>
+        <div class="text-lg font-medium text-gray-900">{{ __('Contacts') }}</div>
       </template>
       <template #right-header>
         <Button
-          label="New contact"
+          :label="__('New')"
           theme="gray"
           variant="solid"
           @click="showNewContactModal = !showNewContactModal"

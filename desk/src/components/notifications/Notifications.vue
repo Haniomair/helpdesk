@@ -3,17 +3,12 @@
     v-if="notificationStore.visible"
     ref="target"
     class="fixed z-10 h-screen overflow-auto bg-white"
-    :style="{
-      'box-shadow': '8px 0px 8px rgba(0, 0, 0, 0.1)',
-      'max-width': '350px',
-      'min-width': '350px',
-      left: sidebarStore.width,
-    }"
+    :style="notificationStyle"
   >
     <div
       class="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-5 py-2.5"
     >
-      <span class="text-lg font-medium">Notifications</span>
+      <span class="text-lg font-medium">{{ __('Notifications') }}</span>
       <span>
         <Button
           theme="blue"
@@ -79,13 +74,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref,computed } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { dayjs } from "@/dayjs";
 import { Notification } from "@/types";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useNotificationStore } from "@/stores/notification";
 import { UserAvatar } from "@/components";
+import { getDirection } from "@/languages";
+
 
 const notificationStore = useNotificationStore();
 const sidebarStore = useSidebarStore();
@@ -101,6 +98,16 @@ onClickOutside(
     ignore: ["#notifications-btn"],
   }
 );
+
+const notificationStyle = computed(() => {
+  return {
+    "box-shadow": getDirection() == "ltr" ? "8px 0px 8px rgba(0, 0, 0, 0.1)" : "-8px 0px 8px rgba(0, 0, 0, 0.1)",
+    "max-width": "350px",
+    "min-width": "350px",
+    "right": getDirection() === "ltr" ? "unset" : sidebarStore.width,
+    "left": getDirection() === "rtl" ? "unset" : sidebarStore.width,
+  }; 
+});
 
 function handleNotificationClick(n: Notification) {
   notificationStore.toggle();

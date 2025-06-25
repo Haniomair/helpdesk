@@ -12,11 +12,11 @@
       <FeatherIcon name="folder" class="h-6 w-6 text-ink-gray-4 -ml-[2px]" />
     </div>
     <div class="gap-1 flex flex-col">
-      <p class="text-base font-medium text-gray-800 truncate">
-        {{ category.category_name }}
+      <p class="text-base font-medium text-gray-800 truncate mb-1">
+        {{ __(category.category_name) }}
       </p>
       <span class="truncate text-xs md:text-sm text-ink-gray-5">
-        {{ category.article_count }} articles
+        {{ category.article_count }} {{ __('articles') }}
       </span>
     </div>
   </router-link>

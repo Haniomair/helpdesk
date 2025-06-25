@@ -8,9 +8,9 @@
         <textarea
           class="text-base rounded py-1.5 px-2 border border-[--surface-gray-2] bg-surface-gray-2 placeholder-ink-gray-4 hover:border-outline-gray-modals hover:bg-surface-gray-3 focus:bg-surface-white focus:border-outline-gray-4 focus:shadow-sm focus:ring-0 focus-visible:ring-2 focus-visible:ring-outline-gray-3 text-ink-gray-8 transition-colors w-full block"
           ref="titleRef"
-          placeholder="Support Issues"
+          :placeholder="__('Category Title')"
           v-model="newTitle"
-          :rows="1"
+          :rows="2"
           maxlength="50"
           autofocus
           @input="(e: Event) => {
@@ -46,7 +46,7 @@ const showDialog = defineModel<boolean>();
 const newTitle = defineModel<string>("title");
 
 const dialogTitle = computed(() =>
-  props.edit ? "Edit Category" : "Create Category"
+  props.edit ? __("Edit Category") : __("Create Category")
 );
 
 const titleRef = ref(null);
@@ -65,7 +65,7 @@ function getActionButton() {
   const action = [];
   if (props.edit) {
     action.push({
-      label: "Save",
+      label: __("Save"),
       variant: "solid",
       onClick: () => {
         emit("update");
@@ -73,7 +73,7 @@ function getActionButton() {
     });
   } else {
     action.push({
-      label: "Create",
+      label: __("Create"),
       variant: "solid",
       onClick: () => {
         emit("create");

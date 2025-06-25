@@ -2,9 +2,9 @@
   <div class="flex h-full flex-col gap-4">
     <!-- title and desc -->
     <div role="heading" aria-level="1" class="flex flex-col gap-1">
-      <h5 class="text-lg font-semibold pt-[5px]">Setup Email</h5>
+      <h5 class="text-lg font-semibold pt-[5px]">{{ __('Setup Email') }}</h5>
       <p class="text-sm text-gray-600">
-        Choose the email service provider you want to configure.
+        {{ __('Choose the email service provider you want to configure.') }}
       </p>
     </div>
     <!-- email service provider selection -->
@@ -33,8 +33,7 @@
           <a
             :href="selectedService.link"
             target="_blank"
-            class="text-blue-500 underline"
-            >here</a
+            class="text-blue-500 underline">here</a
           >
           .
         </div>

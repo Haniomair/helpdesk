@@ -156,7 +156,7 @@ watch(
         txt: text.value,
         doctype: props.doctype,
         filters: newVal,
-        page_length: props.pageLength,
+        page_length: 100,
       },
     });
     options.reload();
@@ -172,7 +172,7 @@ const options = createResource({
     txt: text.value,
     doctype: props.doctype,
     filters: props.filters,
-    page_length: props.pageLength,
+    page_length: 100,
   },
   transform: (data) => {
     let allData = data.map((option) => {
@@ -209,7 +209,7 @@ function reload(val) {
       txt: val,
       doctype: props.doctype,
       filters: props.filters,
-      page_length: props.pageLength,
+      page_length: 100,
     },
   });
   options.reload();
