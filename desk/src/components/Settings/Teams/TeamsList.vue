@@ -6,7 +6,7 @@
       <div class="flex item-center space-x-2">
         <FormControl
           v-model="search"
-          :placeholder="'Search'"
+          :placeholder="__('Search')"
           type="text"
           :debounce="300"
         >

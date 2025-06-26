@@ -1,0 +1,233 @@
+).reset(t,r,i);o.progress&&o.progress({start:0,end:a.count(),count:a.count()},a),this._symbolDraw.updateLayout()},e.prototype._updateGroupTransform=function(t){var r=t.coordinateSystem;r&&r.getRoamTransform&&(this.group.transform=I9e(r.getRoamTransform()),this.group.decomposeTransform())},e.prototype.remove=function(t,r){this._symbolDraw&&this._symbolDraw.remove(!0)},e.type="effectScatter",e}(Vn);const oat=aat;var sat=function(n){te(e,n);function e(){var t=n!==null&&n.apply(this,arguments)||this;return t.type=e.type,t.hasSymbolVisual=!0,t}return e.prototype.getInitialData=function(t,r){return xu(null,this,{useEncodeDefaulter:!0})},e.prototype.brushSelector=function(t,r,i){return i.point(r.getItemLayout(t))},e.type="series.effectScatter",e.dependencies=["grid","polar"],e.defaultOption={coordinateSystem:"cartesian2d",z:2,legendHoverLink:!0,effectType:"ripple",progressive:0,showEffectOn:"render",clip:!0,rippleEffect:{period:4,scale:2.5,brushType:"fill",number:3},universalTransition:{divideShape:"clone"},symbolSize:10},e}(Jn);const lat=sat;function cat(n){n.registerChartView(oat),n.registerSeriesModel(lat),n.registerLayout(Y_("effectScatter"))}var uat=function(n){te(e,n);function e(t,r,i){var a=n.call(this)||this;return a.add(a.createLine(t,r,i)),a._updateEffectSymbol(t,r),a}return e.prototype.createLine=function(t,r,i){return new A4(t,r,i)},e.prototype._updateEffectSymbol=function(t,r){var i=t.getItemModel(r),a=i.getModel("effect"),o=a.get("symbolSize"),s=a.get("symbol");ke(o)||(o=[o,o]);var l=t.getItemVisual(r,"style"),c=a.get("color")||l&&l.stroke,u=this.childAt(1);this._symbolType!==s&&(this.remove(u),u=Rr(s,-.5,-.5,1,1,c),u.z2=100,u.culling=!0,this.add(u)),u&&(u.setStyle("shadowColor",c),u.setStyle(a.getItemStyle(["color"])),u.scaleX=o[0],u.scaleY=o[1],u.setColor(c),this._symbolType=s,this._symbolScale=o,this._updateEffectAnimation(t,a,r))},e.prototype._updateEffectAnimation=function(t,r,i){var a=this.childAt(1);if(a){var o=t.getItemLayout(i),s=r.get("period")*1e3,l=r.get("loop"),c=r.get("roundTrip"),u=r.get("constantSpeed"),d=oi(r.get("delay"),function(h){return h/t.count()*s/3});if(a.ignore=!0,this._updateAnimationPoints(a,o),u>0&&(s=this._getLineLength(a)/u*1e3),s!==this._period||l!==this._loop||c!==this._roundTrip){a.stopAnimation();var f=void 0;tt(d)?f=d(i):f=d,a.__t>0&&(f=-s*a.__t),this._animateSymbol(a,s,f,l,c)}this._period=s,this._loop=l,this._roundTrip=c}},e.prototype._animateSymbol=function(t,r,i,a,o){if(r>0){t.__t=0;var s=this,l=t.animate(
+).reset(t,r,i);o.progress&&o.progress({start:0,end:a.count(),count:a.count()},a),this._symbolDraw.updateLayout(a)},e.prototype.eachRendered=function(t){this._symbolDraw&&this._symbolDraw.eachRendered(t)},e.prototype._getClipShape=function(t){if(t.get("clip",!0)){var r=t.coordinateSystem;return r&&r.getArea&&r.getArea(.1)}},e.prototype._updateSymbolDraw=function(t,r){var i=this._symbolDraw,a=r.pipelineContext,o=a.large;return(!i||o!==this._isLargeDraw)&&(i&&i.remove(),i=this._symbolDraw=o?new zJe:new K_,this._isLargeDraw=o,this.group.removeAll()),this.group.add(i.group),i},e.prototype.remove=function(t,r){this._symbolDraw&&this._symbolDraw.remove(!0),this._symbolDraw=null},e.prototype.dispose=function(){},e.type="scatter",e}(Vn);const HJe=VJe;var UJe=function(n){te(e,n);function e(){return n!==null&&n.apply(this,arguments)||this}return e.type="grid",e.dependencies=["xAxis","yAxis"],e.layoutMode="box",e.defaultOption={show:!1,z:0,left:"10%",top:60,right:"10%",bottom:70,containLabel:!1,backgroundColor:"rgba(0,0,0,0)",borderWidth:1,borderColor:"#ccc"},e}(en);const GJe=UJe;var _L=function(n){te(e,n);function e(){return n!==null&&n.apply(this,arguments)||this}return e.prototype.getCoordSysModel=function(){return this.getReferringComponents("grid",Pr).models[0]},e.type="cartesian2dAxis",e}(en);Lr(_L,G_);var Tce={show:!0,z:0,inverse:!1,name:
+0 is no feedback, 1 is Like, 2 is Dislike
+About
+Access denied
+Action to perform when clicking the button. The doc will be available as `this`
+Agent Manager
+Agent Name
+Allow anyone to create tickets
+Apply SLA for Resolution Time
+Apply To
+Apply on new page
+Apply to customer portal
+Assign to
+Assignment Conditions
+At-least one of priority, team and ticket type is required
+Auto update status
+Auto-close after (Days)
+Automatically Close Replied Tickets
+Badge
+Base Support Rotation
+Based on your HR Policy, select your leave allocation period's end date
+Based on your HR Policy, select your leave allocation period's start date
+Branding
+Can not send email. No sender email set up!
+Cannot merge General category
+Category must have atleast one article
+Click on Add to Holidays. This will populate the holidays table with all the dates that fall on the selected weekly off. Repeat the process for populating the dates for all your weekly holidays
+Closed or rated tickets cannot be updated by non-agents
+ComboboxInput
+ComboboxOption
+ComboboxOptions
+Commented By
+Contact with us
+Criterion
+Day count for auto closing tickets cannot be negative or zero
+Default SLA
+Default priority
+Default template can not be deleted
+Default ticket type
+Description Template
+Description Weight
+Display Name
+Do not apply filters and restrictions to agents of this team
+Do not restrict tickets without a Team
+DocType
+Enter a name for this HD Service Holiday List.
+Error moving article to category
+Escalation rule already exists for this criteria
+External link
+Feedback
+Feedback (Extra)
+Feedback (Option)
+Feedback (Text)
+Field (fieldname)
+Field `{0}` does not exist in Ticket
+Filter Type
+First Response Due
+First Response Time for Tickets
+Frappe Support
+General category can't be deleted
+General category name can't be changed
+Global
+Group By Field
+Guest
+HD Action
+HD Agent
+HD Article
+HD Article Category
+HD Article Feedback
+HD Canned Response
+HD Customer
+HD Desk Account Request
+HD Escalation Rule
+HD Form Script
+HD Holiday
+HD Notification
+HD Organization
+HD Organization Contact Item
+HD Pause Service Level Agreement On Status
+HD Portal Signup Request
+HD Preset Filter
+HD Preset Filter Item
+HD Service Day
+HD Service Holiday List
+HD Service Level Agreement
+HD Service Level Agreement Fulfilled On Status
+HD Service Level Priority
+HD Settings
+HD Stopword
+HD Support Search Source
+HD Synonym
+HD Synonyms
+HD Team
+HD Team Member
+HD Ticket
+HD Ticket Activity
+HD Ticket Comment
+HD Ticket Feedback Option
+HD Ticket Priority
+HD Ticket Template
+HD Ticket Template Field
+HD Ticket Type
+HD View
+Headings Weight
+HelpDesk
+Helpdesk
+Helpdesk Contact
+Here, your weekly offs are pre-populated based on the previous selections. You can add more rows to also add public and national holidays individually.
+Hide condition
+Hide from customer
+If enabled, anyone will be able to create tickets (without any permission). 
+If enabled, the feedback dialog will be shown, when a user tries to close a ticket. |||
+Ignore Restrictions
+Image to be used in various places, including Login and Signup pages. An image with transparent background and 160 x 32 is preferred
+Instantly send e-mail
+Integer value
+Is Customer Portal
+Is name setup skipped
+Is pinned
+Is setup complete
+Load Default Columns
+Lower the Integer value, higher is the priority of the issue
+Make feedback mandatory
+Merged With
+Meta
+Misc
+My Filter
+Name Weight
+No new notifications
+On click (Javascript)
+Only one default view is allowed per user for {0}
+Paused
+Pinned
+Placeholder
+Post Route Key List
+Prefer knowledge base
+Rating must be between 0.2 and 1.0
+Rating {0} is not allowed
+Reaction
+Reference Ticket
+Regenerate Search Index
+Request Key
+Required
+Resolution Due
+Response and Resolution
+Restrict tickets by Team
+Route Name
+Rows
+SLA
+SLA Creation
+SLA Fulfilled On
+SLA Paused On
+SLA Status
+Search Index Regenerated
+Search Score
+Select your weekly off day
+Send Acknowledgement Email
+Service Level Name
+Set Response Time for Priority {0} in row {1}.
+Simple Python Expression, Example: doc.status == 'Open' and doc.ticket_type == 'Bug'
+Skip e-mail workflow
+Source and target category cannot be same
+Source and target ticket cannot be same
+Source ticket does not exist
+Split and Merge
+Start Time can't be greater than or equal to End Time for {0}.
+Status Details
+Still got questions? We're here to assist you.
+Subject Weight
+Synonyms
+System Health
+System types can not be deleted
+Target ticket does not exist
+Team Restrictions
+The Condition '{0}' is invalid: {1}
+This doctype will be deprecated in the future
+This field is used to send an email instantly without adding it into the queue. If this field is checked, the email will be sent immediately after clicking the "Send" button, instead of being added to the email queue for later processing.
+This field is used to skip email-related workflows for tickets. If this field is checked, no emails will be sent related to tickets, such as new ticket creation, status updates, or notifications.
+This method is only meant for developer mode
+This ticket (#{0}) has been merged with ticket <a href = '/helpdesk/tickets/{1}'>#{1}</a>.
+This ticket has been split to a new ticket. Please follow up on ticket <a href={0}>#{1}</a>.
+Ticket Analytics
+Ticket Merged
+Ticket Priority
+Ticket Split From
+Ticket Summary
+Ticket must be resolved with a feedback
+Ticket not found
+Ticket type
+Ticket type is mandatory
+Ticket-Search Analysis
+Tickets can only be assigned to agents
+Title Slug
+Toggle Full Width
+Toggle Theme
+Tooltip
+Top Result
+Total Ticket
+URL/Method
+User Not found
+User Settings
+Views
+VirtualProvider
+When enabled, the ticket status will automatically change to "Replied" whenever the agent responds to a ticket.|||
+Word
+Workspace Settings
+You are not allowed to view this dashboard data.
+You are not permitted to access this resource.
+You are not permitted to add a comment
+after
+before
+between
+div
+funnel
+group_by
+in
+is
+is not
+like
+line
+not in
+not like
+p
+path
+pie
+radar
+rect
+scatter
+span
+svg
+synonym
+themeRiver

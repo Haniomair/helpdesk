@@ -6,11 +6,15 @@
         *
       </span>
     </span>
+   
     <component
       :is="component"
       :placeholder="placeholder"
       :value="transValue"
-      :model-value="transValue"
+      :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''"
+      v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''"
+      :dir="field.fieldtype === 'Phone' ? 'ltr' : 'auto'"
+      
       @update:model-value="emitUpdate(field.fieldname, $event)"
       @change="
         emitUpdate(
@@ -18,15 +22,22 @@
           $event.target?.value || $event.value || $event
         )
       "
-    />
+   >
+
+
+
+  </component>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, h } from "vue";
+import { computed, watch, h } from "vue";
 import { Autocomplete, Link } from "@/components";
 import { createResource, FormControl } from "frappe-ui";
 import { Field } from "@/types";
+import { vMaska  } from "maska/vue";
+
+
 
 type Value = string | number | boolean;
 
@@ -77,9 +88,7 @@ const component = computed(() => {
       ],
     });
   } else {
-    return h(FormControl, {
-      debounce: 500,
-    });
+    return h(FormControl);
   }
 });
 
@@ -103,6 +112,10 @@ const transValue = computed(() => {
 const placeholder = computed(() => {
   if (props.field.fieldtype === "Data" && !props.field.url_method) {
     return __("Type something");
+  } else if (props.field.fieldtype === "Phone") {
+    return "+9665xxxxxxxx";
+  } else if (props.field.fieldtype === "Email") {
+    return "example@example.com";
   }
   return __("Select an option");
 });

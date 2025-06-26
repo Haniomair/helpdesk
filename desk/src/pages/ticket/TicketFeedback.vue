@@ -6,7 +6,7 @@
       actions: [
         {
           disabled: !preset,
-          label: __('Submit'),
+          label: __('Save'),
           theme: 'gray',
           variant: 'solid',
           onClick: () =>
@@ -49,7 +49,6 @@
           </div>
         </div>
         <div class="space-y-2">
-          <span> Other </span>
           <FormControl
             v-model="text"
             type="textarea"

@@ -5,7 +5,7 @@
       <div class="flex items-center gap-1 justify-center -ml-[16px]">
         <Button
           variant="ghost"
-          icon-left="chevron-left"
+          :icon-left="getDirection() == 'rtl' ? 'chevron-right' : 'chevron-left'"
           :label="teamName"
           size="md"
           @click="() => emit('update:step', 'team-list')"
@@ -27,9 +27,9 @@
         <Link
           doctype="HD Agent"
           class="form-control flex-1"
-          placeholder="Search members"
+          :placeholder="__('Search')"
           v-model="search"
-          label="Members"
+          :label="__('Members')"
           :hide-me="true"
           :filters="agentFilters"
         >
@@ -47,13 +47,13 @@
                 <p>{{ getUser(option.label)?.full_name || "User" }}</p>
               </div>
               <p class="text-gray-600 text-sm">
-                {{ option.label }}
+                {{ __(option.label) }}
               </p>
             </div>
           </template>
         </Link>
         <Button
-          label="Add"
+          :label="__('Add')"
           variant="solid"
           :disabled="!search"
           @click="addMember(search)"
@@ -93,20 +93,19 @@
         </div>
       </div>
       <div v-else class="flex justify-center h-full">
-        <p class="text-p-base text-gray-500">No members found</p>
+        <p class="text-p-base text-gray-500">{{ __('No members found') }}</p>
       </div>
     </div>
   </div>
-  <Dialog v-model="showDelete" :options="{ title: 'Delete team' }">
+  <Dialog v-model="showDelete" :options="{ title: __('Delete team') }">
     <template #body-content>
       <p class="text-p-base text-ink-gray-7">
-        Are you sure you want to delete this team? This action cannot be
-        reversed!
+        {{ __('Are you sure you want to delete this team? This action cannot be reversed!') }}
       </p>
       <Button
         variant="solid"
         class="mt-4 float-right"
-        label="Confirm"
+        :label="__('Confirm')"
         theme="red"
         @click="
           () => {
@@ -121,8 +120,8 @@
     <template #body-content>
       <FormControl
         v-model="_teamName"
-        label="Title"
-        placeholder="Product Experts"
+        :label="__('Title')"
+        :placeholder="__('Product Experts')"
       />
     </template>
   </Dialog>
@@ -146,7 +145,8 @@ import { computed, h, ref } from "vue";
 import LucideLock from "~icons/lucide/lock";
 import LucideUnlock from "~icons/lucide/unlock";
 import AgentCard from "../AgentCard.vue";
-
+import { getDirection } from "@/languages";
+ 
 const props = defineProps<{
   teamName: string;
 }>();
@@ -261,11 +261,11 @@ function renameTeam(close) {
 
 const showDelete = ref(false);
 const deleteDialogOptions = {
-  title: "Delete team",
-  message: `Are you sure you want to delete this team? This action cannot be reversed!`,
+  title: __("Delete team"),
+  message: __('Are you sure you want to delete this team? This action cannot be reversed!'),
   actions: [
     {
-      label: "Confirm",
+      label: __("Confirm"),
       variant: "solid",
       onClick: (ctx) => {
         team.delete.submit();
@@ -277,22 +277,22 @@ const deleteDialogOptions = {
 
 const options = [
   {
-    label: "Rename",
+    label: __("Rename"),
     icon: "edit-3",
     onClick: () => (showRename.value = !showRename.value),
   },
   {
     condition: () => teamRestrictionApplied,
     label: team.doc?.ignore_restrictions
-      ? "Disable Bypass Restrictions"
-      : "Enable Bypass Restrictions",
+      ? __("Disable Bypass Restrictions")
+      : __("Enable Bypass Restrictions"),
     component: () =>
       h(
         Tooltip,
         {
           text: ignoreRestrictions.value
-            ? "Members of this team will see the tickets assigned to this team only"
-            : "Members of this team will be able to see the tickets assigned to all the teams",
+            ? __("Members of this team will see the tickets assigned to this team only")
+            : __("Members of this team will be able to see the tickets assigned to all the teams"),
         },
         {
           default: () => [
@@ -318,8 +318,8 @@ const options = [
                   },
                   [
                     team.doc?.ignore_restrictions
-                      ? "Access only this team's tickets"
-                      : "Access all team tickets",
+                      ? __("Access only this team's tickets")
+                      : __("Access all team tickets"),
                   ]
                 ),
               ]
@@ -329,9 +329,9 @@ const options = [
       ),
   },
   {
-    label: "Delete",
+    label: __("Delete"),
     component: h(Button, {
-      label: "Delete",
+      label: __("Delete"),
       variant: "ghost",
       iconLeft: "trash-2",
       theme: "red",

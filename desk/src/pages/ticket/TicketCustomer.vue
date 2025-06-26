@@ -24,7 +24,7 @@
     </LayoutHeader>
     <div class="flex overflow-hidden h-full w-full">
       <!-- Main Ticket Comm -->
-      <section class="flex flex-col flex-1 max-w-[calc(100%-382px)]">
+      <section class="flex flex-col flex-1" :class="isMobileView ? 'w-full' : 'max-w-[calc(100%-382px)]'">
         <!-- show for only mobile -->
         <TicketCustomerTemplateFields v-if="isMobileView" />
 

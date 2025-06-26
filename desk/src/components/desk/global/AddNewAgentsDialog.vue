@@ -1,6 +1,6 @@
 <template>
   <Dialog
-    :options="{ title: 'Add Agents' }"
+    :options="{ title: __('Add Agents') }"
     :model-value="show"
     @update:modelValue="$emit('update:modelValue', $event)"
     @close="close()"
@@ -16,7 +16,7 @@
             class="w-full"
             type="text"
             v-model="searchInput"
-            placeholder="Type emails"
+            :placeholder="__('Type email')"
             @input="(val) => onSearchInputChange(val)"
           />
           <Button
@@ -30,7 +30,7 @@
               }
             "
           >
-            Add
+            {{ __('Add') }}
           </Button>
         </form>
         <div
@@ -66,10 +66,10 @@
           @click="sendInvites"
           class="mr-2"
           variant="solid"
-          :loading="sentInvitesResource.loading"
-          >Send Invites
+          :loading="sentInvitesResource.loading">
+          {{ __('Send Invites') }}
         </Button>
-        <Button @click="removeAllEmailFromQueue"> Clear All </Button>
+        <Button @click="removeAllEmailFromQueue">{{ __('Clear All') }}</Button>
       </div>
     </template>
   </Dialog>

@@ -1,5 +1,5 @@
 <template>
-  <Dropdown :options="options">
+  <Dropdown :options="options" placement="bottom">
     <template #default="{ open }">
       <button
         class="flex h-12 items-center rounded-md py-2 duration-300 ease-in-out"

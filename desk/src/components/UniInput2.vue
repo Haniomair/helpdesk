@@ -6,18 +6,13 @@
         <span v-if="field.required" class="text-red-500"> * </span>
       </div>
     </Tooltip>
-    <div
-      class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base"
-    >
-      <component
-        :is="component"
-        :key="field.fieldname"
-        class="form-control"
+    <div class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base">
+      <component :is="component" :key="field.fieldname" class="form-control"
+        :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" 
         :placeholder="`${__('Add')} ${__(field.label)}`"
-        :model-value="transValue"
-        autocomplete="off"
-        v-on="
-          textFields.includes(field.fieldtype)
+        :dir="field.fieldtype === 'Phone' ? 'ltr' : ''"
+        :model-value="transValue" autocomplete="off" v-on="
+          textFields.includes(field.fieldtype) || field.fieldtype === 'Phone'
             ? {
                 blur: (event) => {
                   emitUpdate(field.fieldname, event.target.value);
@@ -31,8 +26,7 @@
                   );
                 },
               }
-        "
-      />
+        " />
     </div>
   </div>
 </template>

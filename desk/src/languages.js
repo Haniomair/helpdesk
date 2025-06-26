@@ -24,6 +24,7 @@ export function getDirection() {
 }
 
 export function changeLanguage(_lang) {
+  console.log(`Changing language to ${_lang}`);
   lang.value = _lang;
   window.location.reload();
 }

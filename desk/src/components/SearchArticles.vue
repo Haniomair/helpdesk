@@ -4,7 +4,7 @@
     class="rounded border p-4 text-base"
   >
     <div class="mb-2 font-medium pl-2" v-if="!hideViewAll">
-      These articles may already cover what you are looking for
+      {{ __('These articles may already cover what you are looking for') }}
       <RouterLink
         class="group cursor-pointer space-x-1 hover:text-gray-900"
         :to="{
@@ -12,7 +12,7 @@
         }"
         target="_blank"
       >
-        <span class="text-xs underline">(View All)</span>
+        <span class="text-xs underline">{{ __('(View All)') }}</span>
       </RouterLink>
     </div>
     <dl
@@ -54,9 +54,8 @@
   >
     <Icon icon="heroicons-outline:search" class="h-8 w-8 text-gray-400" />
     <div class="flex items-center flex-col justify-center">
-      <p class="font-base">No answers found</p>
-      <span class="font-base text-p-sm text-gray-600 text-center"
-        >Rephrase the question and try again with some keywords</span
+      <p class="font-base">{{ __('No answers found') }}</p>
+      <span class="font-base text-p-sm text-gray-600 text-center">{{ __('Rephrase the question and try again with some keywords') }}</span
       >
     </div>
   </div>
@@ -66,10 +65,8 @@
   >
     <Icon icon="heroicons-outline:search" class="h-8 w-8 text-gray-400" />
     <div class="flex items-center flex-col justify-center">
-      <p class="font-base">Searching...</p>
-      <span class="font-base text-p-sm text-gray-600 text-center"
-        >Please wait while we search for the answers</span
-      >
+      <p class="font-base mb-2">{{ __('Searching...') }}</p>
+      <span class="font-base text-p-sm text-gray-600 text-center">{{ __('Please wait while we search for the answers') }}</span>
     </div>
   </div>
 </template>

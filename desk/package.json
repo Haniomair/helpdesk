@@ -28,6 +28,7 @@
     "gemoji": "^8.1.0",
     "lodash": "^4.17.21",
     "lucide-static": "^0.276.0",
+    "maska": "^3.1.1",
     "mime": "^3.0.0",
     "pinia": "^2.0.33",
     "pluralize": "^8.0.0",

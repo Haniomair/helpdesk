@@ -6,7 +6,7 @@
       <div class="flex item-center space-x-2">
         <FormControl
           v-model="search"
-          :placeholder="'Search'"
+          :placeholder="__('Search')"
           type="text"
           :debounce="300"
         >
@@ -17,7 +17,7 @@
         <Dropdown :options="dropdownOptions" placement="right">
           <template #default="{ open }">
             <Button
-              :label="activeFilter"
+              :label="__(activeFilter)"
               class="flex items-center justify-between w-[90px]"
             >
               <template #suffix>
@@ -74,7 +74,7 @@
       class="flex mt-28 justify-between w-full h-full"
     >
       <p class="text-sm text-gray-500 w-full flex justify-center">
-        No agents found
+      {{ __('No agents found') }}
       </p>
     </div>
     <!-- Agent List -->
@@ -95,7 +95,7 @@
               :options="getRoles(agent.name)"
               :label="getUserRole(agent.name)"
               :button="{
-                label: getUserRole(agent.name),
+                label: __(getUserRole(agent.name)),
                 iconRight: 'chevron-down',
               }"
               placement="right"

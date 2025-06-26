@@ -1,25 +1,25 @@
 <template>
-  <div class="grid grid-cols-1 gap-4 border-b px-5 py-2.5 sm:grid-cols-3">
+  <div class="grid grid-cols-1 gap-4 border-b px-5 py-2.5 sm:grid-cols-4">
     <div class="space-y-1.5">
-      <span class="block text-sm text-gray-700"> Status </span>
+      <span class="block text-sm text-gray-700">{{ __('Status') }}</span>
       <span class="block break-words text-base font-medium text-gray-900">
         {{ transformStatus(ticket.data.status) }}
       </span>
     </div>
     <div class="space-y-1.5">
-      <span class="block text-sm text-gray-700"> Priority </span>
+      <span class="block text-sm text-gray-700">{{ __('Priority') }}</span>
       <span class="block break-words text-base font-medium text-gray-900">
         {{ ticket.data.priority }}
       </span>
     </div>
     <div v-for="data in slaData" :key="data.label" class="space-y-1.5">
       <Tooltip :text="dayjs(data.value).long()">
-        <span class="block text-sm text-gray-700">{{ data.title }}</span>
+        <span class="block text-sm text-gray-700">{{ __(data.title) }}</span>
       </Tooltip>
       <span class="block break-words text-base font-medium text-gray-900">
         <Badge
           v-if="data.showSla"
-          :label="data.label"
+          :label="__(data.label)"
           :theme="data.theme"
           variant="outline"
         />
@@ -34,7 +34,7 @@
       class="space-y-1.5"
     >
       <span class="block text-sm text-gray-700">
-        {{ field.label }}
+        {{ __(field.label) }}
       </span>
       <span class="block break-words text-base font-medium text-gray-900">
         {{ ticket.data[field.fieldname] }}

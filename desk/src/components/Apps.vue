@@ -1,12 +1,9 @@
 <template>
-  <Popover placement="right-start" class="flex w-full">
+  <Popover :placement="getDirection() == 'rtl' ? 'left-start' : 'right-start'" class="flex w-full">
     <template #target="{ togglePopover }">
-      <button
-        :class="[
+      <button :class="[
           'group w-full flex h-7 items-center justify-between rounded px-2 text-base text-gray-800 hover:bg-gray-100',
-        ]"
-        @click.prevent="togglePopover()"
-      >
+        ]" @click.prevent="togglePopover()">
         <div class="flex gap-2">
           <AppsIcon />
           <span class="whitespace-nowrap">{{ __('Apps') }}</span>
@@ -15,16 +12,12 @@
       </button>
     </template>
     <template #body>
-      <div
-        class="grid grid-cols-3 justify-between mx-3 p-2 rounded-lg border border-gray-100 bg-white shadow-xl"
-      >
+      <div class="grid grid-cols-3 justify-between mx-3 p-2 rounded-lg border border-gray-100 bg-white shadow-xl">
         <div v-for="app in apps.data" key="name">
-          <a
-            :href="app.route"
-            class="flex flex-col gap-1.5 rounded justify-center items-center py-2 px-3 hover:bg-gray-100"
-          >
+          <a :href="app.route"
+            class="flex flex-col gap-1.5 rounded justify-center items-center py-2 px-3 hover:bg-gray-100">
             <img class="size-8" :src="app.logo" />
-            <div class="text-sm" @click="app.onClick">
+            <div class="text-sm" @touchend="app.onClick" @click="app.onClick">
               {{ __(app.title) }}
             </div>
           </a>
@@ -37,6 +30,8 @@
 import { Popover, createResource } from "frappe-ui";
 import AppsIcon from "./icons/AppsIcon.vue";
 import ChevronRight from "~icons/lucide/chevron-right";
+import { getDirection } from "@/languages";
+
 
 const apps = createResource({
   url: "frappe.apps.get_apps",

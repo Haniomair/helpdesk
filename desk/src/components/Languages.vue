@@ -1,5 +1,5 @@
 <template>
-    <Popover placement="right-start" class="flex w-full">
+    <Popover :placement="getDirection() == 'rtl' ? 'left-start' : 'right-start'" class="flex w-full">
       <template #target="{ togglePopover }">
         <button
           :class="[
@@ -22,6 +22,7 @@
             <a
               href="#"
                @click="changeLanguage(lang.name)"
+               @touchend="changeLanguage(lang.name)"
               class="flex flex-col gap-1.5 rounded justify-center items-center py-2 px-3 hover:bg-gray-100"
             >
               <div class="text-sm">
@@ -39,7 +40,7 @@
   import GlobIcon from "./icons/GlobIcon.vue";
   import ChevronRight from "~icons/lucide/chevron-right";
 
-  import { getCurrentLanguage, changeLanguage } from "@/languages";
+  import { getCurrentLanguage, changeLanguage, getDirection } from "@/languages";
   const currentLanguage = getCurrentLanguage();
   
   

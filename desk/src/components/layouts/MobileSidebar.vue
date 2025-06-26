@@ -4,11 +4,11 @@
       <TransitionChild
         as="template"
         enter="transition ease-in-out duration-200 transform"
-        enter-from="-translate-x-full"
+        :enter-from="getDirection() == 'rtl' ? 'translate-x-full' : '-translate-x-full'"
         enter-to="translate-x-0"
         leave="transition ease-in-out duration-200 transform"
         leave-from="translate-x-0"
-        leave-to="-translate-x-full"
+        :leave-to="getDirection() == 'rtl' ? 'translate-x-full' : '-translate-x-full'"
       >
         <div
           class="relative z-10 flex h-full w-[230px] flex-col border-r bg-gray-50 transition-all duration-300 ease-in-out"
@@ -38,7 +38,7 @@
               <SidebarLink
                 v-if="!isCustomerPortal"
                 class="relative"
-                label="Dashboard"
+                :label="__('Dashboard')"
                 :icon="LucideLayoutDashboard"
                 :to="'Dashboard'"
                 :is-active="isActiveTab('Dashboard')"
@@ -113,6 +113,9 @@ import {
 } from "@headlessui/vue";
 import { computed, markRaw } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import Languages from "@/components/Languages.vue";
+
+import { getDirection } from "@/languages";
 
 import { Section } from "@/components";
 import SidebarLink from "@/components/SidebarLink.vue";
@@ -191,7 +194,10 @@ function parseViews(views) {
 
 const customerPortalDropdown = computed(() => [
   {
-    label: "Log out",
+    component: markRaw(Languages),
+  },
+  {
+    label: __("Log out"),
     icon: "log-out",
     onClick: () => authStore.logout(),
   },
@@ -202,25 +208,28 @@ const agentPortalDropdown = computed(() => [
     component: markRaw(Apps),
   },
   {
-    label: "Customer portal",
+    component: markRaw(Languages),
+  },
+  {
+    label: __("Customer portal"),
     icon: "users",
     onClick: () => {
       const path = router.resolve({ name: "TicketsCustomer" });
       window.open(path.href);
     },
   },
-  {
+/*   {
     icon: "life-buoy",
     label: "Support",
     onClick: () => window.open("https://t.me/frappedesk"),
-  },
-  {
+  }, */
+/*   {
     icon: "book-open",
     label: "Docs",
     onClick: () => window.open("https://docs.frappe.io/helpdesk"),
-  },
+  }, */
   {
-    label: "Log out",
+    label: __("Log out"),
     icon: "log-out",
     onClick: () => authStore.logout(),
   },

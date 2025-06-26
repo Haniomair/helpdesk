@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col gap-4">
+  <div class="flex h-full flex-col gap-4 overflow-y-auto px-1">
     <!-- title and desc -->
     <div role="heading" aria-level="1" class="flex flex-col gap-1">
       <h5 class="text-lg font-semibold pt-[5px]">{{ __('Setup Email') }}</h5>
@@ -29,11 +29,11 @@
           class="h-6 w-5 w-min-5 w-max-5 min-h-5 max-w-5 text-blue-500"
         />
         <div class="text-wrap text-xs text-gray-700">
-          {{ selectedService.info }}
+          {{ __(selectedService.info) }}
           <a
             :href="selectedService.link"
             target="_blank"
-            class="text-blue-500 underline">here</a
+            class="text-blue-500 underline">{{ __('here') }}</a
           >
           .
         </div>
@@ -48,10 +48,10 @@
           >
             <FormControl
               v-model="state[field.name]"
-              :label="field.label"
+              :label="__(field.label)"
               :name="field.name"
               :type="field.type"
-              :placeholder="field.placeholder"
+              :placeholder="__(field.placeholder)"
             />
           </div>
         </div>
@@ -63,11 +63,11 @@
           >
             <FormControl
               v-model="state[field.name]"
-              :label="field.label"
+              :label="__(field.label)"
               :name="field.name"
               :type="field.type"
             />
-            <p class="text-gray-500 text-p-sm">{{ field.description }}</p>
+            <p class="text-gray-500 text-p-sm">{{ __(field.description) }}</p>
           </div>
         </div>
         <ErrorMessage v-if="error" class="ml-1" :message="error" />
@@ -76,14 +76,14 @@
     <!-- action button -->
     <div v-if="selectedService" class="mt-auto flex justify-between">
       <Button
-        label="Back"
+        :label="__('Back')"
         theme="gray"
         variant="outline"
         :disabled="addEmailRes.loading"
         @click="emit('update:step', 'email-list')"
       />
       <Button
-        label="Create"
+        :label="__('Create')"
         variant="solid"
         :loading="addEmailRes.loading"
         @click="createEmailAccount"
