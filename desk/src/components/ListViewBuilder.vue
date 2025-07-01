@@ -212,15 +212,15 @@ const defaultOptions = reactive({
   },
   selectBannerActions: [
     {
-      label: "Delete",
+      label: __("Delete"),
       icon: "trash-2",
       onClick: (selections: Set<string>) => {
         $dialog({
-          title: "Delete",
-          message: `Are you sure you want to delete ${selections.size} item(s)?`,
+          title: __("Delete"),
+          message: __('Are you sure you want to delete the selected items?'),
           actions: [
             {
-              label: "Confirm",
+              label: __("Confirm"),
               variant: "solid",
               onClick({ close }) {
                 handleBulkDelete(close, selections);
@@ -240,7 +240,7 @@ function handleBulkDelete(hide: Function, selections: Set<string>) {
     items: JSON.stringify(Array.from(selections)),
     doctype: props.options.doctype,
   }).then(() => {
-    toast.success("Item(s) deleted successfully");
+    toast.success(__("Item(s) deleted successfully"));
     hide();
     reset();
   });

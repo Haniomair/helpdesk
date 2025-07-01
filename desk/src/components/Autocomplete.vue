@@ -1,119 +1,74 @@
 <template>
-  <Combobox v-slot="{ open: isComboboxOpen }" v-model="selectedValue" nullable>
-    <Popover v-model:show="showOptions" class="w-full">
-      <template #target="{ open: openPopover, togglePopover }">
-        <slot name="target" v-bind="{ open: openPopover, togglePopover }">
-          <div class="w-full -ml-0.5">
-            <button
-              class="flex w-full items-center justify-between focus:outline-none"
-              :class="inputClasses"
-              @click="() => togglePopover()"
-            >
-              <div class="flex items-center">
-                <slot name="prefix" />
-                <span
-                  v-if="selectedValue"
-                  class="overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5"
-                >
-                  {{ displayValue(selectedValue) }}
-                </span>
-                <span v-else class="text-base leading-5 text-gray-500">
-                  {{ placeholder || "" }}
-                </span>
-              </div>
-              <FeatherIcon
-                name="chevron-down"
-                class="h-4 w-4 text-gray-600"
-                aria-hidden="true"
-              />
-            </button>
-          </div>
-        </slot>
-      </template>
-      <template #body="{ isOpen }">
-        <div v-show="isOpen">
-          <div class="mt-1 rounded-lg bg-white py-1 text-base shadow-2xl">
-            <div class="relative px-1.5 pt-0.5">
-              <ComboboxInput
-                ref="search"
-                class="form-input w-full"
-                type="text"
-                :value="query"
-                autocomplete="off"
-                placeholder="Search"
-                @change="
+  <div>
+    <Combobox v-slot="{ open: isComboboxOpen }" v-model="selectedValue" nullable>
+      <Popover v-model:show="showOptions" class="w-full">
+        <template #target="{ open: openPopover, togglePopover }">
+          <slot name="target" v-bind="{ open: openPopover, togglePopover }">
+            <div class="w-full -ml-0.5">
+              <button class="flex w-full items-center justify-between focus:outline-none" :class="inputClasses"
+                @click="() => togglePopover()">
+                <div class="flex items-center">
+                  <slot name="prefix" />
+                  <span v-if="selectedValue != null"
+                    class="overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5">
+                    {{ displayValue(selectedValue) }}
+                  </span>
+                  <span v-else class="text-base leading-5 text-gray-500">
+                    {{ placeholder || "" }}
+                  </span>
+                </div>
+                <FeatherIcon name="chevron-down" class="h-4 w-4 text-gray-600" aria-hidden="true" />
+              </button>
+            </div>
+          </slot>
+        </template>
+        <template #body="{ isOpen }">
+          <div v-show="isOpen">
+            <div class="mt-1 rounded-lg bg-white py-1 text-base shadow-2xl">
+              <div class="relative px-1.5 pt-0.5">
+                <ComboboxInput ref="search" class="form-input w-full" type="text" :value="query" autocomplete="off"
+                  :placeholder="__('Search')" @change="
                   (e) => {
                     query = e.target.value;
                   }
-                "
-              />
-              <button
-                class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
-                @click="selectedValue = null"
-              >
-                <FeatherIcon name="x" class="w-4" />
-              </button>
-            </div>
-            <ComboboxOptions
-              class="my-1 max-h-[12rem] overflow-y-auto px-1.5"
-              static
-            >
-              <div
-                v-for="group in groups"
-                v-show="group.items.length > 0"
-                :key="group.key"
-                class="mt-1.5"
-              >
-                <div
-                  v-if="group.group && !group.hideLabel"
-                  class="px-2.5 py-1.5 text-sm font-medium text-gray-500"
-                >
-                  {{ group.group }}
-                </div>
-                <ComboboxOption
-                  v-for="option in group.items"
-                  :key="option.value"
-                  v-slot="{ active, selected }"
-                  as="template"
-                  :value="option"
-                >
-                  <li
-                    :class="[
+                " />
+                <button class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
+                  @click="selectedValue = null">
+                  <FeatherIcon name="x" class="w-4" />
+                </button>
+              </div>
+              <ComboboxOptions class="my-1 max-h-[12rem] overflow-y-auto px-1.5" static>
+                <div v-for="group in groups" v-show="group.items.length > 0" :key="group.key" class="mt-1.5">
+                  <div v-if="group.group && !group.hideLabel" class="px-2.5 py-1.5 text-sm font-medium text-gray-500">
+                    {{ group.group }}
+                  </div>
+                  <ComboboxOption v-for="option in group.items" :key="option.value" v-slot="{ active, selected }"
+                    as="template" :value="option">
+                    <li :class="[
                       'flex items-center rounded px-2.5 py-1.5 text-base',
                       { 'bg-gray-100': active },
-                    ]"
-                  >
-                    <slot
-                      name="item-prefix"
-                      v-bind="{ active, selected, option }"
-                    />
-                    <slot
-                      name="item-label"
-                      v-bind="{ active, selected, option }"
-                    >
-                      {{ option.label }}
-                    </slot>
-                  </li>
-                </ComboboxOption>
+                    ]">
+                 
+                      <slot name="item-prefix" v-bind="{ active, selected, option }" />
+                      <slot name="item-label" v-bind="{ active, selected, option }">
+                        {{ option.label }}
+                      </slot>
+                    </li>
+                  </ComboboxOption>
+                </div>
+                <li v-if="groups.length == 0" class="mt-1.5 rounded-md px-2.5 py-1.5 text-base text-gray-600">
+                  __('No results found')
+                </li>
+              </ComboboxOptions>
+              <div v-if="slots.footer" class="border-t p-1.5 pb-0.5">
+                <slot name="footer" v-bind="{ value: search?.el._value, close }"></slot>
               </div>
-              <li
-                v-if="groups.length == 0"
-                class="mt-1.5 rounded-md px-2.5 py-1.5 text-base text-gray-600"
-              >
-                No results found
-              </li>
-            </ComboboxOptions>
-            <div v-if="slots.footer" class="border-t p-1.5 pb-0.5">
-              <slot
-                name="footer"
-                v-bind="{ value: search?.el._value, close }"
-              ></slot>
             </div>
           </div>
-        </div>
-      </template>
-    </Popover>
-  </Combobox>
+        </template>
+      </Popover>
+    </Combobox>
+  </div>
 </template>
 
 <script setup>
@@ -155,6 +110,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  valueField: {
+    type: String,
+    default: "value",
+  },
 });
 const emit = defineEmits(["update:modelValue", "update:query", "change"]);
 
@@ -167,6 +126,7 @@ const slots = useSlots();
 
 const valuePropPassed = computed(() => "value" in attrs);
 
+
 const selectedValue = computed({
   get() {
     return valuePropPassed.value ? attrs.value : props.modelValue;
@@ -176,9 +136,14 @@ const selectedValue = computed({
     if (val) {
       showOptions.value = false;
     }
-    emit(valuePropPassed.value ? "change" : "update:modelValue", val);
+    let emittedValue = val;
+    if (typeof val === "object") {
+      emittedValue = val[props.valueField];
+    }
+    emit(valuePropPassed.value ? "change" : "update:modelValue", emittedValue);
   },
 });
+
 
 function close() {
   showOptions.value = false;
@@ -203,6 +168,8 @@ const groups = computed(() => {
     .filter((group) => group.items.length > 0);
 });
 
+
+
 function filterOptions(options) {
   if (!query.value) {
     return options;
@@ -216,9 +183,18 @@ function filterOptions(options) {
 }
 
 function displayValue(option) {
-  if (typeof option === "string") {
+
+  
+  let value = null;
+
+  if (typeof option === 'object')
+    value = option[props.valueField];
+  else
+    value = option;
+
+  if (value != null) {
     let allOptions = groups.value.flatMap((group) => group.items);
-    let selectedOption = allOptions.find((o) => o.value === option);
+    let selectedOption = allOptions.find((o) => o.value == value);
     return selectedOption?.label || option;
   }
   return option?.label;

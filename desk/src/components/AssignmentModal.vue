@@ -10,10 +10,16 @@
       <SearchComplete
         class="form-control"
         doctype="HD Agent"
+        search-field="agent_name"
         :custom-filters="customFilters"
         :reset-input="true"
         @change="
           (option) => {
+            if (option == null) return;
+            if (option.value === '@me') {
+              addAssignee(useAuthStore().user.name);
+              return;
+            }
             addAssignee(option.value);
           }
         "

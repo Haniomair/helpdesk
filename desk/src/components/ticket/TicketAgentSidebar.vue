@@ -66,10 +66,10 @@ const props = defineProps<Props>();
 const emit = defineEmits(["update", "email:open", "reload"]);
 
 function update(val = null) {
-  if (val.value && typeof val.value === "object") {
+/*   if (val.value && typeof val.value === "object") {
     val.value = val.value.target?.value || null;
-  }
-  emit("update", val);
+  } */
+  emit("reload");
 }
 
 const showMergeModal = ref(false);

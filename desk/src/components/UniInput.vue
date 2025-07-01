@@ -1,37 +1,30 @@
 <template>
-  <div class="space-y-1.5" v-if="field.display_via_depends_on">
+  
+  <div class="space-y-1.5" v-show="field.display_via_depends_on">
     <span class="block text-sm text-gray-700">
       {{ __(field.label) }}
       <span v-if="field.required" class="place-self-center text-red-500">
         *
       </span>
     </span>
-   
-    <component
-      :is="component"
-      :placeholder="placeholder"
-      :value="transValue"
-      :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''"
+    <component :is="component" :placeholder="placeholder"
+      :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :value="transValue"
       v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''"
-      :dir="field.fieldtype === 'Phone' ? 'ltr' : 'auto'"
-      
-      @update:model-value="emitUpdate(field.fieldname, $event)"
-      @change="
+      :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" @update:model-value="emitUpdate(field.fieldname, $event)" @change="
         emitUpdate(
           field.fieldname,
           $event.target?.value || $event.value || $event
         )
-      "
-   >
+      ">
 
 
 
-  </component>
+    </component>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, watch, h } from "vue";
+import { computed, h, defineExpose,ref } from "vue";
 import { Autocomplete, Link } from "@/components";
 import { createResource, FormControl } from "frappe-ui";
 import { Field } from "@/types";
@@ -67,6 +60,8 @@ const component = computed(() => {
     return h(Link, {
       doctype: props.field.options,
       filters: props.field.filters,
+      advanced_filters: true,
+      filter_based_on: props.field.filter_based_on
     });
   } else if (props.field.fieldtype === "Select") {
     return h(Autocomplete, {
@@ -102,12 +97,30 @@ const apiOptions = createResource({
     })),
 });
 
+
+/* const transValue = computed({
+  get() {
+    if (props.field.fieldtype === "Check") {
+      return props.value ? __("Yes") : __("No");
+    }
+    return props.value;
+  },
+  set(value: Value) {
+    //props.value = value;
+    emitUpdate(props.field.fieldname, value);
+  },
+}) */
+
 const transValue = computed(() => {
-  if (props.field.fieldtype === "Check") {
-    return props.value ? __("Yes") : __("No");
-  }
+  //if (props.field.fieldtype === "Check") {
+  //  return props.value ? __("Yes") : __("No");
+  //}
   return props.value;
 });
+
+
+defineExpose({ transValue });
+
 
 const placeholder = computed(() => {
   if (props.field.fieldtype === "Data" && !props.field.url_method) {
@@ -121,6 +134,9 @@ const placeholder = computed(() => {
 });
 
 function emitUpdate(fieldname: Field["fieldname"], value: Value) {
+ // if (props.field.fieldtype === "Check") {
+ //   value = value === 'true' ? value = true : false;
+ // }
   emit("change", { fieldname, value });
 }
 </script>

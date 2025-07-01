@@ -66,6 +66,17 @@ def get_one(name, is_customer_portal=False):
             "name": ticket.raised_by.split("@")[0],
         }
     template = ticket.template or DEFAULT_TICKET_TEMPLATE
+    fields = (get_meta(template) if template else [])
+
+    if is_customer_portal:
+        for field in fields:
+            if field.get("fieldtype") == "Link" and field.get("options"):
+                meta = frappe.get_meta(field.get("options"))
+                if meta.title_field:
+                    ticket[field.get("fieldname")] = frappe.db.get_value(
+                        meta.name, ticket.get(field.get("fieldname")), meta.title_field
+                    )
+
     return {
         **ticket,
         "comments": get_comments(name),
@@ -78,7 +89,7 @@ def get_one(name, is_customer_portal=False):
         "_form_script": get_form_script(
             "HD Ticket", is_customer_portal=is_customer_portal
         ),
-        "fields": get_meta(template),
+        "fields": fields if not is_customer_portal else None,
     }
 
 

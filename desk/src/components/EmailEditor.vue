@@ -1,4 +1,5 @@
 <template>
+  
   <TextEditor
     ref="editorRef"
     :editor-class="[
@@ -153,6 +154,7 @@
     :doctype="doctype"
     @apply="applyCannedResponse"
   />
+
 </template>
 
 <script setup lang="ts">

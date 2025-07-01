@@ -1,14 +1,15 @@
 <template>
   <Popover
     :popover-class="popoverClass.length > 0 ? popoverClass : ''"
-    class="flex w-full"
+    
+    class="flex w-full "
   >
     <template #target="{ open, close }">
       <div class="flex flex-col gap-1 w-full">
         <slot name="label"></slot>
         <FormControl
           type="text"
-          class="w-full focus:outline-none outline-none border-inherit shadow-none"
+          class="w-full focus:outline-none outline-none border-inherit shadow-none pointer-events-none-3rd-div"
           v-bind="$attrs"
           v-model="query"
           @update:model-value="(e:string)=>{
@@ -26,6 +27,7 @@
       </div>
     </template>
     <template #body-main>
+      
       <!-- Searched Articles -->
       <div class="max-h-[320px] md:max-h-[420px] overflow-scroll flex flex-col">
         <SearchArticles
@@ -58,4 +60,10 @@ const props = withDefaults(defineProps<P>(), {
 const query: ModelRef<string> = defineModel();
 </script>
 
-<style scoped></style>
+<style scoped>
+
+:deep(.pointer-events-none-3rd-div div div) {
+  pointer-events: none;
+}
+
+</style>

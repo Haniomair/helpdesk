@@ -1,4 +1,6 @@
 import { Field } from "@/types";
+import { object } from "zod";
+import { reactive, computed, isReactive, toRaw,ref } from "vue";
 
 export async function setupCustomizations(doc, obj) {
   let data = doc?.data;
@@ -62,6 +64,23 @@ export function handleSelectFieldUpdate(
   doc[fieldname] = "";
 }
 
+export function cascadeFilterChanges(fieldname,fields, templateFields) {
+
+
+  let fieldsWithFilter = fields.filter(
+    console.log("fieldname", fieldname),
+    (f) => f.filter_based_on.includes(fieldname)
+  );
+  
+
+  fieldsWithFilter.forEach(f => {
+    templateFields[f.fieldname] = null;
+    evaluateFilter(f, templateFields);
+    cascadeFilterChanges(f.fieldname,fields,templateFields);
+  });
+
+}
+
 export function handleLinkFieldUpdate(
   f: Field,
   fieldname: string,
@@ -80,23 +99,172 @@ export function handleLinkFieldUpdate(
 }
 
 //
+
+export function parseField2(field,doc) {
+  field['display_via_depends_on'] = evaluateDependsOnValue(field?.depends_on, doc);
+  field['required'] = field.required ||
+    (field.mandatory_depends_on &&
+      evaluateDependsOnValue(field.mandatory_depends_on, doc));
+  field['filters'] = field.link_filters ? setupFieldFilters2(field,doc) : [];
+  field['filter_based_on'] = [];
+  setupFieldFilters(field);
+}
+
 export function parseField(field, doc) {
-  return {
-    display_via_depends_on: evaluateDependsOnValue(field?.depends_on, doc),
+
+  
+  let result = {
     ...field,
+    display_via_depends_on: computed(()=> evaluateDependsOnValue(field?.depends_on, doc)),
     required:
       field.required ||
       (field.mandatory_depends_on &&
         evaluateDependsOnValue(field.mandatory_depends_on, doc)),
-    filters: field.link_filters && JSON.parse(field.link_filters),
+    filters: field.link_filters ? setupFieldFilters2(field,doc) : [], 
+    filter_based_on: []
   };
+  setupFieldFilters(result);
+  let r = reactive(result);
+  return r;
 }
-function evaluateDependsOnValue(expression, doc) {
-  if (!expression) return true;
+
+function setupFieldFilters2(field,doc) {
+ 
+  let filters = JSON.parse(field.link_filters);
+  let result = [];
+  filters.forEach(f=> {
+    result.push({
+      doctype: f[0],
+      field: f[1],
+      operator: f[2],
+      expression: f[3],
+      based_on: getFilterBasedOn(f[3]),
+      value: null,
+      function: computed(()=> evaluateFilter3(f[3], doc))
+    })
+  });
+  
+  return result;
+
+}
+
+function getFilterBasedOn(expression) {
+  const regex = /doc\.([^\s]*)(?=\s|$)/g;
+  let matches = [...expression.matchAll(regex)];
+  return matches.map(match => match[1]);
+}
+
+function setupFieldFilters(field) {
+
+  if (!field.filters)
+    return;
+
+  let evals = field.filters.map((filter) => {
+    return filter.expression;
+  }).join(" ");
+  // regex to match doc.fieldname in link_filters
+  // e.g. doc.fieldname, doc.fieldname1, doc.fieldname2
+  // This regex will match doc.fieldname followed by a space or end of string
+  const regex = /doc\.([^\s]*)(?=\s|$)/g;
+  let matches = [...evals.matchAll(regex)];
+  field.filter_based_on.push(...matches.map(match => match[1]));
+}
+
+function evaluateFilter3(exp,doc) {
+  if (!exp) return '';
+  let out = null;
+  if (exp.substr(0, 5) == "eval:") {
+    try {
+      out = _eval(exp.substr(5), { doc });
+    } catch (e) {
+    }
+  } else {
+    let value = doc[exp];
+    if (Array.isArray(value)) {
+      out = !!value.length;
+    } else {
+      out = !!value;
+    }
+  }
+  return out;
+}
+
+function evaluateFilter2(filter,doc) {
+
+  let expression = filter[3];
+  if (expression.substr(0, 5) == "eval:") {
+    try {
+      filter[4] = _evalFilter(expression.substr(5), { doc });
+    } catch (e) {
+      console.log("Error evaluating the following expression:");
+      console.error(expression);
+    }
+  } else if (expression.substr(0, 4) == "doc.") {
+    filter[4] = doc[expression.substr(4)];
+  }
+
+}
+
+export function evaluateFilter(field, doc) {
+  field.filters.forEach(filter => {
+    let expression = filter.expression;
+    if (expression.substr(0,5) == "eval:") {
+      try {
+        filter.value = _evalFilter(expression.substr(5), { doc });
+      } catch (e) {
+        console.log("Error evaluating the following expression:");
+        console.error(expression);
+      }
+    } else if (expression.substr(0,4) == "doc.") {
+      filter.value = doc[expression.substr(4)]; 
+    }
+
+
+  });
+  
+/*   if (!expression) return '';
   let out = null;
   if (expression.substr(0, 5) == "eval:") {
     try {
-      out = _eval(expression.substr(5), { doc });
+      out = _evalFilter(expression.substr(5), { doc });
+    } catch (e) {
+      out = true;
+    }
+  } else if (expression.substr(0, 4) == "doc.") {
+    out = doc[expression.substr(4)];
+  } else {
+    let value = doc[expression];
+    if (Array.isArray(value)) {
+      out = !!value.length;
+    } else {
+      out = !!value;
+    }
+  }
+  return out; */
+}
+
+function _evalFilter(code, context = {}) {
+  let variable_names = Object.keys(context);
+  let variables = Object.values(context);
+  code = `return ${code};`;
+  try {
+    let expression_function = new Function(...variable_names, code);
+    let result= expression_function(...variables);
+    return result;
+  } catch (error) {
+    console.log("Error evaluating the following expression:");
+    console.error(code);
+    throw error;
+  }
+}
+
+function evaluateDependsOnValue(expression, doc) {
+
+  if (!expression) return true;
+  let out = true;
+  if (expression.substr(0, 5) == "eval:") {
+    try {
+      return _eval(expression.substr(5), { doc });
     } catch (e) {
       out = true;
     }
@@ -112,11 +280,13 @@ function evaluateDependsOnValue(expression, doc) {
   }
   return out;
 }
+
 function _eval(code, context = {}) {
   let variable_names = Object.keys(context);
   let variables = Object.values(context);
   code = `let out = ${code}; return out`;
   try {
+    
     let expression_function = new Function(...variable_names, code);
     return expression_function(...variables);
   } catch (error) {

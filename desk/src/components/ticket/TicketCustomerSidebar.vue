@@ -8,11 +8,7 @@
     <div class="flex flex-col gap-4 pt-0 px-5 py-3 border-b">
       <!-- user info -->
       <div class="flex gap-2">
-        <Avatar
-          size="2xl"
-          :image="ticket.data.contact.image"
-          :label="ticket.data.contact.name"
-        />
+        <Avatar size="2xl" :image="ticket.data.contact.image" :label="ticket.data.contact.name" />
         <div class="flex items-center justify-between">
           <Tooltip :text="ticket.data.contact.name">
             <div class="w-[242px] truncate text-2xl font-medium">
@@ -32,10 +28,7 @@
       </div>
 
       <!-- Ticket Info -->
-      <div
-        class="flex items-center text-base leading-5"
-        v-for="field in ticketBasicInfo"
-      >
+      <div class="flex items-center text-base leading-5" v-for="field in ticketBasicInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
         <span class="text-base text-gray-800 flex-1">
           {{ __(field.value) }}
@@ -43,11 +36,7 @@
       </div>
 
       <!-- sla info -->
-      <div
-        v-for="data in slaData"
-        :key="data.label"
-        class="flex items-center text-base"
-      >
+      <div v-for="data in slaData" :key="data.label" class="flex items-center text-base">
         <div class="w-[126px] text-gray-600 text-sm">{{ __(data.title) }}</div>
 
         <div class="break-words text-base text-gray-800">
@@ -58,18 +47,11 @@
       </div>
     </div>
     <!-- feedback component -->
-    <TicketFeedback
-      v-if="ticket.data.feedback_rating"
-      class="border-b text-base text-gray-600"
-      :ticket="ticket.data"
-    />
-    <div class="flex flex-col gap-4 pt-0 px-5 py-3">
-      <div
-        class="flex items-center text-base leading-5"
-        v-for="field in ticketAdditionalInfo"
-      >
+    <TicketFeedback v-if="ticket.data.feedback_rating" class="border-b text-base text-gray-600" :ticket="ticket.data" />
+    <div class="flex flex-col gap-4 pt-0 px-5 py-3  overflow-y-auto">
+      <div class="flex items-center text-base leading-5" v-for="field in ticketAdditionalInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
-        <span class="text-base text-gray-800 flex-1">
+        <span :dir="getDirection() == 'rtl' && field.fieldtype == 'Phone' ? 'ltr' : ''" :class="'text-base text-gray-800 flex-1 ' + (field.fieldtype === 'Phone' && getDirection() == 'rtl' ? 'text-end' : '')">
           {{ __(field.value) }}
         </span>
       </div>
@@ -84,6 +66,7 @@ import { Field } from "@/types";
 import { formatTime } from "@/utils";
 import { Avatar, Tooltip } from "frappe-ui";
 import { computed, inject } from "vue";
+import { getDirection } from "@/languages";
 
 const emit = defineEmits(["open"]);
 
@@ -193,14 +176,17 @@ const ticketAdditionalInfo = computed(() => {
     {
       label: "Subject",
       value: ticket.data.subject,
+      fieldtype: "Data",
     },
     {
       label: "Team",
       value: ticket.data.agent_group || "-",
+      fieldtype: "Data",
     },
     {
       label: "Priority",
       value: ticket.data.priority,
+      fieldtype: "Select",
     },
   ];
   const custom_fields = ticket.data.template.fields
@@ -212,6 +198,7 @@ const ticketAdditionalInfo = computed(() => {
     .map((field: Field) => ({
       label: field.label,
       value: ticket.data[field.fieldname],
+      fieldtype: field.fieldtype
     }));
 
   return [...fields, ...custom_fields];

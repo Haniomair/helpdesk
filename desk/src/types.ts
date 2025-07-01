@@ -136,6 +136,7 @@ export interface Field {
   url_method?: string;
   link_filters?: string;
   filters?: string;
+  filter_based_on?: string;
   display_via_depends_on?: string;
   mandatory_via_depends_on?: string;
 }

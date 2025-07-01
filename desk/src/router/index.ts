@@ -6,7 +6,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const { isMobileView } = useScreenSize();
 
 export const LOGIN_PAGE = "/login?redirect-to=/helpdesk";
-
+  
 // type the meta fields
 declare module "vue-router" {
   interface RouteMeta {

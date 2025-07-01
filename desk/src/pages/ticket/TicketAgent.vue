@@ -1,5 +1,7 @@
 <template>
   <div class="flex flex-col">
+    
+    
     <LayoutHeader v-if="ticket.data">
       <template #left-header>
         <Breadcrumbs :items="breadcrumbs" class="breadcrumbs">
@@ -95,7 +97,7 @@
       </div>
       <TicketAgentSidebar
         :ticket="ticket.data"
-        @update="({ field, value }) => updateTicket(field, value)"
+        @update="(({ field, value }) => updateTicket(field, value))"
         @email:open="(e) => communicationAreaRef.toggleEmailBox()"
         @reload="ticket.reload()"
       />
@@ -132,6 +134,8 @@
         </div>
       </template>
     </Dialog>
+
+
   </div>
 </template>
 
@@ -173,7 +177,7 @@ import { useTicketStatusStore } from "@/stores/ticketStatus";
 import { useUserStore } from "@/stores/user";
 import { TabObject, TicketTab, View } from "@/types";
 import { getIcon } from "@/utils";
-import { ComputedRef } from "vue";
+import { ComputedRef, reactive } from "vue";
 import { showAssignmentModal } from "./modalStates";
 const route = useRoute();
 const router = useRouter();
@@ -204,6 +208,7 @@ const { findView } = useView("HD Ticket");
 provide("communicationArea", communicationAreaRef);
 
 const showSubjectDialog = ref(false);
+let visibleFields = [];
 
 const ticket = createResource({
   url: "helpdesk.helpdesk.doctype.hd_ticket.api.get_one",
@@ -212,6 +217,7 @@ const ticket = createResource({
     name: props.ticketId,
   }),
   transform: (data) => {
+    data.assignees = [];
     if (data._assign) {
       data.assignees = JSON.parse(data._assign).map((assignee) => {
         return {
@@ -234,8 +240,19 @@ const ticket = createResource({
       updateField,
       createToast: toast.create,
     });
+
+   // visibleFields = reactive(generateVisibleFields());
+
   },
 });
+
+
+function generateVisibleFields() {
+
+ // return _fields.map((field) => parseField(field, templateFields));
+
+}
+
 function updateField(name: string, value: string, callback = () => {}) {
   updateTicket(name, value);
   callback();

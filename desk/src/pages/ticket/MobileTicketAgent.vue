@@ -5,7 +5,7 @@
         <Breadcrumbs :items="breadcrumbs" />
       </template>
       <template #right-header>
-        <div class="absolute right-0 pr-2">
+        <div class="absolute pr-2" :style="getDirection() === 'rtl' ? 'left: 0' : 'right: 0'">
           <Dropdown :options="dropdownOptions">
             <template #default="{ open }">
               <Button :label="ticket.data.status">
@@ -210,6 +210,7 @@ import { globalStore } from "@/stores/globalStore";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
 import { useUserStore } from "@/stores/user";
 import { TabObject, TicketTab } from "@/types";
+import { getDirection } from "@/languages";
 
 const ticketStatusStore = useTicketStatusStore();
 const { getUser } = useUserStore();

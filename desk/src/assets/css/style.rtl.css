@@ -460,6 +460,14 @@ select {
 }
 
  
+.ticket-field input {
+    direction: rtl !important;
+}
+
 .ticket-field-phone input {
     text-align: right !important;
+}
+
+.ticket-field button {
+    direction: rtl !important;
 }

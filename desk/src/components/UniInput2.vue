@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2 px-6 pb-1 leading-5 first:mt-3 items-baseline">
+  <div class="flex gap-2 px-6 pb-1 leading-5 first:mt-3 items-baseline" v-if="field.display_via_depends_on">
     <Tooltip :text="__(field.label)">
       <div class="w-[106px] shrink-0 truncate text-sm text-gray-600">
         {{ __(field.label) }}
@@ -8,25 +8,14 @@
     </Tooltip>
     <div class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base">
       <component :is="component" :key="field.fieldname" class="form-control"
-        :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" 
-        :placeholder="`${__('Add')} ${__(field.label)}`"
-        :dir="field.fieldtype === 'Phone' ? 'ltr' : ''"
-        :model-value="transValue" autocomplete="off" v-on="
-          textFields.includes(field.fieldtype) || field.fieldtype === 'Phone'
-            ? {
-                blur: (event) => {
-                  emitUpdate(field.fieldname, event.target.value);
-                },
-              }
-            : {
-                'update:model-value': (event) => {
-                  emitUpdate(
-                    field.fieldname,
-                    event?.value || event?.target?.value || event
-                  );
-                },
-              }
-        " />
+        :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :placeholder="`${__('Add')} ${__(field.label)}`"
+        v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''" :value="transValue"
+        :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" autocomplete="off"
+        @update:model-value="emitUpdate(field.fieldname, $event)" @change="
+          emitUpdate(
+            field.fieldname,
+            $event.target?.value || $event.value
+          )" />
     </div>
   </div>
 </template>
@@ -36,6 +25,8 @@ import { Autocomplete, Link } from "@/components";
 import { Field, FieldValue } from "@/types";
 import { createResource, FormControl, Tooltip } from "frappe-ui";
 import { computed, h } from "vue";
+import { vMaska } from "maska/vue";
+
 
 interface P {
   field: Field;
@@ -54,7 +45,7 @@ interface E {
 const props = defineProps<P>();
 const emit = defineEmits<E>();
 
-const textFields = ["Long Text", "Small Text", "Text", "Text Editor", "Data"];
+//const textFields = ["Long Text", "Small Text", "Text", "Text Editor", "Data"];
 
 const component = computed(() => {
   if (props.field.url_method) {
@@ -64,6 +55,10 @@ const component = computed(() => {
   } else if (props.field.fieldtype === "Link" && props.field.options) {
     return h(Link, {
       doctype: props.field.options,
+      filters: props.field.filters,
+      advanced_filters: true,
+      filter_based_on: props.field.filter_based_on,
+      simpleFilterMessageStyle: true,
       hideMe: true,
     });
   } else if (props.field.fieldtype === "Select") {
@@ -85,11 +80,13 @@ const component = computed(() => {
         },
       ],
     });
-  } else if (textFields.includes(props.field.fieldtype)) {
-    return h(FormControl, {
-      type: "textarea",
-    });
-  } else {
+  } 
+  //else if (textFields.includes(props.field.fieldtype)) {
+  //  return h(FormControl, {
+  //    type: "textarea",
+  //  });
+  //} 
+  else {
     return h(FormControl);
   }
 });
@@ -105,9 +102,9 @@ const apiOptions = createResource({
 });
 
 const transValue = computed(() => {
-  if (props.field.fieldtype === "Check") {
-    return props.value ? "Yes" : "No";
-  }
+  //if (props.field.fieldtype === "Check") {
+  //  return props.value ? "Yes" : "No";
+  //}
   return props.value;
 });
 

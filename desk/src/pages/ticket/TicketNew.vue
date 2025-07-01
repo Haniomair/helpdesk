@@ -28,20 +28,19 @@
 
       </div>
 
-      <h4 v-if="isCustomerPortal && subject.length <= 2 && description.length === 0" class="text-p-sm text-gray-500 ml-1">
+      <h4 v-if="isCustomerPortal && subject.length <= 2 && description.length === 0"
+        class="text-p-sm text-gray-500 ml-1">
         {{ __('Please enter a subject to continue') }}
       </h4>
 
       <!-- custom fields -->
-       <div v-show="!isCustomerPortal || subject.length >= 2 || description.length > 0"
-        class="flex flex-col gap-2">
-        
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3" v-if="Boolean(visibleFields)">
-        <UniInput v-for="field in visibleFields" :key="field.fieldname" :field="field"
-          :value="templateFields[field.fieldname]" @change="
-            (e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)
-          " />
-      </div>
+      <div v-show="!isCustomerPortal || subject.length >= 2 || description.length > 0" class="flex flex-col gap-2">
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3" v-if="Boolean(visibleFields)">
+
+          <UniInput v-for="field in visibleFields" :key="field.fieldname" :field="field"
+            :value="templateFields[field.fieldname]" @change="(e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)" />
+        </div>
       </div>
 
       <!-- description -->
@@ -77,8 +76,10 @@ import { LayoutHeader, UniInput } from "@/components";
 import {
   handleLinkFieldUpdate,
   handleSelectFieldUpdate,
-  parseField,
   setupCustomizations,
+  cascadeFilterChanges,
+  parseField,
+  parseField2,
 } from "@/composables/formCustomisation";
 import { useAuthStore } from "@/stores/auth";
 import { globalStore } from "@/stores/globalStore";
@@ -96,7 +97,7 @@ import {
 import { useOnboarding } from "frappe-ui/frappe";
 import { isEmpty } from "lodash";
 import sanitizeHtml from "sanitize-html";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, isReactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SearchArticles from "../../components/SearchArticles.vue";
 import TicketTextEditor from "./TicketTextEditor.vue";
@@ -137,12 +138,24 @@ const template = createResource({
       applyFilters,
     });
     setupTemplateFields(data.fields);
+    visibleFields = reactive(generateVisibleFields());
+    //parseField(data.fields,templateFields);
+    //template.data.fields.forEach(f=> {
+    //  parseField2(f, templateFields)
+    //});
+
+/*     let _fields = template.data?.fields?.filter(
+      (f) => !isCustomerPortal.value || !f.hide_from_customer
+    );
+    if (_fields) {
+    visibleFields = _fields.map((field) => reactive(parseField(field, templateFields)));
+    } */
+
   },
 });
 
 function setupTemplateFields(fields) {
   fields.sort((a,b)=> a.idx - b.idx).forEach((field: Field) => {
-
     templateFields[field.fieldname] = "";
   });
 }
@@ -160,18 +173,61 @@ function applyFilters(fieldname: string, filters: any = null) {
 }
 
 const customOnChange = computed(() => template.data?._customOnChange);
+let visibleFields = [];
 
-const visibleFields = computed(() => {
+function generateVisibleFields() {
+
   let _fields = template.data?.fields?.filter(
     (f) => !isCustomerPortal.value || !f.hide_from_customer
   );
+  //return _fields;
+  if (!_fields) return [];
+
+  return _fields.map((field) => parseField(field, templateFields));
+
+}
+
+  
+  
+/*   const visibleFields = computed(() => {
+  let _fields = template.data?.fields?.filter(
+    (f) => !isCustomerPortal.value || !f.hide_from_customer
+  );
+  //return _fields;
   if (!_fields) return [];
   return _fields.map((field) => parseField(field, templateFields));
-});
+}); */
+
+
 
 function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {
+
+  console.log(e);
+  if (e.value instanceof Event) {
+return;
+  }
   templateFields[fieldname] = e.value;
+
+  //console.log(f.fieldtype);
+  //if (f.fieldtype === 'Link' || f.fieldtype === 'Select') {
+  //  console.log("here");
+  //console.log(fieldname);
+  //cascadeFilterChanges(fieldname, visibleFields,templateFields);
+  //}
+
+  // get fields with filters containing the fieldname
+/*   let fieldsWithFilter = visibleFields.value.filter(
+    (f) => f.filter_based_on.includes(fieldname)
+  );
+
+  fieldsWithFilter.forEach(f=> {
+    templateFields[f.fieldname] = null;
+    evaluateFilter(f,templateFields);
+    cascadeFilterReset(f);
+  }); */
+
   const fieldDependentFns = customOnChange.value?.[fieldname];
+  const f: Field = template.data.fields.find((f) => f.fieldname === fieldname);
   if (fieldDependentFns) {
     fieldDependentFns.forEach((fn: Function) => {
       fn(e.value, fieldtype);
@@ -192,12 +248,12 @@ const ticket = createResource({
     attachments: attachments.value,
   }),
   validate: (params) => {
-    const fields = visibleFields.value?.filter((f) => f.required) || [];
+    const fields = visibleFields?.filter((f) => f.required) || [];
     const toVerify = [...fields, "subject", "description"];
     for (const field of toVerify) {
       if (isEmpty(params.doc[field.fieldname || field])) {
         return `${field.label || field} is required`;
-      }
+      } visibleFields
     }
   },
   onSuccess: (data) => {

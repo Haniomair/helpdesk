@@ -228,7 +228,7 @@ function displayValue(option) {
   if (typeof option === "string") {
     let allOptions = groups.value.flatMap((group) => group.items);
     let selectedOption = allOptions.find((o) => o.value === option);
-    return selectedOption?.label || option;
+    return selectedOption?.label || '';
   }
   return option?.label;
 }
