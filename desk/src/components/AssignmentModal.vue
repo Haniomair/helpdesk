@@ -15,12 +15,13 @@
         :reset-input="true"
         @change="
           (option) => {
+            console.log('Selected option:', option);
             if (option == null) return;
             if (option.value === '@me') {
               addAssignee(useAuthStore().user.name);
               return;
             }
-            addAssignee(option.value);
+            addAssignee(option);
           }
         "
       >

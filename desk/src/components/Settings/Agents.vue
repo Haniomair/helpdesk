@@ -4,54 +4,34 @@
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-lg font-semibold">{{ __('Agents') }}</h1>
       <div class="flex item-center space-x-2">
-        <FormControl
-          v-model="search"
-          :placeholder="__('Search')"
-          type="text"
-          :debounce="300"
-        >
+        <FormControl v-model="search" class="pointer-events-none-3rd-div" :placeholder="__('Search')" type="text"
+          :debounce="300">
           <template #prefix>
             <LucideSearch class="h-4 w-4 text-gray-500" />
           </template>
         </FormControl>
         <Dropdown :options="dropdownOptions" placement="right">
           <template #default="{ open }">
-            <Button
-              :label="__(activeFilter)"
-              class="flex items-center justify-between w-[90px]"
-            >
+            <Button :label="__(activeFilter)" class="flex items-center justify-between w-[90px]">
               <template #suffix>
-                <FeatherIcon
-                  :name="open ? 'chevron-up' : 'chevron-down'"
-                  class="h-4"
-                />
+                <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
               </template>
             </Button>
           </template>
           <template #item="{ item, active }">
             <button
               class="group flex text-ink-gray-6 gap-4 h-7 w-full justify-between items-center rounded px-2 text-base"
-              :class="{ 'bg-surface-gray-3': active }"
-              @click="item.onClick"
-            >
+              :class="{ 'bg-surface-gray-3': active }" @click="item.onClick">
               <div class="flex items-center justify-between flex-1">
                 <span class="whitespace-nowrap">
                   {{ __(item.label) }}
                 </span>
-                <FeatherIcon
-                  v-if="activeFilter === item.label"
-                  name="check"
-                  class="size-4 text-ink-gray-7"
-                />
+                <FeatherIcon v-if="activeFilter === item.label" name="check" class="size-4 text-ink-gray-7" />
               </div>
             </button>
           </template>
         </Dropdown>
-        <Button
-          @click="() => (showNewAgentsDialog = !showNewAgentsDialog)"
-          :label="__('New')"
-          variant="solid"
-        >
+        <Button @click="() => (showNewAgentsDialog = !showNewAgentsDialog)" :label="__('New')" variant="solid">
           <template #prefix>
             <LucidePlus class="h-4 w-4 stroke-1.5" />
           </template>
@@ -61,51 +41,25 @@
 
     <!-- loading state -->
     <div v-if="agents.loading" class="flex mt-28 justify-between w-full h-full">
-      <Button
-        :loading="agents.loading"
-        variant="ghost"
-        class="w-full"
-        size="2xl"
-      />
+      <Button :loading="agents.loading" variant="ghost" class="w-full" size="2xl" />
     </div>
     <!-- Empty State -->
-    <div
-      v-if="!agents.loading && !agents.data?.length"
-      class="flex mt-28 justify-between w-full h-full"
-    >
+    <div v-if="!agents.loading && !agents.data?.length" class="flex mt-28 justify-between w-full h-full">
       <p class="text-sm text-gray-500 w-full flex justify-center">
-      {{ __('No agents found') }}
+        {{ __('No agents found') }}
       </p>
     </div>
     <!-- Agent List -->
-    <div
-      class="overflow-y-auto w-full hide-scrollbar"
-      v-if="!agents.loading && Boolean(agents.data?.length)"
-    >
+    <div class="overflow-y-auto w-full hide-scrollbar" v-if="!agents.loading && Boolean(agents.data?.length)">
       <div v-for="(agent, idx) in agents.data" :key="agent.agent_name">
-        <AgentCard
-          :agent="agent"
-          :show-status="true"
-          :class="idx !== agents.data.length - 1 && 'border-b '"
-        >
+        <AgentCard :agent="agent" :show-status="true" :class="idx !== agents.data.length - 1 && 'border-b '">
           <template #right>
-            <Dropdown
-              v-if="isManager"
-              class="w-1/5 flex justify-end items-center"
-              :options="getRoles(agent.name)"
-              :label="getUserRole(agent.name)"
-              :button="{
+            <Dropdown v-if="isManager" class="w-1/5 flex justify-end items-center" :options="getRoles(agent.name)"
+              :label="getUserRole(agent.name)" :button="{
                 label: __(getUserRole(agent.name)),
                 iconRight: 'chevron-down',
-              }"
-              placement="right"
-            />
-            <Dropdown
-              :options="getOptions(agent)"
-              placement="right"
-              :key="agent"
-              class="ml-2"
-            >
+              }" placement="right" />
+            <Dropdown :options="getOptions(agent)" placement="right" :key="agent" class="ml-2">
               <Button>
                 <template #icon>
                   <IconMoreHorizontal class="h-4 w-4" />
@@ -117,23 +71,13 @@
       </div>
       <!-- Load More Button -->
       <div class="flex justify-center">
-        <Button
-          v-if="!agents.loading && agents.hasNextPage"
-          class="mt-3.5 p-2"
-          @click="() => agents.next()"
-          :loading="agents.loading"
-          label="Load More"
-          icon-left="refresh-cw"
-        />
+        <Button v-if="!agents.loading && agents.hasNextPage" class="mt-3.5 p-2" @click="() => agents.next()"
+          :loading="agents.loading" label="Load More" icon-left="refresh-cw" />
       </div>
     </div>
   </div>
-  <AddNewAgentsDialog
-    @close="showNewAgentsDialog = false"
-    :modelValue="showNewAgentsDialog"
-    :show="showNewAgentsDialog"
-    @update:modelValue="showNewAgentsDialog = $event"
-  />
+  <AddNewAgentsDialog @close="showNewAgentsDialog = false" :modelValue="showNewAgentsDialog" :show="showNewAgentsDialog"
+    @update:modelValue="showNewAgentsDialog = $event" />
 </template>
 
 <script setup lang="ts">
@@ -271,4 +215,10 @@ const dropdownOptions = [
 ];
 </script>
 
-<style scoped></style>
+<style scoped>
+
+:deep(.pointer-events-none-3rd-div div div) {
+  pointer-events: none;
+}
+
+</style>

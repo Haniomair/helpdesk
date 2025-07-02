@@ -124,7 +124,7 @@ let _values = {};
       toast.success("Ticket updated successfully");
       // Update the original values after successful update
        for (const key in originalValues) {
-          originalValues[key] = _values[key];
+          originalValues[key] = values[key];
        }
       
  

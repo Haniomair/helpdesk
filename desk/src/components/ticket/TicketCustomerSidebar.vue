@@ -34,7 +34,7 @@
           class="text-base text-gray-800 flex-1"
           :class="!field.value && 'text-ink-gray-4'"
         >
-          {{ __(field.value) || "—" }}
+          {{ __(field.value) || "-" }}
         </span>
       </div>
 
@@ -55,10 +55,10 @@
       <div class="flex items-center text-base leading-5" v-for="field in ticketAdditionalInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
         <span
-          :dir="getDirection() == 'rtl' && field.fieldtype == 'Phone' ? 'ltr' : ''" :class="'text-base text-gray-800 flex-1 ' + (field.fieldtype === 'Phone' && getDirection() == 'rtl' ? 'text-end' : '') + (!field.value && ' text-ink-gray-4')"
+          :dir="getDirection() == 'rtl' && field.fieldtype == 'Phone' ? 'ltr' : ''" :class="'text-base text-gray-800 flex-1 ' + (field.fieldtype === 'Phone' && getDirection() == 'rtl' ? 'text-end ' : '') + (!field.value && ' text-ink-gray-4')"
           
         >
-          {{ __(field.value) || "—" }}
+          {{ __(field.value) || "-" }}
         </span>
       </div>
     </div>
