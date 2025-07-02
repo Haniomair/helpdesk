@@ -1,6 +1,7 @@
 <template>
   <div>
-    <Combobox v-slot="{ open: isComboboxOpen }" v-model="selectedValue" nullable>
+    <Combobox v-slot="{ open: isComboboxOpen }"
+    v-model="selectedValue" nullable>
       <Popover v-model:show="showOptions" class="w-full">
         <template #target="{ open: openPopover, togglePopover }">
           <slot name="target" v-bind="{ open: openPopover, togglePopover }">
@@ -9,12 +10,12 @@
                 @click="() => togglePopover()">
                 <div class="flex items-center">
                   <slot name="prefix" />
-                  <span v-if="selectedValue != null"
+                  <span v-if="selectedValue != null && selectedValue !== ''"
                     class="overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5">
                     {{ displayValue(selectedValue) }}
                   </span>
                   <span v-else class="text-base leading-5 text-gray-500">
-                    {{ placeholder || "" }}
+                    {{ placeholder }}
                   </span>
                 </div>
                 <FeatherIcon name="chevron-down" class="h-4 w-4 text-gray-600" aria-hidden="true" />
@@ -57,7 +58,7 @@
                   </ComboboxOption>
                 </div>
                 <li v-if="groups.length == 0" class="mt-1.5 rounded-md px-2.5 py-1.5 text-base text-gray-600">
-                  __('No results found')
+                  {{ __('No results found') }}
                 </li>
               </ComboboxOptions>
               <div v-if="slots.footer" class="border-t p-1.5 pb-0.5">
@@ -100,7 +101,7 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: "",
+    default: "Select an option",
   },
   disabled: {
     type: Boolean,
