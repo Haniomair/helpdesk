@@ -1,4 +1,6 @@
 <template>
+
+  
   <div class="flex gap-2 px-6 pb-1 leading-5 first:mt-3 items-baseline" v-if="field.display_via_depends_on">
     <Tooltip :text="__(field.label)">
       <div class="w-[106px] shrink-0 truncate text-sm text-gray-600">
@@ -14,7 +16,7 @@
         @update:model-value="emitUpdate(field.fieldname, $event)" @change="
           emitUpdate(
             field.fieldname,
-            $event.target?.value || $event.value
+            $event.target?.value || $event.value || $event
           )" />
     </div>
   </div>

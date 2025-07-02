@@ -92,7 +92,7 @@ const props = defineProps({
   },
   size: {
     type: String,
-    default: "md",
+    default: "sm",
   },
   variant: {
     type: String,

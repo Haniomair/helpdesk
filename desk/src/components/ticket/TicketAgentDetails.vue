@@ -105,7 +105,7 @@ const resolutionBadge = computed(() => {
       .add(props.ticket.total_hold_time, "s")
       .diff(dayjs(props.ticket.on_hold_since), "s");
     resolution = {
-      label: `${formatTime(timeLeft)} left (On Hold)`,
+      label: `${formatTime(timeLeft)} ${__('left (On Hold)')}`,
       color: "blue",
     };
   } else if (
@@ -116,7 +116,7 @@ const resolutionBadge = computed(() => {
     handleResolutionInterval(resolutionBy);
 
     resolution = {
-      label: `Due in ${formatTime(resolutionSeconds.value)}`,
+      label: `${__('Due in')} ${formatTime(resolutionSeconds.value)}`,
       color: "orange",
     };
   } else if (

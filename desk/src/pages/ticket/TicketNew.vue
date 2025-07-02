@@ -202,29 +202,12 @@ function generateVisibleFields() {
 
 function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {
 
-  console.log(e);
   if (e.value instanceof Event) {
 return;
   }
   templateFields[fieldname] = e.value;
 
-  //console.log(f.fieldtype);
-  //if (f.fieldtype === 'Link' || f.fieldtype === 'Select') {
-  //  console.log("here");
-  //console.log(fieldname);
-  //cascadeFilterChanges(fieldname, visibleFields,templateFields);
-  //}
 
-  // get fields with filters containing the fieldname
-/*   let fieldsWithFilter = visibleFields.value.filter(
-    (f) => f.filter_based_on.includes(fieldname)
-  );
-
-  fieldsWithFilter.forEach(f=> {
-    templateFields[f.fieldname] = null;
-    evaluateFilter(f,templateFields);
-    cascadeFilterReset(f);
-  }); */
 
   const fieldDependentFns = customOnChange.value?.[fieldname];
   const f: Field = template.data.fields.find((f) => f.fieldname === fieldname);

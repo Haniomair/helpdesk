@@ -3,7 +3,7 @@
   <TextEditor
     ref="editorRef"
     :editor-class="[
-      'prose-sm max-w-full mx-6 md:mx-10 max-h-[50vh] py-3',
+      'prose-sm max-w-full max-h-[50vh] py-3 px-6',
       'min-h-[7rem]',
       getFontFamily(newEmail),
       editable && '!max-h-[35vh] overflow-y-auto',
@@ -16,7 +16,7 @@
     :extensions="[PreserveVideoControls]"
   >
     <template #top>
-      <div class="mx-6 md:mx-10 flex items-center gap-2 border-y py-2.5">
+      <div class="flex items-center gap-2 border-y py-2.5 px-6">
         <span class="text-xs text-gray-500">{{ __('TO') }}:</span>
         <MultiSelectInput
           v-model="toEmailsClone"
@@ -37,7 +37,7 @@
       </div>
       <div
         v-if="showCC || cc"
-        class="mx-10 flex items-center gap-2 py-2.5"
+        class="flex items-center gap-2 py-2.5 px-6"
         :class="cc || showCC ? 'border-b' : ''"
       >
         <span class="text-xs text-gray-500">CC:</span>
@@ -51,7 +51,7 @@
       </div>
       <div
         v-if="showBCC || bcc"
-        class="mx-10 flex items-center gap-2 py-2.5"
+        class="flex items-center gap-2 py-2.5 px-6"
         :class="bcc || showBCC ? 'border-b' : ''"
       >
         <span class="text-xs text-gray-500">BCC:</span>
@@ -88,10 +88,11 @@
         </AttachmentItem>
       </div>
       <!-- TextEditor Fixed Menu -->
+      
       <div
-        class="flex justify-between overflow-scroll pl-10 py-2.5 items-center"
+        class="flex justify-between overflow-x-auto py-2.5 px-3 items-center"
       >
-        <div class="flex items-center overflow-x-auto w-[60%]">
+        <div class="flex items-center overflow-x-auto w-full">
           <div class="flex gap-1">
             <FileUploader
               :upload-args="{
@@ -131,7 +132,7 @@
           <TextEditorFixedMenu class="ml-1" :buttons="textEditorMenuButtons" />
         </div>
         <div
-          class="flex items-center justify-end space-x-2 sm:mt-0 w-[40%] mr-9"
+          class="flex items-center justify-end space-x-2 sm:mt-0 w-[40%] mr-2"
         >
           <Button :label="__('Discard')" @click="handleDiscard" />
           <Button

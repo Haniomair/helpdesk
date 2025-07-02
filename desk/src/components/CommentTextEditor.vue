@@ -1,11 +1,12 @@
 <template>
+  
   <TextEditor
     v-if="agentsList.data"
     ref="editorRef"
     :editor-class="[
       'prose-sm max-w-none',
       editable &&
-        'min-h-[7rem] mx-6 md:ml-10 md:mr-9 max-h-[50vh] overflow-y-auto border-t py-3',
+        'min-h-[7rem] px-6 max-h-[50vh] overflow-y-auto border-t py-3',
       getFontFamily(newComment),
     ]"
     :content="newComment"
@@ -17,7 +18,7 @@
     :extensions="[PreserveVideoControls]"
   >
     <template #bottom>
-      <div v-if="editable" class="flex flex-col gap-2 px-6 md:pl-10 md:pr-9">
+      <div v-if="editable" class="flex flex-col gap-2">
         <!-- Attachments -->
         <div class="flex flex-wrap gap-2">
           <AttachmentItem
@@ -35,8 +36,8 @@
           </AttachmentItem>
         </div>
         <!-- Fixed Menu -->
-        <div class="flex justify-between overflow-hidden border-t py-2.5">
-          <div class="flex items-center overflow-x-auto w-[60%]">
+        <div class="flex justify-between overflow-hidden border-t py-2.5 px-3">
+          <div class="flex items-center overflow-x-auto w-full">
             <TextEditorFixedMenu
               class="-ml-1"
               :buttons="textEditorMenuButtons"

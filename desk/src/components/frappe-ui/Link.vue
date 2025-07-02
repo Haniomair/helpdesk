@@ -4,7 +4,7 @@
 
     <span class="block overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5 py-1 px-2 "
       :class="!simpleFilterMessageStyle ? 'rounded h-7 border border-gray-100 bg-gray-100 w-full' : ''"
-      v-if="options.loading">{{ __('Loading...') }}</span>
+      v-if="!props.noSearchingMessage && options.loading">{{ __('Loading...') }}</span>
 
 
     <label class="block" :class="labelClasses" v-else-if="attrs.label">
@@ -12,8 +12,7 @@
     </label>
 
 
-
-    <div v-show="!options.loading && (options.fetched === true || modelValue == '')">
+    <div v-show="(!options.loading || (options.loading && props.noSearchingMessage === true)) && (options.fetched === true || modelValue == '')">
       <Autocomplete ref="autocomplete" :options="options.data" v-model="value" :size="attrs.size || 'sm'"
         :variant="attrs.variant" :placeholder="attrs.placeholder" :filterable="false">
         <template #target="{ open, togglePopover }">
@@ -84,8 +83,8 @@ const props = defineProps({
     default: [],
   },
   filter_based_on: {
-type: Object,
-default :[]
+    type: Object,
+    default: []
   },
   advanced_filters: {
     type: Boolean,
@@ -115,6 +114,10 @@ default :[]
     type: Boolean,
     default: false,
   },
+  noSearchingMessage: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "change"]);
@@ -132,6 +135,14 @@ const value = computed({
     );
   },
 });
+
+watch(
+  () => attrs.value,
+  (val) => {
+    emit("change", val?.value || val)
+  },
+  { immediate: true }
+);
 
 const autocomplete = ref(null);
 const text = ref("");
@@ -156,8 +167,8 @@ watchDebounced(
 );
 
 
- watch(
-  ()=> props?.filters,
+watch(
+  () => props?.filters,
   () => {
     clearValue();
     options.data = [];
@@ -248,14 +259,14 @@ function clearValue(close) {
 
 function getFilters(filters) {
   if (!filters)
-  return null;
-    
-  if (!props.advanced_filters)
-  return filters;
+    return null;
 
-return filters.map(f=> {
-  return [f.doctype,f.field,f.operator,f.function];
-});
+  if (!props.advanced_filters)
+    return filters;
+
+  return filters.map(f => {
+    return [f.doctype, f.field, f.operator, f.function];
+  });
 }
 
 

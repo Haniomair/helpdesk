@@ -31,6 +31,7 @@
           v-model="search"
           :label="__('Members')"
           :hide-me="true"
+          :noSearchingMessage="true"
           :filters="agentFilters"
         >
           <template #prefix>

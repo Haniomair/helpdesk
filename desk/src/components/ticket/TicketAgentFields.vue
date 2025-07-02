@@ -28,13 +28,11 @@
 <script setup lang="ts">
 import { Field, FieldValue } from "@/types";
 import { toast } from "frappe-ui";
-import { ref, reactive, computed , onMounted } from "vue";
+import { ref, reactive, computed , onMounted, isReactive } from "vue";
 import { parseField, cascadeFilterChanges } from "@/composables/formCustomisation";
 import UniInput2 from "../UniInput2.vue";
 import { createResource } from "frappe-ui";
-import { object } from "zod";
 
-//import { set } from "zod";
 const emit = defineEmits(["update"]);
 
 const props = defineProps({
@@ -52,16 +50,19 @@ onMounted(() => {
 
   // template fields
   props.ticket.template.fields.sort((a,b)=> a.idx - b.idx).forEach(f => {
-    values[f.fieldname] = props.ticket[f.fieldname] || "";
+    values[f.fieldname] = ref(props.ticket[f.fieldname]) || "";
     fields.push(parseField(f, values));
   });
 
   // default fields
   let names = fields.map(f => f.fieldname);
   props.ticket.fields.filter(f=> !names.includes(f.fieldname)).forEach(f => {
-      values[f.fieldname] = props.ticket[f.fieldname] || "";
+      values[f.fieldname] = reactive(props.ticket[f.fieldname]) || "";
+      //console.log(isReactive(values[f.fieldname]));
       default_fields.push(parseField(f, values));
   });
+
+
 
   originalValues = reactive(JSON.parse(JSON.stringify(values)));
 
@@ -75,16 +76,23 @@ onMounted(() => {
 });
 
 
-const values = reactive({});
-var originalValues = {};
+var values = reactive({});
+var originalValues = reactive({});
 
 const default_fields = reactive([]);
 const fields = reactive([]);
 
 function resetValues() {
-  Object.keys(values).forEach((key) => {
+  // Reset the values to the original state
+  for (const key in originalValues) {
     values[key] = originalValues[key];
-  });
+  }
+
+  //values = reactive(JSON.parse(JSON.stringify(originalValues)));
+
+  //values = reactive(JSON.parse(JSON.stringify(originalValues)));
+  //Object.keys(values).forEach((key) => {
+  //});
 }
 
 
@@ -97,7 +105,7 @@ function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {
 
 function updateData() {
 
-  let _values = {};
+let _values = {};
  default_fields.concat(fields).forEach((field) => {
   _values[field.fieldname] = values[field.fieldname] || "";
  });
@@ -115,9 +123,11 @@ function updateData() {
     onSuccess: () => {
       toast.success("Ticket updated successfully");
       // Update the original values after successful update
-      for (const key in originalValues) {
-        originalValues[key] = _values[key];
-      }
+       for (const key in originalValues) {
+          originalValues[key] = _values[key];
+       }
+      
+ 
       emit("update", { field: "all", value: values });
       isSaving.value = false;
     },
