@@ -79,8 +79,8 @@ import { computed, onMounted, onUnmounted, provide, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useTicket } from "./data";
 import { ITicket } from "./symbols";
-import TicketConversation from "./TicketConversation.vue";
 import TicketCustomerTemplateFields from "./TicketCustomerTemplateFields.vue";
+import TicketConversation from "./TicketConversation.vue";
 import TicketFeedback from "./TicketFeedback.vue";
 import TicketTextEditor from "./TicketTextEditor.vue";
 

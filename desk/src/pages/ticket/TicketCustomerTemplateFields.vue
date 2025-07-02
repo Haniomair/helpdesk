@@ -36,18 +36,21 @@
       <span class="block text-sm text-gray-700">
         {{ __(field.label) }}
       </span>
-      <span class="block break-words text-base font-medium text-gray-900">
-        {{ ticket.data[field.fieldname] }}
+      <span
+        class="block break-words text-base font-medium text-gray-900"
+        :class="!ticket.data[field.fieldname] && 'text-ink-gray-4'"
+      >
+        {{ ticket.data[field.fieldname] || "—" }}
       </span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, computed } from "vue";
-import { ITicket } from "./symbols";
 import { dayjs } from "@/dayjs";
 import { Field } from "@/types";
+import { computed, inject } from "vue";
+import { ITicket } from "./symbols";
 
 const ticket = inject(ITicket);
 

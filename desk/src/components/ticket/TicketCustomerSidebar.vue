@@ -30,8 +30,11 @@
       <!-- Ticket Info -->
       <div class="flex items-center text-base leading-5" v-for="field in ticketBasicInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
-        <span class="text-base text-gray-800 flex-1">
-          {{ __(field.value) }}
+        <span
+          class="text-base text-gray-800 flex-1"
+          :class="!field.value && 'text-ink-gray-4'"
+        >
+          {{ __(field.value) || "—" }}
         </span>
       </div>
 
@@ -51,8 +54,11 @@
     <div class="flex flex-col gap-4 pt-0 px-5 py-3  overflow-y-auto">
       <div class="flex items-center text-base leading-5" v-for="field in ticketAdditionalInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
-        <span :dir="getDirection() == 'rtl' && field.fieldtype == 'Phone' ? 'ltr' : ''" :class="'text-base text-gray-800 flex-1 ' + (field.fieldtype === 'Phone' && getDirection() == 'rtl' ? 'text-end' : '')">
-          {{ __(field.value) }}
+        <span
+          :dir="getDirection() == 'rtl' && field.fieldtype == 'Phone' ? 'ltr' : ''" :class="'text-base text-gray-800 flex-1 ' + (field.fieldtype === 'Phone' && getDirection() == 'rtl' ? 'text-end' : '') + (!field.value && ' text-ink-gray-4')"
+          
+        >
+          {{ __(field.value) || "—" }}
         </span>
       </div>
     </div>
