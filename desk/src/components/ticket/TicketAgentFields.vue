@@ -98,6 +98,9 @@ function resetValues() {
 
 function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {
 
+  if (e.value instanceof Event) {
+    return;
+  }
   values[fieldname] = e.value;
   //cascadeFilterChanges(fieldname, fields, values);
 
@@ -121,7 +124,7 @@ let _values = {};
     debounce: 500,
     auto: true,
     onSuccess: () => {
-      toast.success("Ticket updated successfully");
+      toast.success(__("Ticket updated successfully"));
       // Update the original values after successful update
        for (const key in originalValues) {
           originalValues[key] = values[key];
