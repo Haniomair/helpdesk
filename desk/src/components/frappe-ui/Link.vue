@@ -141,7 +141,7 @@ watch(
   (val) => {
     emit("change", val?.value || val)
   },
-  { immediate: true }
+  { immediate: false }
 );
 
 const autocomplete = ref(null);

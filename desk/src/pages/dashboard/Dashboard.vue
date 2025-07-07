@@ -20,8 +20,7 @@
           @change="filters.period = preset"
           :button="{
             label: __(preset),
-            class:
-              '!w-full justify-start [&>span]:mr-auto rtl:[&>span]:mr-0 rtl:[&>span]:ml-auto [&>svg]:text-ink-gray-5 ',
+            class: '!w-full justify-start [&>span]:mr-auto rtl:[&>span]:mr-0 rtl:[&>span]:ml-auto [&>svg]:text-ink-gray-5 ',
             variant: 'ghost',
             iconRight: 'chevron-down',
             iconLeft: 'calendar',
@@ -140,16 +139,18 @@
 import { Link } from "@/components";
 import { useAuthStore } from "@/stores/auth";
 import {
-  AxisChart,
+  //AxisChart,
   createResource,
   DateRangePicker,
   dayjs,
-  DonutChart,
+  //DonutChart,
   Dropdown,
-  NumberChart,
   Tooltip,
   usePageMeta,
 } from "frappe-ui";
+import AxisChart from "@/components/frappe-ui/charts/AxisChart.vue";
+import DonutChart from "@/components/frappe-ui/charts/DonutChart.vue";
+import NumberChart from "@/components/frappe-ui/charts/NumberChart.vue";
 import { computed, h, onMounted, reactive, ref, watch } from "vue";
 
 const { isManager, userId } = useAuthStore();

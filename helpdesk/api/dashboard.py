@@ -528,7 +528,7 @@ def get_ticket_trend_data(from_date, to_date, conds=""):
         as_dict=1,
     )
     avg_tickets = get_avg_tickets_per_day(from_date, to_date, conds)
-    subtitle = f"Average tickets per day is around {avg_tickets:.0f}"
+    subtitle = f"Average tickets per day is around [{avg_tickets:.2f}]",
     return get_bar_chart_config(
         result,
         "Ticket Trend",
@@ -596,7 +596,7 @@ def get_feedback_trend_data(from_date, to_date, conds=""):
     )
     avg_rating = avg_rating_result[0] if avg_rating_result[0] else 0
 
-    subtitle = f"Average feedback rating per day is around {avg_rating:.1f} stars"
+    subtitle = f"Average feedback rating per day is around [{avg_rating:.1f}]"
 
     return get_bar_chart_config(
         result,
