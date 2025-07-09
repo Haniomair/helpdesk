@@ -1,6 +1,5 @@
 <template>
 
-  
   <div class="flex gap-2 px-6 pb-1 leading-5 first:mt-3 items-baseline" v-show="field.display_via_depends_on">
     <Tooltip :text="__(field.label)">
       <div class="w-[106px] shrink-0 truncate text-sm text-gray-600">
@@ -113,7 +112,6 @@ const transValue = computed(() => {
 });
 
 function emitUpdate(fieldname: Field["fieldname"], value: FieldValue) {
-  console.log("here", fieldname, value);
   emit("change", { fieldname, value });
 }
 </script>

@@ -50,15 +50,14 @@ onMounted(() => {
 
   // template fields
   props.ticket.template.fields.sort((a,b)=> a.idx - b.idx).forEach(f => {
-    values[f.fieldname] = ref(props.ticket[f.fieldname]) || "";
+    values[f.fieldname] = ref(props.ticket[f.fieldname] ? props.ticket[f.fieldname] : "");
     fields.push(parseField(f, values));
   });
 
   // default fields
   let names = fields.map(f => f.fieldname);
   props.ticket.fields.filter(f=> !names.includes(f.fieldname)).forEach(f => {
-      values[f.fieldname] = reactive(props.ticket[f.fieldname]) || "";
-      //console.log(isReactive(values[f.fieldname]));
+    values[f.fieldname] = ref(props.ticket[f.fieldname] ? props.ticket[f.fieldname] : "");
       default_fields.push(parseField(f, values));
   });
 
@@ -98,7 +97,8 @@ function resetValues() {
 
 function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {
 
-  if (e.value instanceof Event) {
+
+  if (e == null || e.value == null || e.value instanceof Event) {
     return;
   }
   values[fieldname] = e.value;

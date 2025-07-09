@@ -1,40 +1,30 @@
 <template>
+
+
   <Combobox v-model="selectedValue" nullable v-slot="{ open: isComboboxOpen }">
     <Popover class="w-full" v-model:show="showOptions">
       <template #target="{ open: openPopover, togglePopover }">
-        <slot
-          name="target"
-          v-bind="{
+        <slot name="target" v-bind="{
             open: openPopover,
             togglePopover,
             isOpen: showOptions,
             selectedValue,
             displayValue,
-          }"
-        >
+            displayValue2,
+          }">
           <div class="w-full">
-            <button
-              class="flex w-full items-center justify-between focus:outline-none"
-              :class="inputClasses"
-              @click="() => togglePopover()"
-            >
+            <button class="flex w-full items-center justify-between focus:outline-none" :class="inputClasses"
+              @click="() => togglePopover()">
               <div class="flex items-center">
                 <slot name="prefix" />
-                <span
-                  class="overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5"
-                  v-if="selectedValue"
-                >
-                  {{ __(displayValue(selectedValue)) }}
+                <span class="overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5" v-if="selectedValue">
+                  {{ __(displayValue2(selectedValue)) }}
                 </span>
                 <span class="text-base leading-5 text-gray-500" v-else>
                   {{ placeholder || "" }}
                 </span>
               </div>
-              <FeatherIcon
-                name="chevron-down"
-                class="h-4 w-4 text-gray-600"
-                aria-hidden="true"
-              />
+              <FeatherIcon name="chevron-down" class="h-4 w-4 text-gray-600" aria-hidden="true" />
             </button>
           </div>
         </slot>
@@ -43,80 +33,56 @@
         <div v-show="isOpen">
           <div class="mt-1 rounded-lg bg-white py-1 text-base shadow-2xl">
             <div class="relative px-1.5 pt-0.5">
-              <ComboboxInput
-                ref="search"
-                class="form-input w-full"
-                type="text"
-                @change="
+              <ComboboxInput ref="search" class="form-input w-full" type="text" @change="
                   (e) => {
                     query = e.target.value;
                   }
-                "
-                :value="query"
-                autocomplete="off"
-                :placeholder="__('Search')"
-              />
-              <button
-                class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
-                @click="selectedValue = null"
-              >
+                " :value="query" autocomplete="off" :placeholder="__('Search')" />
+              <button class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
+                @click="selectedValue = null">
                 <FeatherIcon name="x" class="w-4" />
               </button>
             </div>
-            <ComboboxOptions
-              class="my-1 max-h-[12rem] overflow-y-auto px-1.5"
-              static
-            >
-              <div
-                class="mt-1.5"
-                v-for="group in groups"
-                :key="group.key"
-                v-show="group.items.length > 0"
-              >
-                <div
-                  v-if="group.group && !group.hideLabel"
-                  class="px-2.5 py-1.5 text-sm font-medium text-gray-500"
-                >
-                  {{ group.group }}
-                </div>
-                <ComboboxOption
-                  as="template"
-                  v-for="option in group.items"
-                  :key="option.value"
-                  :value="option"
-                  v-slot="{ active, selected }"
-                >
-                  <li
-                    :class="[
-                      'flex items-center rounded px-2.5 py-1.5 text-base',
+            <ComboboxOptions class="my-1 max-h-[12rem] overflow-y-auto px-1.5" static>
+              <ComboboxOption as="template" v-for="option in items" :key="option.value" :value="option"
+                v-slot="{ active, selected }">
+                <li :class="[
+                      'flex items-center rounded px-2.5 py-1.5 text-base cursor-pointer hover:bg-gray-50',
                       { 'bg-gray-100': active },
-                    ]"
-                  >
-                    <slot
-                      name="item-prefix"
-                      v-bind="{ active, selected, option }"
-                    />
-                    <slot
-                      name="item-label"
-                      v-bind="{ active, selected, option }"
-                    >
-                      {{ __(option.label) }}
-                    </slot>
-                  </li>
-                </ComboboxOption>
-              </div>
-              <li
-                v-if="groups.length == 0"
-                class="mt-1.5 rounded-md px-2.5 py-1.5 text-base text-gray-600"
-              >
+                    ]">
+                  <slot name="item-prefix" v-bind="{ active, selected, option }" />
+                  <slot name="item-label" v-bind="{ active, selected, option }">
+                    {{ option.label }}
+                  </slot>
+                </li>
+              </ComboboxOption>
+              <li v-if="items.length == 0" class="mt-1.5 rounded-md px-2.5 py-1.5 text-base text-gray-600">
                 {{ __('No results found') }}
               </li>
+              <!-- Uncomment this section if you want to group options -->
+              <!--                   <div class="mt-1.5" v-for="group in groups" :key="group.key" v-show="group.items.length > 0">
+                    <div v-if="group.group && !group.hideLabel" class="px-2.5 py-1.5 text-sm font-medium text-gray-500">
+                      {{ group.group }}
+                    </div>
+                    <ComboboxOption as="template" v-for="option in group.items" :key="option.value" :value="option"
+                      v-slot="{ active, selected }">
+                      <li :class="[
+                      'flex items-center rounded px-2.5 py-1.5 text-base',
+                      { 'bg-gray-100': active },
+                    ]">
+                        <slot name="item-prefix" v-bind="{ active, selected, option }" />
+                        <slot name="item-label" v-bind="{ active, selected, option }">
+                          {{ __(option.label) }}
+                        </slot>
+                      </li>
+                    </ComboboxOption>
+                  </div>
+                  <li v-if="groups.length == 0" class="mt-1.5 rounded-md px-2.5 py-1.5 text-base text-gray-600">
+                    {{ __('No results found') }}
+                  </li> -->
             </ComboboxOptions>
             <div v-if="slots.footer" class="border-t p-1.5 pb-0.5">
-              <slot
-                name="footer"
-                v-bind="{ value: search?.el._value, close }"
-              ></slot>
+              <slot name="footer" v-bind="{ value: search?.el._value, close }"></slot>
             </div>
           </div>
         </div>
@@ -134,6 +100,8 @@ import {
 } from "@headlessui/vue";
 import { Popover, Button, FeatherIcon } from "frappe-ui";
 import { ref, computed, useAttrs, useSlots, watch, nextTick } from "vue";
+
+
 
 const props = defineProps({
   modelValue: {
@@ -193,6 +161,18 @@ function close() {
   showOptions.value = false;
 }
 
+const items = computed(() => {
+  
+  if (!props.options || props.options.length == 0) return [];
+
+  return props.filterable
+    ? filterOptions(props.options)
+    : props.options;
+
+});
+
+
+
 const groups = computed(() => {
   if (!props.options || props.options.length == 0) return [];
 
@@ -212,16 +192,29 @@ const groups = computed(() => {
     .filter((group) => group.items.length > 0);
 });
 
+
 function filterOptions(options) {
   if (!query.value) {
     return options;
   }
   return options.filter((option) => {
-    let searchTexts = [option.label, option.value];
-    return searchTexts.some((text) =>
-      (text || "").toString().toLowerCase().includes(query.value.toLowerCase())
-    );
+    return option.label.toLowerCase().includes(query.value.toLowerCase());
+     // option.value.toLowerCase().startsWith(query.value.toLowerCase());
+    //let searchTexts = [__(option.label), option.value];
+    //return searchTexts.some((text) =>
+    //  (text || "").toLowerCase().startsWith(query.value.toLowerCase())
+    //);
   });
+}
+
+function displayValue2(option) {
+  if (props.options == null || props.options.length == 0) return option?.label;
+  if (typeof option === "string") {
+    //let allOptions = props.options.flatMap((group) => group.items);
+    let selectedOption = props.options.find((o) => o.value === option);
+    return selectedOption?.label || '';
+  }
+  return option?.label;
 }
 
 function displayValue(option) {

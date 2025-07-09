@@ -14,7 +14,7 @@
 
     <div v-show="(!options.loading || (options.loading && props.noSearchingMessage === true)) && (options.fetched === true || modelValue == '')">
       <Autocomplete ref="autocomplete" :options="options.data" v-model="value" :size="attrs.size || 'sm'"
-        :variant="attrs.variant" :placeholder="attrs.placeholder" :filterable="false">
+        :variant="attrs.variant" :placeholder="attrs.placeholder" :filterable="true">
         <template #target="{ open, togglePopover }">
           <slot name="target" v-bind="{ open, togglePopover }" />
         </template>
@@ -31,14 +31,14 @@
           <slot name="item-label" v-bind="{ active, selected, option }">
             <div v-if="option.description && showDescription" class="flex flex-col gap-1">
               <div class="flex-1 font-semibold truncate text-ink-gray-7">
-                {{ __(option.label) }}
+                {{ option.label }}
               </div>
               <div class="flex-1 text-sm truncate text-ink-gray-5">
                 {{ option.description }}
               </div>
             </div>
             <div v-else class="flex-1 truncate text-ink-gray-7">
-              {{ __(option.label) }}
+              {{ option.label }}
             </div>
           </slot>
         </template>
@@ -72,6 +72,7 @@ import { createResource } from "frappe-ui";
 import Autocomplete from "./Autocomplete.vue";
 import { watchDebounced } from "@vueuse/core";
 import { watch } from "vue";
+import { isCustomerPortal } from "@/utils";
 
 const props = defineProps({
   doctype: {
@@ -100,7 +101,7 @@ const props = defineProps({
   },
   pageLength: {
     type: Number,
-    default: 10,
+    default: 0,
   },
   hideClearButton: {
     type: Boolean,
@@ -139,7 +140,7 @@ const value = computed({
 watch(
   () => attrs.value,
   (val) => {
-    emit("change", val?.value || val)
+    emit("change", val)
   },
   { immediate: false }
 );
@@ -155,7 +156,7 @@ watchDebounced(
     val = val || "";
     if (text.value === val) return;
     text.value = val;
-    reload(val);
+    //reload(val);
   },
   { debounce: 300, immediate: true }
 );
@@ -177,7 +178,7 @@ watch(
         txt: text.value,
         doctype: props.doctype,
         filters: getFilters(props.filters),
-        page_length: 100,
+        page_length: 0,
       },
     });
     reloadingOnFiltersChange.value = true;
@@ -185,6 +186,31 @@ watch(
   },
   { deep: true }
 );
+
+function transform(data) {
+
+  let allData = data.map((option) => {
+
+    return {
+      value: option.value,
+      label: option.label != undefined ? __(option.label) : __(option.value),
+      description: option?.description,
+    };
+  });
+
+  if (
+    !props.hideMe &&
+    (props.doctype == "User" || props.doctype == "HD Agent")
+  ) {
+    allData.unshift({
+      label: "@me",
+      value: "@me",
+    });
+  }
+
+  return allData;
+
+}
 
 var options = createResource({
   url: "frappe.desk.search.search_link",
@@ -194,7 +220,7 @@ var options = createResource({
     txt: text.value,
     doctype: props.doctype,
     filters: getFilters(props.filters),
-    page_length: 100,
+    page_length: 0,
   },
   validate(params) {
 
@@ -206,24 +232,9 @@ var options = createResource({
 
   },
   transform: (data) => {
-    let allData = data.map((option) => {
-      return {
-        value: option.value,
-        label: option?.label || option.value,
-        description: option?.description,
-      };
-    });
 
-    if (
-      !props.hideMe &&
-      (props.doctype == "User" || props.doctype == "HD Agent")
-    ) {
-      allData.unshift({
-        label: "@me",
-        value: "@me",
-      });
-    }
-    return allData;
+    return transform(data);
+    
   },
   onSuccess: (data) => {
     reloadingOnFiltersChange.value = false;
@@ -246,7 +257,10 @@ function reload(val) {
       txt: val,
       doctype: props.doctype,
       filters: getFilters(props.filters),
-      page_length: 100,
+      page_length: 0,
+    },
+    transform: (data) => {
+      return transform(data);
     },
   });
   options.reload();
@@ -258,15 +272,25 @@ function clearValue(close) {
 }
 
 function getFilters(filters) {
-  if (!filters)
-    return null;
+
+  var filtersList = [];
+  if (props.doctype == 'HD Ticket Type' && isCustomerPortal.value === true) {
+    // For customer portal, we need to filter out the ticket types that are not visible to customers
+    filtersList.push(['HD Ticket Type', 'hide_from_customer', '=', 0]);
+  }
+
+  if (!filters || filters.length === 0 || !props.advanced_filters)
+    return filtersList;
 
   if (!props.advanced_filters)
     return filters;
 
-  return filters.map(f => {
+  filtersList= [...filters.map(f => {
     return [f.doctype, f.field, f.operator, f.function];
-  });
+  })];
+
+  return filtersList;
+
 }
 
 

@@ -46,7 +46,7 @@
                   <ComboboxOption v-for="option in group.items" :key="option.value" v-slot="{ active, selected }"
                     as="template" :value="option">
                     <li :class="[
-                      'flex items-center rounded px-2.5 py-1.5 text-base',
+                      'flex items-center rounded px-2.5 py-1.5 text-base cursor-pointer hover:bg-gray-50',
                       { 'bg-gray-100': active },
                     ]">
                  
