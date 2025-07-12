@@ -12,7 +12,10 @@
       </div>
     </Tooltip>
     <div class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base">
-      <component :is="component" :key="field.fieldname" class="form-control"
+      <div v-if="field.read_only == 1" class="p-2 rounded text-gray-700">
+        {{ transValue }}
+      </div>
+      <component v-else :is="component" :key="field.fieldname" class="form-control"
         :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :placeholder="`${__('Add')} ${__(field.label)}`"
         v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''" :value="transValue"
         :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" autocomplete="off"

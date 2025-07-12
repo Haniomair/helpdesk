@@ -140,6 +140,7 @@ export interface Field {
   display_via_depends_on?: string;
   mandatory_via_depends_on?: string;
   validationMessage?: ComputedRef<string> | boolean | string;
+  read_only: 0 | 1;
 }
 
 export type FieldValue = string | number | boolean;

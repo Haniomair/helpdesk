@@ -84,7 +84,8 @@ function resetValues() {
 }
 
 const canSave = computed(() => {
-  return fields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false);
+  return true;
+  //return fields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false);
 });
 
 function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {

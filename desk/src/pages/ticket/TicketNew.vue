@@ -206,7 +206,8 @@ function generateVisibleFields() {
 
 
 const canSave = computed(() => {
-  return visibleFields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false) && !isEmpty(subject.value) && editor?.value?.editor.isEmpty === false;
+  return !isEmptyString(subject.value) && editor?.value?.editor.isEmpty === false;
+  //return visibleFields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false) && !isEmpty(subject.value) && editor?.value?.editor.isEmpty === false;
 });
   
   

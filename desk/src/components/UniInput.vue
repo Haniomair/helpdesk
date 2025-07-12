@@ -12,7 +12,12 @@
         </Tooltip>
       </span>
     </span>
-    <component :is="component" :placeholder="placeholder"
+    <div
+      
+      v-if="field.read_only == 1">
+      {{ transValue }}
+    </div>
+    <component v-else :is="component" :placeholder="placeholder"
       :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :value="transValue"
       v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''"
       :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" @update:model-value="emitUpdate(field.fieldname, $event)" @change="
