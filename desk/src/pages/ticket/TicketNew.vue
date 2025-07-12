@@ -20,55 +20,82 @@
         <div class="flex flex-col gap-2">
           <span class="block text-sm text-gray-700">
             {{ __('Subject') }}
-            <span class="place-self-center text-red-500"> * </span>
+            <span v-if="isEmptyString(subject)">
+              <Tooltip :text="__('This field is required')" :placement="'top'">
+                <lucide-info class="inline ms-1 h-4 w-4 rounded-full text-red-500" />
+              </Tooltip>
+            </span>
           </span>
           <FormControl v-model="subject" type="text" :placeholder="__('A short description')" />
         </div>
-        <SearchArticles v-if="isCustomerPortal" :query="subject" class="shadow" />
+
+        <!-- search articles -->
+        <SearchArticles v-if="isCustomerPortal && !isEmptyString(subject)" :query="subject" class="shadow" />
 
       </div>
 
-      <h4 v-if="isCustomerPortal && subject.length <= 2 && description.length === 0"
+      <h4 v-if="isCustomerPortal && isEmptyString(subject)"
         class="text-p-sm text-gray-500 ml-1">
         {{ __('Please enter a subject to continue') }}
       </h4>
 
       <!-- custom fields -->
-      <div v-show="!isCustomerPortal || subject.length >= 2 || description.length > 0" class="flex flex-col gap-2">
+      <div v-show="!isCustomerPortal || !isEmptyString(subject)" class="flex flex-col gap-2">
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3" v-if="Boolean(visibleFields)">
 
           <UniInput v-for="field in visibleFields" :key="field.fieldname" :field="field"
-            :value="templateFields[field.fieldname]" @change="(e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)" />
+            :value="templateFields[field.fieldname]"
+            @change="(e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)" />
         </div>
       </div>
 
       <!-- description -->
-      <div v-if="isCustomerPortal">
-
-        <TicketTextEditor v-show="subject.length > 2 || description.length > 0" ref="editor"
-          v-model:attachments="attachments" v-model:content="description" :placeholder="__('Detailed explanation')"
-          expand>
+      <div v-if="isCustomerPortal && !isEmptyString(subject)">
+        <span class="block text-sm text-gray-700 mb-2">
+          {{ __('Details') }}
+          <span v-if="$refs.editor != null && $refs.editor.editor.isEmpty">
+            <Tooltip :text="__('This field is required')" :placement="'top'">
+              <lucide-info class="inline ms-1 h-4 w-4 rounded-full text-red-500" />
+            </Tooltip>
+          </span>
+        </span>
+        <TicketTextEditor ref="editor" v-model:attachments="attachments" v-model:content="description"
+          :placeholder="__('Detailed explanation')" expand>
           <template #bottom-right>
-            <Button :label="__('Submit')" theme="gray" variant="solid" :disabled="$refs.editor.editor.isEmpty || ticket.loading || !subject
-              " @click="() => ticket.submit()" />
+            <Button :label="__('Submit')" theme="gray" variant="solid" :disabled="canSave === false || ticket.loading"
+              @click="() => ticket.submit()" />
           </template>
         </TicketTextEditor>
       </div>
 
       <!-- for agent portal -->
       <div v-if="!isCustomerPortal">
+        <span class="block text-sm text-gray-700 mb-2">
+          {{ __('Details') }}
+          <span v-if="$refs.editor != null && $refs.editor.editor.isEmpty">
+            <Tooltip :text="__('This field is required')" :placement="'top'">
+              <lucide-info class="inline ms-1 h-4 w-4 rounded-full text-red-500" />
+            </Tooltip>
+          </span>
+        </span>
         <TicketTextEditor ref="editor" v-model:attachments="attachments" v-model:content="description"
           :placeholder="__('Detailed explanation')" expand>
           <template #bottom-right>
             <Button :label="__('Submit')" theme="gray" variant="solid" :disabled="
-                $refs.editor.editor.isEmpty || ticket.loading || !subject
+                !canSave || ticket.loading
               " @click="() => ticket.submit()" />
           </template>
         </TicketTextEditor>
       </div>
     </div>
+
+    <pre>
+  </pre>
+
   </div>
+
+
 </template>
 
 <script setup lang="ts">
@@ -77,15 +104,13 @@ import {
   handleLinkFieldUpdate,
   handleSelectFieldUpdate,
   setupCustomizations,
-  cascadeFilterChanges,
   parseField,
-  parseField2,
 } from "@/composables/formCustomisation";
 import { useAuthStore } from "@/stores/auth";
 import { globalStore } from "@/stores/globalStore";
 import { capture } from "@/telemetry";
 import { Field } from "@/types";
-import { isCustomerPortal } from "@/utils";
+import { isCustomerPortal, isEmptyString } from "@/utils";
 import {
   Breadcrumbs,
   Button,
@@ -97,7 +122,7 @@ import {
 import { useOnboarding } from "frappe-ui/frappe";
 import { isEmpty } from "lodash";
 import sanitizeHtml from "sanitize-html";
-import { computed, onMounted, reactive, ref, isReactive } from "vue";
+import { computed, onMounted, reactive, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SearchArticles from "../../components/SearchArticles.vue";
 import TicketTextEditor from "./TicketTextEditor.vue";
@@ -110,7 +135,7 @@ const props = withDefaults(defineProps<P>(), {
   templateId: "",
 });
 
-const route = useRoute();
+//const route = useRoute();
 const router = useRouter();
 const { $dialog } = globalStore();
 const { updateOnboardingStep } = useOnboarding("helpdesk");
@@ -120,6 +145,7 @@ const subject = ref("");
 const description = ref("");
 const attachments = ref([]);
 const templateFields = reactive({});
+const editor = useTemplateRef("editor");
 
 const template = createResource({
   url: "helpdesk.helpdesk.doctype.hd_ticket_template.api.get_one",
@@ -137,19 +163,10 @@ const template = createResource({
       $dialog,
       applyFilters,
     });
-    setupTemplateFields(data.fields);
-    visibleFields = reactive(generateVisibleFields());
-    //parseField(data.fields,templateFields);
-    //template.data.fields.forEach(f=> {
-    //  parseField2(f, templateFields)
-    //});
 
-/*     let _fields = template.data?.fields?.filter(
-      (f) => !isCustomerPortal.value || !f.hide_from_customer
-    );
-    if (_fields) {
-    visibleFields = _fields.map((field) => reactive(parseField(field, templateFields)));
-    } */
+
+    setupTemplateFields(data.fields);
+    visibleFields.push(...generateVisibleFields());
 
   },
 });
@@ -173,7 +190,7 @@ function applyFilters(fieldname: string, filters: any = null) {
 }
 
 const customOnChange = computed(() => template.data?._customOnChange);
-let visibleFields = [];
+let visibleFields = reactive([]);
 
 function generateVisibleFields() {
 
@@ -187,6 +204,10 @@ function generateVisibleFields() {
 
 }
 
+
+const canSave = computed(() => {
+  return visibleFields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false) && !isEmpty(subject.value) && editor?.value?.editor.isEmpty === false;
+});
   
   
 /*   const visibleFields = computed(() => {

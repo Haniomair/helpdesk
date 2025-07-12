@@ -22,7 +22,10 @@ import { router } from "./router";
 import { socket } from "./socket";
 import { posthogPlugin } from "./telemetry";
 import translationPlugin from "./translation";
+import { socketio_port } from "../../../../sites/common_site_config.json";
+import { clear } from "idb-keyval";
 
+clear(); // Clear the cache on startup
 
 const globalComponents = {
   Badge,
@@ -57,7 +60,12 @@ setConfig("fallbackErrorHandler", (error) => {
 const pinia = createPinia();
 const app = createApp(App);
 
-app.use(FrappeUI);
+
+app.use(FrappeUI,{
+  socketio: {
+    port: socketio_port, // Use the port from common_site_config.json
+  }
+});
 app.use(pinia);
 app.use(router);
 app.use(posthogPlugin);

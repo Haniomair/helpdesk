@@ -73,6 +73,7 @@ import Autocomplete from "./Autocomplete.vue";
 import { watchDebounced } from "@vueuse/core";
 import { watch } from "vue";
 import { isCustomerPortal } from "@/utils";
+import { get, set } from 'idb-keyval';
 
 const props = defineProps({
   doctype: {
@@ -174,6 +175,7 @@ watch(
     clearValue();
     options.data = [];
     options.update({
+      //cache: getCacheKey(props.filters),
       params: {
         txt: text.value,
         doctype: props.doctype,
@@ -182,7 +184,8 @@ watch(
       },
     });
     reloadingOnFiltersChange.value = true;
-    options.reload();
+    reload();
+    //options.reload();
   },
   { deep: true }
 );
@@ -208,13 +211,27 @@ function transform(data) {
     });
   }
 
+  set(cacheKey.value, allData);
   return allData;
 
 }
 
+const cacheKey = computed(() => {
+  
+
+  if (!props.filters || props.filters.length === 0) return props.doctype;
+
+  return props.filters
+    .map((f) => {
+      return `${f.doctype}.${f.field} ${f.operator} ${f.function}`;
+    })
+    .join(",");
+
+});
+
 var options = createResource({
   url: "frappe.desk.search.search_link",
-  cache: [props.doctype + '' + Date.now(), text.value, props.hideMe],
+  //cache: cacheKey.value,
   method: "POST",
   params: {
     txt: text.value,
@@ -223,7 +240,6 @@ var options = createResource({
     page_length: 0,
   },
   validate(params) {
-
 
     // TODO: Impelement better way to stop the request if filters not set
     if (props.filter_based_on?.length > 0 && props.filters.some(f => !Boolean(f.function) && !f.function)) {
@@ -244,7 +260,15 @@ var options = createResource({
   }
 });
 
-function reload(val) {
+
+async function reload(val = "") {
+
+  const cache = await get(cacheKey.value);
+  if (cache) {
+    options.data = cache;
+    return;
+  }
+
   if (
     options.data?.length &&
     val === options.params?.txt &&
@@ -253,6 +277,7 @@ function reload(val) {
     return;
 
   options.update({
+    //cache: getCacheKey(props.filters),
     params: {
       txt: val,
       doctype: props.doctype,

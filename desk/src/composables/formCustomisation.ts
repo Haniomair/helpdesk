@@ -1,6 +1,6 @@
 import { Field } from "@/types";
-import { object } from "zod";
-import { reactive, computed, isReactive, toRaw,ref } from "vue";
+import { reactive, computed } from "vue";
+import { isEmptyString } from "@/utils";
 
 export async function setupCustomizations(doc, obj) {
   let data = doc?.data;
@@ -68,7 +68,6 @@ export function cascadeFilterChanges(fieldname,fields, templateFields) {
 
 
   let fieldsWithFilter = fields.filter(
-    console.log("fieldname", fieldname),
     (f) => f.filter_based_on.includes(fieldname)
   );
   
@@ -100,7 +99,7 @@ export function handleLinkFieldUpdate(
 
 //
 
-export function parseField2(field,doc) {
+/* export function parseField2(field,doc) {
   field['display_via_depends_on'] = evaluateDependsOnValue(field?.depends_on, doc);
   field['required'] = field.required ||
     (field.mandatory_depends_on &&
@@ -108,21 +107,22 @@ export function parseField2(field,doc) {
   field['filters'] = field.link_filters ? setupFieldFilters2(field,doc) : [];
   field['filter_based_on'] = [];
   setupFieldFilters(field);
-}
+} */
 
 export function parseField(field, doc) {
 
   
   let result = {
     ...field,
-    display_via_depends_on: computed(()=> evaluateDependsOnValue(field?.depends_on, doc)),
-    required:
-      field.required ||
-      (field.mandatory_depends_on &&
-        evaluateDependsOnValue(field.mandatory_depends_on, doc)),
-    filters: field.link_filters ? setupFieldFilters2(field,doc) : [], 
-    filter_based_on: []
+    display_via_depends_on: computed(()=> evaluateDependsOnValue(field.depends_on, doc)),
+    required: field.required,
+    required_via_depends_on: computed(()=> {
+      return field.mandatory_depends_on && evaluateDependsOnValue(field.mandatory_depends_on, doc)
+    }),
+    filters: field.link_filters ? setupFieldFilters2(field,doc) : [],
+    filter_based_on: [],
   };
+  result['validationMessage'] = computed(()=> validateField(result,doc[field.fieldname]));
   setupFieldFilters(result);
   let r = reactive(result);
   return r;
@@ -140,7 +140,7 @@ function setupFieldFilters2(field,doc) {
       expression: f[3],
       based_on: getFilterBasedOn(f[3]),
       value: null,
-      function: computed(()=> evaluateFilter3(f[3], doc))
+      function: computed(()=> evaluateFilter3(f[2],f[3], doc))
     })
   });
   
@@ -170,8 +170,12 @@ function setupFieldFilters(field) {
   field.filter_based_on.push(...matches.map(match => match[1]));
 }
 
-function evaluateFilter3(exp,doc) {
-  if (!exp) return '';
+function evaluateFilter3(operator,exp,doc) {
+  if (!operator || !exp) return '';
+
+  if (operator == "is")
+    return exp;
+
   let out = null;
   if (exp.substr(0, 5) == "eval:") {
     try {
@@ -189,7 +193,7 @@ function evaluateFilter3(exp,doc) {
   return out;
 }
 
-function evaluateFilter2(filter,doc) {
+/* function evaluateFilter2(filter,doc) {
 
   let expression = filter[3];
   if (expression.substr(0, 5) == "eval:") {
@@ -203,7 +207,7 @@ function evaluateFilter2(filter,doc) {
     filter[4] = doc[expression.substr(4)];
   }
 
-}
+} */
 
 export function evaluateFilter(field, doc) {
   field.filters.forEach(filter => {
@@ -260,6 +264,7 @@ function _evalFilter(code, context = {}) {
 
 function evaluateDependsOnValue(expression, doc) {
 
+
   if (!expression) return true;
   let out = true;
   if (expression.substr(0, 5) == "eval:") {
@@ -294,4 +299,27 @@ function _eval(code, context = {}) {
     console.error(code);
     throw error;
   }
+}
+
+export function validateField(field : Field, value: any) {
+
+  if ((field.required == 1 || field.required_via_depends_on.value == true) && isEmptyString(value)) {
+    return 'This field is required';
+  }
+
+  switch (field.fieldtype) {
+    case "Phone":
+      if (value && !/^\+9665[0-9]{8}$/.test(value)) {
+        return 'Invalid phone number format';
+      }
+      break;
+      case "Email":
+      if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return 'Invlaid email address';
+      }
+      break;
+  }
+
+  return '';
+
 }

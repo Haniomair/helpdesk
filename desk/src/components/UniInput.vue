@@ -1,10 +1,15 @@
 <template>
-  
+
   <div class="space-y-1.5" v-show="field.display_via_depends_on">
     <span class="block text-sm text-gray-700">
       {{ __(field.label) }}
-      <span v-if="field.required" class="place-self-center text-red-500">
+      <!--       <span v-if="field.required" class="place-self-center text-red-500">
         *
+      </span> -->
+      <span v-if="field.validationMessage">
+        <Tooltip :text="__(field.validationMessage)" :placement="'top'">
+          <lucide-info class="inline ms-1 h-4 w-4 text-red-500" />
+        </Tooltip>
       </span>
     </span>
     <component :is="component" :placeholder="placeholder"
@@ -29,6 +34,7 @@ import { Autocomplete, Link } from "@/components";
 import { createResource, FormControl } from "frappe-ui";
 import { Field } from "@/types";
 import { vMaska  } from "maska/vue";
+import LucideInfo from '~icons/lucide/info';
 
 
 

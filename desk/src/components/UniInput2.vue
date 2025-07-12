@@ -4,7 +4,11 @@
     <Tooltip :text="__(field.label)">
       <div class="w-[106px] shrink-0 truncate text-sm text-gray-600">
         {{ __(field.label) }}
-        <span v-if="field.required" class="text-red-500"> * </span>
+        <span v-if="field.validationMessage">
+          <Tooltip :text="__(field.validationMessage)" :placement="'top'">
+            <lucide-info class="inline ms-1 h-4 w-4 text-red-500" />
+          </Tooltip>
+        </span>
       </div>
     </Tooltip>
     <div class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base">

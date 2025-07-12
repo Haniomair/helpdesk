@@ -16,7 +16,7 @@
 
 
     <div v-if="hasChanged" class="flex gap-1 justify-end text-sm text-gray-500 px-6 py-2.5 border-t">
-      <Button :label="__('Update')" :loading="isSaving" :loadingText="__('Saving...')" @click="updateData" theme="gray"
+      <Button :label="__('Update')" :disabled="!canSave" :loading="isSaving" :loadingText="__('Saving...')" @click="updateData" theme="gray"
         variant="solid" />
       <Button :label="__('Reset')" v-if="!isSaving" @click="resetValues" theme="red" variant="solid" />
     </div>
@@ -29,7 +29,7 @@
 import { Field, FieldValue } from "@/types";
 import { toast } from "frappe-ui";
 import { ref, reactive, computed , onMounted, isReactive } from "vue";
-import { parseField, cascadeFilterChanges } from "@/composables/formCustomisation";
+import { parseField } from "@/composables/formCustomisation";
 import UniInput2 from "../UniInput2.vue";
 import { createResource } from "frappe-ui";
 
@@ -65,11 +65,6 @@ onMounted(() => {
 
   originalValues = reactive(JSON.parse(JSON.stringify(values)));
 
-/*   fields.forEach(f=> {
-    cascadeFilterChanges(f.fieldname, fields, values);
-  });
- */
-
   showFields.value = true;
 
 });
@@ -86,14 +81,11 @@ function resetValues() {
   for (const key in originalValues) {
     values[key] = originalValues[key];
   }
-
-  //values = reactive(JSON.parse(JSON.stringify(originalValues)));
-
-  //values = reactive(JSON.parse(JSON.stringify(originalValues)));
-  //Object.keys(values).forEach((key) => {
-  //});
 }
 
+const canSave = computed(() => {
+  return fields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false);
+});
 
 function handleOnFieldChange(e: any, fieldname: string, fieldtype: string) {
 

@@ -36,8 +36,9 @@
               <ComboboxInput ref="search" class="form-input w-full" type="text" @change="
                   (e) => {
                     query = e.target.value;
-                  }
-                " :value="query" autocomplete="off" :placeholder="__('Search')" />
+                  }"
+                  :displayValue="()=> ''" 
+                  autocomplete="off" :placeholder="__('Search')" />
               <button class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
                 @click="selectedValue = null">
                 <FeatherIcon name="x" class="w-4" />
@@ -232,6 +233,7 @@ watch(query, (q) => {
 
 watch(showOptions, (val) => {
   if (val) {
+    query.value = "";
     nextTick(() => {
       search.value.el.focus();
     });

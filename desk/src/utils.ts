@@ -223,3 +223,7 @@ export function getFontFamily(content: string) {
   }
   return langMap[lang];
 }
+
+export function isEmptyString(str: string) {
+  return !/^(?!\s*$).+/.test(str);
+}

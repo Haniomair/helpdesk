@@ -1,4 +1,4 @@
-import { Component } from "vue";
+import { Component, ComputedRef } from "vue";
 
 export interface Resource<T = unknown> {
   auto: boolean;
@@ -131,6 +131,7 @@ export interface Field {
   label: string;
   options: string;
   required: 0 | 1;
+  required_via_depends_on?: ComputedRef<boolean>;
   description?: null;
   url_method?: string;
   link_filters?: string;
@@ -138,6 +139,7 @@ export interface Field {
   filter_based_on?: string;
   display_via_depends_on?: string;
   mandatory_via_depends_on?: string;
+  validationMessage?: ComputedRef<string> | boolean | string;
 }
 
 export type FieldValue = string | number | boolean;
