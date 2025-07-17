@@ -34,8 +34,7 @@
 
       </div>
 
-      <h4 v-if="isCustomerPortal && isEmptyString(subject)"
-        class="text-p-sm text-gray-500 ml-1">
+      <h4 v-if="isCustomerPortal && isEmptyString(subject)" class="text-p-sm text-gray-500 ml-1">
         {{ __('Please enter a subject to continue') }}
       </h4>
 
@@ -61,7 +60,7 @@
           </span>
         </span>
         <TicketTextEditor ref="editor" v-model:attachments="attachments" v-model:content="description"
-          :placeholder="__('Detailed explanation')" expand>
+          :uploadFunction="(file: any) => uploadFunction(file)" :placeholder="__('Detailed explanation')" expand>
           <template #bottom-right>
             <Button :label="__('Submit')" theme="gray" variant="solid" :disabled="canSave === false || ticket.loading"
               @click="() => ticket.submit()" />
@@ -110,7 +109,7 @@ import { useAuthStore } from "@/stores/auth";
 import { globalStore } from "@/stores/globalStore";
 import { capture } from "@/telemetry";
 import { Field } from "@/types";
-import { isCustomerPortal, isEmptyString } from "@/utils";
+import { isCustomerPortal, isEmptyString, uploadFunction } from "@/utils";
 import {
   Breadcrumbs,
   Button,
@@ -299,7 +298,7 @@ const breadcrumbs = computed(() => {
     {
       label: __("Tickets"),
       route: {
-        name: "TicketsCustomer",
+        name: isCustomerPortal.value ? "TicketsCustomer" : "TicketsAgent",
       },
     },
     {
