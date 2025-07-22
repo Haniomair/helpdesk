@@ -309,7 +309,7 @@ export function validateField(field : Field, value: any) {
 
   switch (field.fieldtype) {
     case "Phone":
-      if (value && !/^\+9665[0-9]{8}$/.test(value)) {
+      if (value && !/^\+966-5[0-9]{8}$/.test(value)) {
         return 'Invalid phone number format';
       }
       break;

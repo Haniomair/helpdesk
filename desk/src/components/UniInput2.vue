@@ -17,7 +17,7 @@
       </div>
       <component v-else :is="component" :key="field.fieldname" class="form-control"
         :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :placeholder="`${__('Add')} ${__(field.label)}`"
-        v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''" :value="transValue"
+        v-maska:transValue="field.fieldtype == 'Phone' ? '+966-5########' : ''" :value="transValue"
         :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" autocomplete="off"
         @update:model-value="emitUpdate(field.fieldname, $event)" @change="
           emitUpdate(

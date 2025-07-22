@@ -32,6 +32,8 @@ from helpdesk.utils import capture_event, get_customer, is_agent, publish_event
 from ..hd_notification.utils import clear as clear_notifications
 from ..hd_service_level_agreement.utils import get_sla
 
+frappe.utils.logger.set_log_level("DEBUG")
+logger = frappe.logger("ticket", allow_site=True, file_count=50)
 
 class HDTicket(Document):
     def publish_update(self):
@@ -117,6 +119,7 @@ class HDTicket(Document):
         self.generate_key()
 
     def after_insert(self):
+        logger.info(f"Ticket created: {self.name}")
         if self.ticket_split_from:
             log_ticket_activity(
                 self.name,
@@ -127,6 +130,7 @@ class HDTicket(Document):
 
         capture_event("ticket_created")
         publish_event("helpdesk:new-ticket", {"name": self.name})
+        logger.info(f"Description: {self.get('description')}")
         if self.get("description"):
             self.create_communication_via_contact(self.description, new_ticket=True)
             self.handle_inline_media_new_ticket()

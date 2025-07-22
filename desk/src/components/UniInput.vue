@@ -19,7 +19,7 @@
     </div>
     <component v-else :is="component" :placeholder="placeholder"
       :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :value="transValue"
-      v-maska:transValue="field.fieldtype == 'Phone' ? '+9665########' : ''"
+      v-maska:transValue="field.fieldtype == 'Phone' ? '+966-5########' : ''"
       :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" @update:model-value="emitUpdate(field.fieldname, $event)" @change="
         emitUpdate(
           field.fieldname,
@@ -137,7 +137,7 @@ const placeholder = computed(() => {
   if (props.field.fieldtype === "Data" && !props.field.url_method) {
     return __("Type something");
   } else if (props.field.fieldtype === "Phone") {
-    return "+9665xxxxxxxx";
+    return "+966-5xxxxxxxx";
   } else if (props.field.fieldtype === "Email") {
     return "example@example.com";
   }
