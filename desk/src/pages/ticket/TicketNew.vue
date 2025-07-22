@@ -116,6 +116,7 @@ import {
   call,
   createResource,
   FormControl,
+  toast,
   usePageMeta,
 } from "frappe-ui";
 import { useOnboarding } from "frappe-ui/frappe";
@@ -125,6 +126,7 @@ import { computed, onMounted, reactive, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SearchArticles from "../../components/SearchArticles.vue";
 import TicketTextEditor from "./TicketTextEditor.vue";
+import { get } from "@vueuse/core";
 
 interface P {
   templateId?: string;
@@ -205,6 +207,8 @@ function generateVisibleFields() {
 
 
 const canSave = computed(() => {
+
+  if (gettingEmployeeData.value) return false;
   return !isEmptyString(subject.value) && editor?.value?.editor.isEmpty === false;
   //return visibleFields.every((f) => (f.display_via_depends_on == true && f.validationMessage === "") || f.display_via_depends_on == false) && !isEmpty(subject.value) && editor?.value?.editor.isEmpty === false;
 });
@@ -315,7 +319,38 @@ usePageMeta(() => ({
   title: __("New Ticket"),
 }));
 
+const gettingEmployeeData = ref(false);
+
 onMounted(() => {
+  if (isCustomerPortal.value) {
+    gettingEmployeeData.value = true;
+    call("itsm.customizations.utils.get_employee_id_mobile_from_server_tb",
+      { user: userID },
+      { method: "GET" }
+    )
+    
+      .then((data) => {
+        
+        toast.success(
+          __("Employee data fetched successfully")
+        );
+
+        templateFields["custom_employee_id"] = data.employee_id || "";
+        templateFields["custom_employee_mobile"] = data.employee_mobile || "";
+        templateFields["custom_employee_name"] = data.first_name || userID;
+        
+      })
+      .catch((error) => {
+        toast.error(
+          __("Error fetching employee data.")
+        );
+        console.error("Error fetching employee data:", error);
+      })
+      .then(() => {
+        gettingEmployeeData.value = false;
+      });
+
+  }
   capture("new_ticket_page", {
     data: {
       user: userID,
