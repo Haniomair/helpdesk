@@ -141,6 +141,7 @@ export interface Field {
   mandatory_via_depends_on?: string;
   validationMessage?: ComputedRef<string> | boolean | string;
   read_only: 0 | 1;
+  link_hide_from_customer_field?: string;
 }
 
 export type FieldValue = string | number | boolean;

@@ -12,7 +12,8 @@
   "placeholder",
   "required",
   "hide_from_customer",
-  "read_only"
+  "read_only",
+  "link_hide_from_customer_field"
  ],
  "fields": [
   {
@@ -51,12 +52,19 @@
    "fieldname": "read_only",
    "fieldtype": "Check",
    "label": "Readonly"
+  },
+  {
+   "description": "Enter the field name that will be used to filter link options in the customer portal. This is only applicable to the Link field type.",
+   "fieldname": "link_hide_from_customer_field",
+   "fieldtype": "Data",
+   "label": "Link Hide from Customer Field",
+   "placeholder": "Enter field name eg. hide_from_customer"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-12 19:55:13.860836",
+ "modified": "2025-07-23 19:17:11.806193",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket Template Field",

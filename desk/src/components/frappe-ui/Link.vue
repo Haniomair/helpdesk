@@ -120,6 +120,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  link_hide_from_customer_field: {
+    type: String,
+    default: null,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "change"]);
@@ -299,9 +303,8 @@ function clearValue(close) {
 function getFilters(filters) {
 
   var filtersList = [];
-  if (props.doctype == 'HD Ticket Type' && isCustomerPortal.value === true) {
-    // For customer portal, we need to filter out the ticket types that are not visible to customers
-    filtersList.push(['HD Ticket Type', 'hide_from_customer', '=', 0]);
+  if ((props.doctype == "HD Ticket Type" || props.link_hide_from_customer_field) && isCustomerPortal.value === true) {
+    filtersList.push([props.doctype, props.link_hide_from_customer_field, '=', 0]);
   }
 
   if (!filters || filters.length === 0 || !props.advanced_filters)
@@ -310,9 +313,10 @@ function getFilters(filters) {
   if (!props.advanced_filters)
     return filters;
 
-  filtersList= [...filters.map(f => {
+  filtersList.push(...filters.map(f => {
     return [f.doctype, f.field, f.operator, f.function];
-  })];
+  }));
+
 
   return filtersList;
 

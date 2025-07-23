@@ -72,7 +72,8 @@ const component = computed(() => {
       doctype: props.field.options,
       filters: props.field.filters,
       advanced_filters: true,
-      filter_based_on: props.field.filter_based_on
+      filter_based_on: props.field.filter_based_on,
+      link_hide_from_customer_field: props.field.link_hide_from_customer_field,
     });
   } else if (props.field.fieldtype === "Select") {
     return h(Autocomplete, {
