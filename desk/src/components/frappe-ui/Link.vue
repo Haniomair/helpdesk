@@ -12,9 +12,10 @@
     </label>
 
 
-    <div v-show="(!options.loading || (options.loading && props.noSearchingMessage === true)) && (options.fetched === true || modelValue == '')">
+    <div
+      v-show="(!options.loading || (options.loading && props.noSearchingMessage === true)) && (options.fetched === true || modelValue == '')">
       <Autocomplete ref="autocomplete" :options="options.data" v-model="value" :size="attrs.size || 'sm'"
-        :variant="attrs.variant" :placeholder="attrs.placeholder" :filterable="true">
+        :variant="attrs.variant" :placeholder="attrs.placeholder" :disabled="attrs.disabled" :filterable="true">
         <template #target="{ open, togglePopover }">
           <slot name="target" v-bind="{ open, togglePopover }" />
         </template>
@@ -67,11 +68,10 @@
 </template>
 
 <script setup>
-import { useAttrs, computed, ref, onMounted } from "vue";
+import { watchDebounced, onMounted } from "@vueuse/core";
 import { createResource } from "frappe-ui";
+import { computed, ref, useAttrs, watch } from "vue";
 import Autocomplete from "./Autocomplete.vue";
-import { watchDebounced } from "@vueuse/core";
-import { watch } from "vue";
 import { isCustomerPortal } from "@/utils";
 import { get, set } from 'idb-keyval';
 
@@ -331,6 +331,9 @@ const labelClasses = computed(() => {
       md: "text-base",
     }[attrs.size || "sm"],
     "text-gray-600",
+    ...(attrs.required
+      ? ["after:content-['*']", "after:ml-0.5", "after:text-red-500"]
+      : []),
   ];
 });
 </script>

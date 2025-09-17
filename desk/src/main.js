@@ -1,3 +1,4 @@
+import { createApp, h } from "vue";
 import {
   Badge,
   Button,
@@ -14,13 +15,15 @@ import {
   Tooltip,
 } from "frappe-ui";
 import { createPinia } from "pinia";
-import { createApp } from "vue";
 import App from "./App.vue";
 import { createDialog } from "./components/dialogs";
 import "./index.css";
 import { router } from "./router";
-import { socket } from "./socket";
 import { posthogPlugin } from "./telemetry";
+import { isCustomerPortal } from "@/utils";
+import { translationPlugin } from "./translation";
+import CircleAlert from "~icons/lucide/circle-alert";
+import { initSocket } from "./socket";
 import translationPlugin from "./translation";
 import { socketio_port } from "../../../../sites/common_site_config.json";
 import { clear } from "idb-keyval";
@@ -41,13 +44,19 @@ const globalComponents = {
 
 setConfig("resourceFetcher", frappeRequest);
 setConfig("serverMessagesHandler", (msgs) => {
+  if (isCustomerPortal.value) {
+    return;
+  }
   msgs.forEach((msg) => {
     msg = JSON.parse(msg);
     if (msg && msg.message == "Feedback email has been sent to the customer") {
       toast.success(msg.message);
       return;
     }
-    toast.warning(msg.message);
+    toast.create({
+      message: msg.message,
+      icon: h(CircleAlert, { class: "text-blue-500" }),
+    });
   });
 });
 setConfig("fallbackErrorHandler", (error) => {
@@ -75,9 +84,9 @@ for (const c in globalComponents) {
   app.component(c, globalComponents[c]);
 }
 
-app.config.globalProperties.$socket = socket;
 app.config.globalProperties.$dialog = createDialog;
 
+let socket;
 if (import.meta.env.DEV) {
   frappeRequest({
     url: "/api/method/helpdesk.www.helpdesk.index.get_context_for_dev",
@@ -85,8 +94,12 @@ if (import.meta.env.DEV) {
     for (let key in values) {
       window[key] = values[key];
     }
+    socket = initSocket();
+    app.config.globalProperties.$socket = socket;
     app.mount("#app");
   });
 } else {
+  socket = initSocket();
+  app.config.globalProperties.$socket = socket;
   app.mount("#app");
 }

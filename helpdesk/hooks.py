@@ -6,6 +6,7 @@ app_icon = "octicon octicon-file-directory"
 app_color = "grey"
 app_email = "hello@frappe.io"
 app_license = "AGPLv3"
+required_apps = ["telephony"]
 
 add_to_apps_screen = [
     {
@@ -41,6 +42,14 @@ website_route_rules = [
     },
 ]
 
+user_invitation = {
+    "allowed_roles": {
+        "Agent Manager": ["Agent", "Agent Manager"],
+        "System Manager": ["Agent", "Agent Manager", "System Manager"],
+    },
+    "after_accept": "helpdesk.helpdesk.hooks.user_invitation.after_accept",
+}
+
 doc_events = {
     "Contact": {
         "before_insert": "helpdesk.overrides.contact.before_insert",
@@ -74,3 +83,9 @@ ignore_links_on_delete = [
 # setup_wizard_requires = "assets/helpdesk/js/setup_wizard.js"
 # setup_wizard_stages = "helpdesk.setup.setup_wizard.get_setup_stages"
 setup_wizard_complete = "helpdesk.setup.setup_wizard.setup_complete"
+
+
+# Testing
+# ---------------
+
+before_tests = "helpdesk.test_utils.before_tests"

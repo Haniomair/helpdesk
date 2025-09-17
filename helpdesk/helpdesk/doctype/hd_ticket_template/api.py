@@ -37,6 +37,7 @@ def get_one(name: str):
 def get_fields_meta(template: str):
     fields = get_fields(template, "DocField")
     fields.extend(get_fields(template, "Custom Field"))
+    fields = sorted(fields, key=lambda x: x.idx)
     return fields
 
 
@@ -70,6 +71,7 @@ def get_fields(template: str, fetch: Literal["Custom Field", "DocField"]):
             fields.url_method,
             fields.placeholder,
             fields.idx,
+            fields.idx,
             fields.read_only
         )
         .join(QBFetch, JoinType.inner)
@@ -78,7 +80,7 @@ def get_fields(template: str, fetch: Literal["Custom Field", "DocField"]):
         .orderby(fields.idx)
         .run(as_dict=True)
     )
-    docfields = ["link_filters"]
+    docfields = ["link_filters", "depends_on", "mandatory_depends_on"]
 
     for df in docfields:
         for field in result:

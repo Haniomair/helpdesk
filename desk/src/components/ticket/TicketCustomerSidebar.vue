@@ -144,15 +144,10 @@ function resolutionData() {
       )}`,
       color: "orange",
     };
-  } else if (
-    dayjs(ticket.data.resolution_date).isBefore(ticket.data.resolution_by)
-  ) {
+  } else if (ticket.data.agreement_status === "Fulfilled") {
     resolution = {
       label: `Fulfilled in ${formatTime(
-        dayjs(ticket.data.resolution_date).diff(
-          dayjs(ticket.data.creation),
-          "s"
-        )
+        dayjs(ticket.data.resolution_time, "s")
       )}`,
       color: "green",
     };
@@ -172,7 +167,7 @@ const ticketBasicInfo = computed(() => [
   },
   {
     label: "Status",
-    value: transformStatus(ticket.data.status),
+    value: ticket.data.status,
     bold: true,
   },
 ]);
@@ -209,14 +204,6 @@ const ticketAdditionalInfo = computed(() => {
 
   return [...fields, ...custom_fields];
 });
-function transformStatus(status: string) {
-  switch (status) {
-    case "Replied":
-      return "Awaiting reply";
-    default:
-      return status;
-  }
-}
 </script>
 
 <style scoped></style>

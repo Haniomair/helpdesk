@@ -11,7 +11,10 @@
               <Button :label="ticket.data.status">
                 <template #prefix>
                   <IndicatorIcon
-                    :class="ticketStatusStore.textColorMap[ticket.data.status]"
+                    :class="
+                      ticketStatusStore.getStatus(ticket.data.status)
+                        ?.parsed_color
+                    "
                   />
                 </template>
                 <template #suffix>
@@ -66,6 +69,7 @@
                 <!-- ticket contact info -->
                 <TicketAgentContact
                   :contact="ticket.data.contact"
+                  :ticketId="ticket.data.name"
                   @email:open="communicationAreaRef.toggleEmailBox()"
                 />
                 <!-- feedback component -->
@@ -110,6 +114,7 @@
             class="sticky bottom-0 z-50 bg-white"
             ref="communicationAreaRef"
             v-model="ticket.data"
+            :ticketId="ticket.data?.name"
             :to-emails="[ticket.data.raised_by]"
             :cc-emails="[]"
             :bcc-emails="[]"
@@ -130,6 +135,7 @@
       v-model="showAssignmentModal"
       :assignees="ticket.data.assignees"
       :docname="ticketId"
+      :team="ticket.data?.agent_group"
       doctype="HD Ticket"
       @update="
         () => {
@@ -168,6 +174,11 @@
         <Button class="ml-2" @click="showSubjectDialog = false">{{ __('Close') }}</Button>
       </template>
     </Dialog>
+    <SetContactPhoneModal
+      v-model="showPhoneModal"
+      :name="ticket.data?.contact?.name"
+      @onUpdate="ticket.reload"
+    />
   </div>
 </template>
 
@@ -184,7 +195,15 @@ import {
   createResource,
   toast,
 } from "frappe-ui";
-import { computed, h, onMounted, onUnmounted, provide, ref } from "vue";
+import {
+  computed,
+  ComputedRef,
+  h,
+  onMounted,
+  onUnmounted,
+  provide,
+  ref,
+} from "vue";
 import { useRouter } from "vue-router";
 
 import {
@@ -199,6 +218,7 @@ import {
   DetailsIcon,
   EmailIcon,
   IndicatorIcon,
+  PhoneIcon,
 } from "@/components/icons";
 import { TicketAgentActivities } from "@/components/ticket";
 
@@ -210,6 +230,14 @@ import { globalStore } from "@/stores/globalStore";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
 import { useUserStore } from "@/stores/user";
 import { TabObject, TicketTab } from "@/types";
+import { useActiveTabManager } from "@/composables/useActiveTabManager";
+import { useTelephonyStore } from "@/stores/telephony";
+import { storeToRefs } from "pinia";
+import { HDTicketStatus } from "@/types/doctypes";
+import SetContactPhoneModal from "@/components/ticket/SetContactPhoneModal.vue";
+
+const telephonyStore = useTelephonyStore();
+const { isCallingEnabled } = storeToRefs(telephonyStore);
 import { getDirection } from "@/languages";
 
 const ticketStatusStore = useTicketStatusStore();
@@ -220,6 +248,7 @@ const ticketAgentActivitiesRef = ref(null);
 const communicationAreaRef = ref(null);
 const subjectInput = ref(null);
 const isLoading = ref(false);
+const showPhoneModal = ref(false);
 
 const props = defineProps({
   ticketId: {
@@ -229,6 +258,18 @@ const props = defineProps({
 });
 
 provide("communicationArea", communicationAreaRef);
+provide("makeCall", () => {
+  if (!ticket.data?.contact?.mobile_no && !ticket.data?.contact?.phone) {
+    showPhoneModal.value = true;
+    return;
+  }
+  telephonyStore.makeCall({
+    number: ticket.data?.contact?.phone || ticket.data?.contact?.mobile_no,
+    doctype: "HD Ticket",
+    docname: props.ticketId,
+  });
+});
+provide("ticketId", props.ticketId);
 
 const { isMobileView } = useScreenSize();
 const { $dialog } = globalStore();
@@ -268,6 +309,9 @@ const ticket = createResource({
   },
 });
 
+provide("refreshTicket", () => ticket.reload());
+provide("onCallEnded", () => ticket.reload());
+
 function updateField(name: string, value: string, callback = () => {}) {
   updateTicket(name, value);
   callback();
@@ -283,41 +327,53 @@ const breadcrumbs = computed(() => {
 });
 
 const dropdownOptions = computed(() =>
-  ticketStatusStore.options.map((o) => ({
-    label: __(o),
-    value: o,
-    onClick: () => updateTicket("status", o),
+  ticketStatusStore.statuses.data?.map((o: HDTicketStatus) => ({
+    label: __(o).label_agent,
+    value: o.label_agent,
+    onClick: () => updateTicket("status", o.label_agent),
     icon: () =>
       h(IndicatorIcon, {
-        class: ticketStatusStore.textColorMap[o],
+        class: o.parsed_color,
       }),
   }))
 );
 
-const tabIndex = ref(0);
-const tabs: TabObject[] = [
-  {
-    name: "details",
-    label: __("Details"),
-    icon: DetailsIcon,
-    condition: () => isMobileView.value,
-  },
-  {
-    name: "activity",
-    label: __("Activity"),
-    icon: ActivityIcon,
-  },
-  {
-    name: "email",
-    label: __("Emails"),
-    icon: EmailIcon,
-  },
-  {
-    name: "comment",
-    label: __("Comments"),
-    icon: CommentIcon,
-  },
-];
+const tabs: ComputedRef<TabObject[]> = computed(() => {
+  const _tabs = [
+    {
+      name: "details",
+      label: __("Details"),
+      icon: DetailsIcon,
+      condition: () => isMobileView.value,
+    },
+    {
+      name: "activity",
+      label: __("Activity"),
+      icon: ActivityIcon,
+    },
+    {
+      name: "email",
+      label: __("Emails"),
+      icon: EmailIcon,
+    },
+    {
+      name: "comment",
+      label: __("Comments"),
+      icon: CommentIcon,
+    },
+  ];
+
+  if (isCallingEnabled.value) {
+    _tabs.push({
+      name: "call",
+      label: "Calls",
+      icon: PhoneIcon,
+    });
+  }
+  return _tabs;
+});
+
+const { tabIndex } = useActiveTabManager(tabs, "lastTicketTab");
 
 const activities = computed(() => {
   const emailProps = ticket.data.communications.map((email, idx: number) => {
@@ -333,6 +389,7 @@ const activities = computed(() => {
       creation: email.communication_date || email.creation,
       attachments: email.attachments,
       name: email.name,
+      deliveryStatus: email.delivery_status,
       isFirstEmail: idx === 0,
     };
   });
@@ -362,9 +419,26 @@ const activities = computed(() => {
     }
   );
 
-  const sorted = [...emailProps, ...commentProps, ...historyProps].sort(
-    (a, b) => new Date(a.creation) - new Date(b.creation)
-  );
+  const callProps = ticket.data.calls.map((call) => {
+    return {
+      ...call,
+      type: "call",
+      name: call.name,
+      key: call.creation,
+      call_type: call.type,
+      content: `${call.caller || "Unknown"} made a call to ${
+        call.receiver || "Unknown"
+      }`,
+      duration: call.duration ? call.duration + "s" : "0s",
+    };
+  });
+
+  const sorted = [
+    ...emailProps,
+    ...commentProps,
+    ...historyProps,
+    ...callProps,
+  ].sort((a, b) => new Date(a.creation) - new Date(b.creation));
 
   const data = [];
   let i = 0;

@@ -142,10 +142,13 @@ import {
   toast,
   Tooltip,
 } from "frappe-ui";
-import { computed, h, ref } from "vue";
+import { computed, h, markRaw, ref } from "vue";
 import LucideLock from "~icons/lucide/lock";
 import LucideUnlock from "~icons/lucide/unlock";
 import AgentCard from "../AgentCard.vue";
+import Settings from "~icons/lucide/settings-2";
+import { assignmentRulesActiveScreen } from "@/stores/assignmentRules";
+import { setActiveSettingsTab } from "../settingsModal";
 import { getDirection } from "@/languages";
  
 const props = defineProps<{
@@ -277,6 +280,17 @@ const deleteDialogOptions = {
 };
 
 const options = [
+  {
+    label: "View Assignment rule",
+    icon: markRaw(h(Settings, { class: "rotate-90" })),
+    onClick: () => {
+      assignmentRulesActiveScreen.value = {
+        data: { name: team.doc?.assignment_rule },
+        screen: "view",
+      };
+      setActiveSettingsTab("Assignment Rules");
+    },
+  },
   {
     label: __("Rename"),
     icon: "edit-3",

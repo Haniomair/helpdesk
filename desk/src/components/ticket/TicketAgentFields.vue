@@ -6,7 +6,7 @@
 
     <div class="flex flex-1 flex-col overflow-hidden overflow-y-auto">
 
-      <UniInput2 v-for="field in default_fields" :key="field.fieldname" :field="field" :value="values[field.fieldname]"
+      <TicketField v-for="field in default_fields" :key="field.fieldname" :field="field" :value="values[field.fieldname]"
         @change="(e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)" />
       <hr v-if="default_fields.length" class="mb-2 mt-2" />
       <UniInput2 v-for="field in fields" :key="field.fieldname" :field="field" :value="values[field.fieldname]"
@@ -30,7 +30,7 @@ import { Field, FieldValue } from "@/types";
 import { toast } from "frappe-ui";
 import { ref, reactive, computed , onMounted, isReactive } from "vue";
 import { parseField } from "@/composables/formCustomisation";
-import UniInput2 from "../UniInput2.vue";
+import TicketField from "../TicketField.vue";
 import { createResource } from "frappe-ui";
 
 const emit = defineEmits(["update"]);

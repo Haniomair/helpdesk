@@ -34,7 +34,7 @@
     <div class="mb-4" v-if="!isCustomerPortal">
       <div
         v-if="notificationStore.unread"
-        class="absolute z-20 h-1.5 w-1.5 translate-x-6 translate-y-1 rounded-full bg-blue-400 left-1"
+        class="absolute size-1.5 translate-x-6 translate-y-1 rounded-full bg-blue-400 left-1"
         theme="gray"
         variant="solid"
       />
@@ -104,7 +104,7 @@
       </div>
     </div>
     <div class="grow" />
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col gap-2">
       <TrialBanner
         v-if="isFCSite && !isCustomerPortal"
         :isSidebarCollapsed="!isExpanded"
@@ -139,10 +139,7 @@
       v-if="isFCSite && !isCustomerPortal"
       :isSidebarCollapsed="!isExpanded"
     />
-    <SettingsModal
-      v-model="showSettingsModal"
-      :default-tab="defaultSettingsTab"
-    />
+    <SettingsModal v-model="showSettingsModal" />
     <HelpModal
       v-if="showHelpModal"
       v-model="showHelpModal"
@@ -169,7 +166,6 @@ import { Section, SidebarLink } from "@/components";
 import Apps from "@/components/Apps.vue";
 import Languages from "@/components/Languages.vue";
 import { FrappeCloudIcon, InviteCustomer } from "@/components/icons";
-import { showNewAgentsDialog } from "@/components/Settings/agents";
 import SettingsModal from "@/components/Settings/SettingsModal.vue";
 import UserMenu from "@/components/UserMenu.vue";
 import { useDevice } from "@/composables";
@@ -199,7 +195,7 @@ import {
 } from "frappe-ui/frappe";
 //import HelpIcon from "frappe-ui/frappe/Icons/HelpIcon.vue";
 import { storeToRefs } from "pinia";
-import { computed, h, markRaw, onMounted, onUnmounted, ref } from "vue";
+import { computed, h, markRaw, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   agentPortalSidebarOptions,
@@ -221,6 +217,9 @@ import Ticket from "~icons/lucide/ticket";
 import Timer from "~icons/lucide/timer";
 import UserPen from "~icons/lucide/user-pen";
 import LucideUserPlus from "~icons/lucide/user-plus";
+import { useTelephonyStore } from "@/stores/telephony";
+import { setActiveSettingsTab } from "../Settings/settingsModal";
+
 import { getDirection } from "@/languages";
 
 const { isMobileView } = useScreenSize();
@@ -231,22 +230,23 @@ const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
 const { isExpanded, width } = storeToRefs(useSidebarStore());
 const device = useDevice();
-const { $socket } = globalStore();
+const telephonyStore = useTelephonyStore();
+const { isCallingEnabled } = storeToRefs(telephonyStore);
 
 const showSettingsModal = ref(false);
 
 const { pinnedViews, publicViews } = useView();
-declare global {
-  interface Window {
-    is_fc_site: boolean;
-  }
-}
+
 const isFCSite = ref(window.is_fc_site);
 
 const allViews = computed(() => {
-  const items = isCustomerPortal.value
+  let items = isCustomerPortal.value
     ? customerPortalSidebarOptions
     : agentPortalSidebarOptions;
+
+  if (!isCallingEnabled.value) {
+    items = items.filter((item) => item.label !== "Call Logs");
+  }
 
   const options = [
     {
@@ -382,8 +382,6 @@ const logo = h(
   null
 );
 
-const defaultSettingsTab = ref(0);
-
 const showOnboardingBanner = computed(() => {
   return (
     !isCustomerPortal.value &&
@@ -401,7 +399,7 @@ const steps = [
     onClick: () => {
       minimize.value = true;
       showSettingsModal.value = true;
-      defaultSettingsTab.value = 0;
+      setActiveSettingsTab("Email Accounts");
     },
   },
   {
@@ -412,10 +410,7 @@ const steps = [
     onClick: () => {
       minimize.value = true;
       showSettingsModal.value = true;
-      defaultSettingsTab.value = 2;
-      setTimeout(() => {
-        showNewAgentsDialog.value = true;
-      }, 300);
+      setActiveSettingsTab("Invite Agents");
     },
   },
   {
@@ -424,9 +419,9 @@ const steps = [
     completed: false,
     icon: markRaw(Timer),
     onClick: () => {
-      console.log("clicked");
-      const url = "/app/hd-service-level-agreement";
-      window.open(url, "_blank");
+      setActiveSettingsTab("SLA Policies");
+      showSettingsModal.value = true;
+      minimize.value = true;
     },
   },
   {
@@ -497,7 +492,6 @@ const steps = [
     completed: false,
     icon: markRaw(InviteCustomer),
     onClick: () => {
-      console.log("clicked");
       minimize.value = true;
       currentStep.value = {
         title: "Create & invite a contact",
@@ -641,17 +635,10 @@ async function getGeneralCategory() {
 
 function setUpOnboarding() {
   if (!authStore.isManager) return;
-  $socket.on("update_sla_status", () => {
-    updateOnboardingStep("setup_sla");
-  });
   setUp(steps);
 }
 
 onMounted(() => {
   setUpOnboarding();
-});
-
-onUnmounted(() => {
-  $socket.off("update_sla_status");
 });
 </script>

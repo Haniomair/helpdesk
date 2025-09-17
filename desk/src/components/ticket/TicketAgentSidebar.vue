@@ -12,6 +12,7 @@
       </span>
       <Dropdown
         v-if="showMergeOption"
+        placement="right"
         :options="[
           {
             label: __('Merge Ticket'),
@@ -26,6 +27,7 @@
     </div>
     <TicketAgentContact
       :contact="ticket.contact"
+      :ticketId="ticket.name"
       @email:open="(e) => emit('email:open', e)"
     />
     <!-- feedback component -->
@@ -76,7 +78,8 @@ const showMergeModal = ref(false);
 
 const showMergeOption = computed(() => {
   return (
-    !props.ticket.is_merged && ["Open", "Replied"].includes(props.ticket.status)
+    !props.ticket.is_merged &&
+    ["Open", "Paused"].includes(props.ticket.status_category)
   );
 });
 </script>

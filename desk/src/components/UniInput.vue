@@ -19,6 +19,7 @@
     </div>
     <component v-else :is="component" :placeholder="placeholder"
       :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :value="transValue"
+      :disabled="field.disabled"
       v-maska:transValue="field.fieldtype == 'Phone' ? '+966-5########' : ''"
       :dir="field.fieldtype === 'Phone' ? 'ltr' : ''" @update:model-value="emitUpdate(field.fieldname, $event)" @change="
         emitUpdate(
@@ -36,6 +37,7 @@
 <script setup lang="ts">
 import { computed, h, defineExpose,ref } from "vue";
 import { Autocomplete, Link } from "@/components";
+import { Field } from "@/types";
 import { createResource, FormControl } from "frappe-ui";
 import { Field } from "@/types";
 import { vMaska  } from "maska/vue";
@@ -66,6 +68,7 @@ const component = computed(() => {
   if (props.field.url_method) {
     return h(Autocomplete, {
       options: apiOptions.data,
+      size: "sm",
     });
   } else if (props.field.fieldtype === "Link" && props.field.options) {
     return h(Link, {
@@ -80,6 +83,7 @@ const component = computed(() => {
       options: props.field.options
         .split("\n")
         .map((o) => ({ label: __(o), value: o })),
+      size: "sm",
     });
   } else if (props.field.fieldtype === "Check") {
     return h(Autocomplete, {
@@ -93,6 +97,7 @@ const component = computed(() => {
           value: 0,
         },
       ],
+      size: "sm",
     });
   } else {
     return h(FormControl);
@@ -135,6 +140,9 @@ defineExpose({ transValue });
 
 
 const placeholder = computed(() => {
+  if (props.field.placeholder) {
+    return props.field.placeholder;
+  }
   if (props.field.fieldtype === "Data" && !props.field.url_method) {
     return __("Type something");
   } else if (props.field.fieldtype === "Phone") {

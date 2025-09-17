@@ -13,8 +13,11 @@
             displayValue2,
           }">
           <div class="w-full">
-            <button class="flex w-full items-center justify-between focus:outline-none" :class="inputClasses"
-              @click="() => togglePopover()">
+            <button
+              class="flex w-full items-center justify-between focus:outline-none"
+              :class="inputClasses"
+              @click="() => !disabled && togglePopover()"
+            >
               <div class="flex items-center">
                 <slot name="prefix" />
                 <span class="overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5" v-if="selectedValue">
@@ -106,7 +109,7 @@ import { ref, computed, useAttrs, useSlots, watch, nextTick } from "vue";
 
 const props = defineProps({
   modelValue: {
-    type: String,
+    type: [String, Object],
     default: "",
   },
   options: {

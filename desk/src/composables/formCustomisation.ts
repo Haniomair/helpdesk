@@ -3,7 +3,8 @@ import { reactive, computed } from "vue";
 import { isEmptyString } from "@/utils";
 
 export async function setupCustomizations(doc, obj) {
-  let data = doc?.data;
+  // Supporting old format, will have to refactor later
+  let data = doc.data ?? doc;
   if (!data) return;
   if (!data._form_script) return [];
   let actions = [];
@@ -54,12 +55,13 @@ export function handleSelectFieldUpdate(
   doc: any,
   oldDoc: any
 ) {
-  if (!filters) {
+  if (!filters || !filters.length) {
     f.options = oldDoc.find((f) => f.fieldname === fieldname).options;
+    f.disabled = true;
   } else {
     f.options = filters.join("\n");
+    f.disabled = false;
   }
-
   // reset dependent field
   doc[fieldname] = "";
 }
@@ -87,11 +89,13 @@ export function handleLinkFieldUpdate(
   doc: any,
   oldDoc: any
 ) {
-  if (!filters) {
+  if (!filters || !filters.length) {
     f.link_filters = oldDoc.find((f) => f.fieldname === fieldname).link_filters;
+    f.disabled = true;
     return;
   }
   f.link_filters = JSON.stringify([[f.options, "name", "in", filters]]);
+  f.disabled = false;
 
   // reset dependent field
   doc[fieldname] = "";
