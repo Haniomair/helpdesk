@@ -24,7 +24,6 @@ import { isCustomerPortal } from "@/utils";
 import { translationPlugin } from "./translation";
 import CircleAlert from "~icons/lucide/circle-alert";
 import { initSocket } from "./socket";
-import translationPlugin from "./translation";
 import { socketio_port } from "../../../../sites/common_site_config.json";
 import { clear } from "idb-keyval";
 

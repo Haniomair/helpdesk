@@ -115,8 +115,7 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
-import { call, FormControl, toast } from "frappe-ui";
-import { h } from "vue";
+import { call, FormControl, toast } from "frappe-ui";import { h } from "vue";
 import LucideCheck from "~icons/lucide/check";
 import IconMoreHorizontal from "~icons/lucide/more-horizontal";
 import AgentCard from "./AgentCard.vue";

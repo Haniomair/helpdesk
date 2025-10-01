@@ -9,6 +9,9 @@
       doctype="HD Agent"
       @change="(option) => addValue(option) && ($refs.input.value = '')"
       :placeholder="__('John Doe')"
+      :ignore_reloading_on_filters_change="true"
+      :no-searching-message="true"
+      :enable_query_search="true"
       :filters="{
         is_active: true,
         name: ['not in', assignees.map((a) => a.name)],

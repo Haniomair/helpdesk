@@ -6,11 +6,11 @@ import type {
   TicketContact,
 } from "@/types";
 import type { HDTicket } from "@/types/doctypes";
-import { createDocumentResource, createResource, toast } from "frappe-ui";
-import { reactive } from "vue";
+import { call, createDocumentResource, createResource, toast } from "frappe-ui";
+import { reactive,ref } from "vue";
 
 interface MapValue {
-  ticket: DocumentResource<HDTicket>;
+  ticket: DocumentResource<HDTicket> | any;
   assignees: Resource<Record<"name", string>[]>;
   contact: Resource<TicketContact>;
   recentSimilarTickets: Resource<RecentSimilarTicket>;
@@ -22,12 +22,25 @@ const ticketMap: Record<string, MapValue> = reactive({});
 export const useTicket = (ticketId: string): MapValue => {
   let err = false;
   if (!ticketMap[ticketId]) {
-    ticketMap[ticketId] = {
-      ticket: createDocumentResource<HDTicket>({
+
+    ticketMap[ticketId] =
+      {
+        ticket: ref((()=> {
+            call("helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_for_agent", { name: ticketId })
+            .then((res) => {
+              if (res && res.status === "Open") {
+                call("helpdesk.helpdesk.doctype.hd_ticket.hd_ticket.api.mark_seen", { ticket: ticketId });
+              }
+              return { name: ticketId, doc: res };
+            })
+        })()),
+      /* ticket: createDocumentResource<HDTicket>({
         doctype: "HD Ticket",
         name: ticketId,
         whitelistedMethods: {
           markSeen: "mark_seen",
+        },
+        onSuccess: (doc) => {
         },
         setValue: {
           onSuccess: () => {
@@ -43,7 +56,7 @@ export const useTicket = (ticketId: string): MapValue => {
             toast.error(msg);
           },
         },
-      }),
+      }), */
       assignees: createResource({
         url: "helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_assignees",
         params: { ticket: ticketId },
@@ -71,6 +84,8 @@ export const useTicket = (ticketId: string): MapValue => {
         auto: true,
       }),
     };
+  } else {
+    // reload the resources
   }
 
   return ticketMap[ticketId];

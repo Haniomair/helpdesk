@@ -4,7 +4,8 @@ import { reactive } from "vue";
 const doctypeMeta = reactive({});
 const userSettings = reactive({});
 
-export function getMeta(doctype: string) {
+export async function getMeta(doctype: string) {
+
   const meta = createResource({
     url: "frappe.desk.form.load.getdoctype",
     params: {
@@ -22,9 +23,12 @@ export function getMeta(doctype: string) {
       userSettings[doctype] = JSON.parse(res.user_settings);
     },
   });
+
   if (!doctypeMeta[doctype] && !meta.loading) {
-    meta.fetch();
+    console.log("Fetching meta for", doctype);
+    await meta.fetch();
   }
+
   function getFields(dt = null) {
     dt = dt || doctype;
     return doctypeMeta[dt]?.fields.map((f) => f) || [];

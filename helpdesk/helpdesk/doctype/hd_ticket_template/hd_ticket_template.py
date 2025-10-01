@@ -20,9 +20,7 @@ class HDTicketTemplate(Document):
         for f in self.fields:
             if not f.fieldname:
                 continue
-            exists = self.docfield_exists(f.fieldname) or self.custom_field_exists(
-                f.fieldname
-            )
+            exists = self.docfield_exists(f.fieldname) or self.custom_field_exists(f.fieldname)
             if not exists:
                 text = _("Field `{0}` does not exist in Ticket").format(f.fieldname)
                 frappe.throw(text)
@@ -30,8 +28,11 @@ class HDTicketTemplate(Document):
             hide_from_customer_field = f.get("link_hide_from_customer_field")
             if not hide_from_customer_field or not hide_from_customer_field.strip():
                 return
+            field = self.get_field(f.fieldname)
+            if not field:
+                continue
             if field.options and field.fieldtype == "Link":
-                exists = self.docfield_exists(hide_from_customer_field, field.options) or self.custom_field_exists(hide_from_customer_field, field.options)
+                exists = self.docfield_check_exists(hide_from_customer_field, field.options) or self.custom_field_exists_check(hide_from_customer_field, field.options)
                 if not exists:
                     text = _("Hide from customer field `{0}` does not exist or it is not a Check field. Field name: {1}, DocType: {2}").format(hide_from_customer_field, f.fieldname, field.options)
                     frappe.throw(text)
@@ -55,13 +56,21 @@ class HDTicketTemplate(Document):
         return field or None
 
 
+    def docfield_check_exists(self, fieldname: str, parent: str = "HD Ticket"):
+        return frappe.db.exists(
+            {
+                "doctype": "DocField",
+                "fieldname": fieldname,
+                "fieldtype": "Check",
+                "parent": parent,
+            }
+        )
 
     def docfield_exists(self, fieldname: str, parent: str = "HD Ticket"):
         return frappe.db.exists(
             {
                 "doctype": "DocField",
                 "fieldname": fieldname,
-                "fieldtype": "Check",
                 "parent": parent,
             }
         )
@@ -75,7 +84,16 @@ class HDTicketTemplate(Document):
                 )
                 frappe.throw(text)
 
-    def custom_field_exists(self, fieldname: str):
+    def custom_field_exists(self, fieldname: str,parent: str = "HD Ticket"):
+        return frappe.db.exists(
+            {
+                "doctype": "Custom Field",
+                "fieldname": fieldname,
+                "dt": parent,
+            }
+        )
+    
+    def custom_field_exists_check(self, fieldname: str,parent: str = "HD Ticket"):
         return frappe.db.exists(
             {
                 "doctype": "Custom Field",

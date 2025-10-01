@@ -88,7 +88,7 @@ import { useNotificationStore } from "@/stores/notification";
 import { useSidebarStore } from "@/stores/sidebar";
 import { Notification } from "@/types";
 import { onClickOutside } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { getDirection } from "@/languages";
 
 

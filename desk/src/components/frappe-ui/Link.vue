@@ -3,8 +3,8 @@
 
 
     <span class="block overflow-hidden text-ellipsis whitespace-nowrap text-base leading-5 py-1 px-2 "
-      :class="!simpleFilterMessageStyle ? 'rounded h-7 border border-gray-100 bg-gray-100 w-full' : ''"
-      v-if="!props.noSearchingMessage && options.loading">{{ __('Loading...') }}</span>
+      :class="!simpleFilterMessageStyle ? 'h-7 w-full' : ''"
+      v-if="!props.noSearchingMessage && options.loading">{{ __('Please wait...') }}</span>
 
 
     <label class="block" :class="labelClasses" v-else-if="attrs.label">
@@ -12,9 +12,10 @@
     </label>
 
 
+
     <div
       v-show="(!options.loading || (options.loading && props.noSearchingMessage === true)) && (options.fetched === true || modelValue == '')">
-      <Autocomplete ref="autocomplete" :options="options.data" v-model="value" :size="attrs.size || 'sm'"
+      <Autocomplete ref="autocomplete" :options="data" v-model="value" :size="attrs.size || 'sm'"
         :variant="attrs.variant" :placeholder="attrs.placeholder" :disabled="attrs.disabled" :filterable="true">
         <template #target="{ open, togglePopover }">
           <slot name="target" v-bind="{ open, togglePopover }" />
@@ -68,9 +69,9 @@
 </template>
 
 <script setup>
-import { watchDebounced, onMounted } from "@vueuse/core";
+import { watchDebounced } from "@vueuse/core";
 import { createResource } from "frappe-ui";
-import { computed, ref, useAttrs, watch } from "vue";
+import { computed, ref, useAttrs, watch, isRef, onMounted } from "vue";
 import Autocomplete from "./Autocomplete.vue";
 import { isCustomerPortal } from "@/utils";
 import { get, set } from 'idb-keyval';
@@ -83,6 +84,14 @@ const props = defineProps({
   filters: {
     type: Array,
     default: [],
+  },
+  ignore_reloading_on_filters_change: {
+    type: Boolean,
+    default: false,
+  },
+  enable_query_search: {
+    type: Boolean,
+    default: false,
   },
   filter_based_on: {
     type: Object,
@@ -127,10 +136,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue", "change"]);
-
 const attrs = useAttrs();
-
 const valuePropPassed = computed(() => "value" in attrs);
+const data = ref([]);
 
 const value = computed({
   get: () => (valuePropPassed.value ? attrs.value : props.modelValue),
@@ -158,17 +166,21 @@ const reloadingOnFiltersChange = ref(false);
 watchDebounced(
   () => autocomplete.value?.query,
   (val) => {
-    val = val || "";
-    if (text.value === val) return;
-    text.value = val;
-    //reload(val);
+
+    if (props.enable_query_search) {
+      val = val || "";
+      if (text.value === val) return;
+      text.value = val;
+      reload(val);
+    }
+    
   },
   { debounce: 300, immediate: true }
 );
 
 watchDebounced(
   () => props.doctype,
-  () => reload(""),
+  () => { if (!props.ignore_reloading_on_filters_change) reload("") },
   { debounce: 300, immediate: true }
 );
 
@@ -176,8 +188,13 @@ watchDebounced(
 watch(
   () => props?.filters,
   () => {
+    if (props.ignore_reloading_on_filters_change) return;
+    if (!props.filters || props.filters.length === 0) return;
+    //if (reloadingOnFiltersChange.value) return;
+    //console.log("here");
+    // Clear the current value
     clearValue();
-    options.data = [];
+    data.value = [];
     options.update({
       //cache: getCacheKey(props.filters),
       params: {
@@ -191,13 +208,12 @@ watch(
     reload();
     //options.reload();
   },
-  { deep: true }
+  { deep: true}
 );
 
-function transform(data) {
+function transform(_data) {
 
-  let allData = data.map((option) => {
-
+  let allData = _data.map((option) => {
     return {
       value: option.value,
       label: option.label != undefined ? __(option.label) : __(option.value),
@@ -215,8 +231,12 @@ function transform(data) {
     });
   }
 
-  set(cacheKey.value, allData);
-  return allData;
+  if (cacheKey.value) {
+    set(cacheKey.value, allData);
+  }
+
+  data.value = allData;
+  return [];
 
 }
 
@@ -225,6 +245,9 @@ const cacheKey = computed(() => {
 
   if (!props.filters || props.filters.length === 0) return props.doctype;
 
+  // if filters not an array return
+  if (!Array.isArray(props.filters)) return null;
+
   return props.filters
     .map((f) => {
       return `${f.doctype}.${f.field} ${f.operator} ${f.function}`;
@@ -232,6 +255,12 @@ const cacheKey = computed(() => {
     .join(",");
 
 });
+
+onMounted(()=> {
+
+  reload();
+  
+})
 
 var options = createResource({
   url: "frappe.desk.search.search_link",
@@ -244,7 +273,6 @@ var options = createResource({
     page_length: 0,
   },
   validate(params) {
-
     // TODO: Impelement better way to stop the request if filters not set
     if (props.filter_based_on?.length > 0 && props.filters.some(f => !Boolean(f.function) && !f.function)) {
       return ' ';
@@ -267,10 +295,14 @@ var options = createResource({
 
 async function reload(val = "") {
 
+  console.log("cacheKey", cacheKey.value);
+  if (cacheKey.value != null) {
   const cache = await get(cacheKey.value);
   if (cache) {
-    options.data = cache;
+    data.value = cache;
+    console.log("cache", cache);
     return;
+  }
   }
 
   if (

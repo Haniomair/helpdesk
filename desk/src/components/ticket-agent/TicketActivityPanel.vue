@@ -61,6 +61,7 @@ import { useTelephonyStore } from "@/stores/telephony";
 import { storeToRefs } from "pinia";
 
 const ticket = inject(TicketSymbol);
+console.log(ticket);
 const activities = inject(ActivitiesSymbol);
 
 const tabIndex = ref(0);

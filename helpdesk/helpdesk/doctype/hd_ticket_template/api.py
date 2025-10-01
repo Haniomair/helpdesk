@@ -14,7 +14,7 @@ DOCTYPE_TICKET = "HD Ticket"
 
 
 @frappe.whitelist()
-def get_one(name: str):
+def get_one(name: str, include_default_fields: bool=False):
     check_permissions(DOCTYPE_TEMPLATE, None)
     found, about, description_template = frappe.get_value(
         DOCTYPE_TEMPLATE, name, ["name", "about", "description_template"]
@@ -22,21 +22,56 @@ def get_one(name: str):
     if not found:
         return {"about": None, "fields": []}
 
-    fields = get_fields_meta(name)
+    fields = get_fields_meta(name, include_default_fields)
+    default_fields = []
+    if include_default_fields:
+        default_fields = get_default_fields()
 
     return {
         "about": about,
         "fields": fields,
+        "default_fields": default_fields,
         "description_template": description_template,
         "_form_script": get_form_script(
             "HD Ticket", apply_on_new_page=True, is_customer_portal=False
         ),
     }
 
+def get_fields_for_agent(template: str):
+    fields = get_fields(template, "DocField")
+    fields = sorted(fields, key=lambda x: x.idx)
+    return fields
 
-def get_fields_meta(template: str):
+def get_default_fields():
+    default_fields = ['customer', 'agent_group']
+    DocField = frappe.qb.DocType("DocField")
+    fields = (
+        frappe.qb.from_(DocField)
+        .select(DocField.fieldname, 
+                DocField.label, 
+                DocField.fieldtype, 
+                DocField.options, 
+                DocField.description, 
+                DocField.idx,
+                DocField.read_only,
+                DocField.depends_on,
+                DocField.mandatory_depends_on
+                )
+        .where(DocField.parent == "HD Ticket")
+        .where(DocField.fieldname.isin(default_fields))
+        .orderby(DocField.idx)
+        .run(as_dict=True)
+    )
+    return fields
+
+def get_fields_meta(template: str, include_default_fields: bool = False):
     fields = get_fields(template, "DocField")
     fields.extend(get_fields(template, "Custom Field"))
+    if include_default_fields:
+        # exclude default fields that are already in template
+        existing_fieldnames = {field['fieldname'] for field in fields}
+        default_fields = [field for field in get_default_fields() if field['fieldname'] not in existing_fieldnames]
+        fields.extend(default_fields)
     fields = sorted(fields, key=lambda x: x.idx)
     return fields
 
@@ -70,7 +105,6 @@ def get_fields(template: str, fetch: Literal["Custom Field", "DocField"]):
             fields.required,
             fields.url_method,
             fields.placeholder,
-            fields.idx,
             fields.idx,
             fields.read_only
         )

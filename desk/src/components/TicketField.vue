@@ -4,44 +4,44 @@
       <Tooltip :text="field.label">
         <span>{{ field.label }}</span>
       </Tooltip>
-      <span v-if="field.required" class="text-red-500"> * </span>
+      <span v-if="field.validationMessage">
+        <Tooltip :text="__(typeof field.validationMessage === 'string' ? field.validationMessage : '')"
+          :placement="'top'">
+          <lucide-info class="inline ms-1 h-4 w-4 text-red-500" />
+        </Tooltip>
+      </span>
+      <!--  <span v-if="field.required" class="text-red-500"> * </span> -->
     </div>
-    <div
-      class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base"
-    >
-      <component
-        :is="component"
-        :key="field.fieldname"
-        :readonly="field.readonly"
-        :disabled="field.disabled"
-        class="form-control"
-        :placeholder="field.placeholder || `Add ${field.label}`"
-        :model-value="transValue"
-        autocomplete="off"
-        v-on="
-          textFields.includes(field.fieldtype)
+    <div class="-m-0.5 min-h-[28px] flex-1 items-center overflow-hidden p-0.5 text-base">
+      <component :is="component" :key="field.fieldname" :readonly="field.readonly || field.read_only"
+        :disabled="field.disabled" class="form-control"
+        v-maska:transValue="field.fieldtype == 'Phone' ? '+966-5########' : ''"
+        :class="field.fieldtype == 'Phone' ? 'ticket-field-phone' : ''" :dir="field.fieldtype === 'Phone' ? 'ltr' : ''"
+        :placeholder="field.placeholder || `${__('Add')} ${field.label}`" :model-value="transValue" autocomplete="off"
+        v-on="textFields.includes(field.fieldtype)
             ? {
-                blur: (event) => {
-                  emitUpdate(field.fieldname, event.target.value);
-                },
-              }
+              blur: (event) => {
+                emitUpdate(field.fieldname, event.target.value);
+              },
+            }
             : {
-                'update:model-value': (event) => {
-                  emitUpdate(
-                    field.fieldname,
-                    event?.value || event?.target?.value || event
-                  );
-                },
-              }
-        "
-      />
+              'update:model-value': (event) => {
+                emitUpdate(
+                  field.fieldname,
+                  event?.value || event?.target?.value || event
+                );
+              },
+            }
+          " />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Autocomplete, Link } from "@/components";
+import { __ } from "@/translation";
 import { Field, FieldValue } from "@/types";
+import { vMaska } from "maska/vue";
 import {
   createResource,
   DateTimePicker,
@@ -50,9 +50,7 @@ import {
   Tooltip,
 } from "frappe-ui";
 import DatePicker from "frappe-ui/src/components/DatePicker/DatePicker.vue";
-import { computed, h } from "vue";
-import { vMaska } from "maska/vue";
-
+import { computed, h, watch } from "vue";
 
 interface P {
   field: Field;
@@ -71,9 +69,6 @@ interface E {
 const props = defineProps<P>();
 const emit = defineEmits<E>();
 
-<<<<<<< HEAD:desk/src/components/UniInput2.vue
-//const textFields = ["Long Text", "Small Text", "Text", "Text Editor", "Data"];
-=======
 const apiOptions = createResource({
   url: props.field.url_method,
   auto: !!props.field.url_method,
@@ -89,7 +84,6 @@ const apiOptions = createResource({
 });
 
 const textFields = ["Long Text", "Small Text", "Text", "Text Editor", "Data"];
->>>>>>> 72647ec4e00a9906e99abb0886b2e65084134591:desk/src/components/TicketField.vue
 
 const component = computed(() => {
   if (props.field.url_method) {
@@ -109,7 +103,7 @@ const component = computed(() => {
     return h(Autocomplete, {
       options: props.field.options
         .split("\n")
-        .map((o) => ({ label: __(o), value: o })),
+        .map((o) => ({ label: o, value: o })),
     });
   } else if (props.field.fieldtype === "Check") {
     return h(Autocomplete, {
@@ -152,6 +146,7 @@ const component = computed(() => {
   }
 });
 
+
 const transValue = computed(() => {
   const fieldtype = props.field.fieldtype;
   if (fieldtype === "Check") {
@@ -163,6 +158,7 @@ const transValue = computed(() => {
   // else if (fieldtype === "Duration") {
   //   if (!props.value) return null;
   // }
+
   return props.value;
 });
 
@@ -182,6 +178,7 @@ function emitUpdate(fieldname: Field["fieldname"], value: FieldValue) {
 :deep(.form-control button) {
   gap: 0;
 }
+
 :deep(.form-control [type="checkbox"]) {
   margin-left: 9px;
   cursor: pointer;

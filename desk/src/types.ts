@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { Component, ComputedRef, InjectionKey, ComputedRef } from "vue";
+import { Component, ComputedRef, InjectionKey } from "vue";
 import type { HDTicket } from "./types/doctypes";
 
 export interface Resource<T = unknown> {
@@ -147,9 +147,10 @@ export interface Field {
   disabled?: boolean;
   placeholder?: string | null;
   readonly?: boolean;
+  read_only?: boolean;
   validationMessage?: ComputedRef<string> | boolean | string;
-  read_only: 0 | 1;
   link_hide_from_customer_field?: string;
+  value: any;
 }
 
 export type FieldValue = string | number | boolean | null | undefined | Dayjs;

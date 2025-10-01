@@ -39,7 +39,6 @@ import { computed, h, defineExpose,ref } from "vue";
 import { Autocomplete, Link } from "@/components";
 import { Field } from "@/types";
 import { createResource, FormControl } from "frappe-ui";
-import { Field } from "@/types";
 import { vMaska  } from "maska/vue";
 import LucideInfo from '~icons/lucide/info';
 

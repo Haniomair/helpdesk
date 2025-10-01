@@ -1,5 +1,5 @@
 import { Field } from "@/types";
-import { reactive, computed } from "vue";
+import { reactive, computed, ref } from "vue";
 import { isEmptyString } from "@/utils";
 
 export async function setupCustomizations(doc, obj) {
@@ -101,23 +101,14 @@ export function handleLinkFieldUpdate(
   doc[fieldname] = "";
 }
 
-//
 
-/* export function parseField2(field,doc) {
-  field['display_via_depends_on'] = evaluateDependsOnValue(field?.depends_on, doc);
-  field['required'] = field.required ||
-    (field.mandatory_depends_on &&
-      evaluateDependsOnValue(field.mandatory_depends_on, doc));
-  field['filters'] = field.link_filters ? setupFieldFilters2(field,doc) : [];
-  field['filter_based_on'] = [];
-  setupFieldFilters(field);
-} */
 
-export function parseField(field, doc) {
+export function parseField(field, doc, agentView = false) {
 
-  
+
   let result = {
     ...field,
+    value: ref(doc[field.fieldname]),
     display_via_depends_on: computed(()=> evaluateDependsOnValue(field.depends_on, doc)),
     required: field.required,
     required_via_depends_on: computed(()=> {
@@ -126,7 +117,7 @@ export function parseField(field, doc) {
     filters: field.link_filters ? setupFieldFilters2(field,doc) : [],
     filter_based_on: [],
   };
-  result['validationMessage'] = computed(()=> validateField(result,doc[field.fieldname]));
+  result['validationMessage'] = computed(()=> validateField(result,doc[field.fieldname], agentView));
   setupFieldFilters(result);
   let r = reactive(result);
   return r;
@@ -305,21 +296,25 @@ function _eval(code, context = {}) {
   }
 }
 
-export function validateField(field : Field, value: any) {
+export function validateField(field : Field, value: any, agent_view = false) {
 
-  if ((field.required == 1 || field.required_via_depends_on.value == true) && isEmptyString(value)) {
+
+  let _value = value;
+
+  if ((field.required == 1 || field.required_via_depends_on.value == true) && isEmptyString(_value)) {
     return 'This field is required';
   }
 
+
   switch (field.fieldtype) {
     case "Phone":
-      if (value && !/^\+966-5[0-9]{8}$/.test(value)) {
+      if (_value && !/^\+966-5[0-9]{8}$/.test(_value)) {
         return 'Invalid phone number format';
       }
       break;
       case "Email":
-      if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return 'Invlaid email address';
+      if (_value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(_value)) {
+        return 'Invalid email address';
       }
       break;
   }

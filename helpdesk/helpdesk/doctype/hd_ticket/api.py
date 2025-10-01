@@ -33,8 +33,10 @@ def new(doc, attachments=[]):
 
 
 @frappe.whitelist()
-def get_one(name, is_customer_portal=False):
+def get_one(name, is_customer_portal=False, include_default_fields=False):
+    frappe.throw("Fetching ticket details", include_default_fields)
     check_permissions("HD Ticket", None, doc=name)
+    
     QBContact = frappe.qb.DocType("Contact")
     QBTicket = frappe.qb.DocType("HD Ticket")
 
@@ -76,16 +78,16 @@ def get_one(name, is_customer_portal=False):
             "name": ticket.raised_by.split("@")[0],
         }
     template = ticket.template or DEFAULT_TICKET_TEMPLATE
-    fields = (get_meta(template) if template else [])
+    fields = (get_meta(template, include_default_fields) if template else [])
 
-    if is_customer_portal:
-        for field in fields:
-            if field.get("fieldtype") == "Link" and field.get("options"):
-                meta = frappe.get_meta(field.get("options"))
-                if meta.title_field:
-                    ticket[field.get("fieldname")] = frappe.db.get_value(
-                        meta.name, ticket.get(field.get("fieldname")), meta.title_field
-                    )
+    #if is_customer_portal:
+    for field in fields:
+        if field.get("fieldtype") == "Link" and field.get("options"):
+            meta = frappe.get_meta(field.get("options"))
+            if meta.title_field:
+                ticket[field.get("fieldname")] = frappe.db.get_value(
+                meta.name, ticket.get(field.get("fieldname")), meta.title_field
+                )
 
 
     linked_calls = frappe.db.get_all(
@@ -130,13 +132,14 @@ def get_one(name, is_customer_portal=False):
         "_form_script": get_form_script(
             "HD Ticket", is_customer_portal=is_customer_portal
         ),
-        "fields": get_meta(template),
+        "fields": fields,
         "calls": call_logs,
     }
 
 
-def get_meta(template: str):
-    default_fields = ["ticket_type", "agent_group", "priority", "customer"]
+def get_meta(template: str, include_default_fields=False):
+    # default_fields = ["ticket_type", "agent_group", "priority", "customer"]
+    default_fields = ["agent_group", "customer"]
     DocField = frappe.qb.DocType("DocField")
 
     fields = (
@@ -147,7 +150,8 @@ def get_meta(template: str):
         .run(as_dict=True)
     )
     meta_fields = get_fields_meta(template)
-    meta_fields = [f for f in meta_fields if f["fieldname"] not in default_fields]
+    if not include_default_fields:
+        meta_fields = [f for f in meta_fields if f["fieldname"] not in default_fields]
 
     fields.extend(meta_fields)
     return fields
@@ -201,6 +205,65 @@ def get_communications(ticket: str):
     return communications
 
 
+@frappe.whitelist()
+def get_ticket_for_agent(name: str):
+
+    if not is_agent:
+        return {}
+
+
+    QBContact = frappe.qb.DocType("Contact")
+    QBTicket = frappe.qb.DocType("HD Ticket")
+
+
+    query = (
+        frappe.qb.from_(QBTicket)
+        .select(QBTicket.star)
+        .where(QBTicket.name == name)
+        .limit(1)
+    )
+
+    
+    ticket = query.run(as_dict=True)
+    if not len(ticket):
+        frappe.throw(_("Ticket not found"), frappe.DoesNotExistError)
+    ticket = ticket.pop()
+
+    contact = (
+        frappe.qb.from_(QBContact)
+        .select(
+            QBContact.company_name,
+            QBContact.email_id,
+            QBContact.image,
+            QBContact.mobile_no,
+            QBContact.name,
+            QBContact.phone,
+        )
+        .where(QBContact.name == ticket.contact)
+        .run(as_dict=True)
+    )
+    if contact:
+        contact = contact[0]
+    else:
+        contact = {
+            "email_id": ticket.raised_by,
+            "name": ticket.raised_by.split("@")[0],
+        }
+    template = ticket.template or DEFAULT_TICKET_TEMPLATE
+    fields = (get_meta(template, True) if template else [])
+
+    #if is_customer_portal:
+    for field in fields:
+        if field.get("fieldtype") == "Link" and field.get("options"):
+            meta = frappe.get_meta(field.get("options"))
+            if meta.title_field:
+                ticket[field.get("fieldname")] = frappe.db.get_value(
+                meta.name, ticket.get(field.get("fieldname")), meta.title_field
+                )
+
+
+    return ticket
+
 def get_comments(ticket: str):
     if not frappe.has_permission("HD Ticket Comment", "read"):
         return []
@@ -221,6 +284,29 @@ def get_comments(ticket: str):
     for c in comments:
         c.user = get_user_info_for_avatar(c.commented_by)
         c.attachments = get_attachments("HD Ticket Comment", c.name)
+
+
+    # get frappe regular comments
+    """if frappe.has_permission("Comment", "read"):
+        QBComment = frappe.qb.DocType("Comment")
+        comments_ = (
+            frappe.qb.from_(QBComment)
+            .select(
+                QBComment.comment_by,
+                QBComment.content,
+                QBComment.creation,
+                QBComment.name,
+            )
+            .where(QBComment.reference_doctype == "HD Ticket")
+            .where(QBComment.reference_name == ticket)
+            .orderby(QBComment.creation, order=Order.asc)
+            .run(as_dict=True)
+        )
+        for c in comments_:
+            c.user = get_user_info_for_avatar(c.comment_by)
+            c.attachments = get_attachments("Comment", c.name)
+        comments.extend(comments_)"""
+    
     return comments
 
 
@@ -560,7 +646,7 @@ def get_ticket_customizations():
     custom_fields = frappe.get_all(
         "HD Ticket Template Field",
         filters={"parent": "Default"},
-        fields=["fieldname", "required", "placeholder", "url_method"],
+        fields=["fieldname", "required", "placeholder", "url_method","hide_from_customer", "read_only","link_hide_from_customer_field"],
         order_by="idx",
     )
     form_scripts = get_form_script("HD Ticket")

@@ -1,4 +1,5 @@
 <template>
+  {{ ticket }}
   <div v-if="ticket.doc?.name" class="flex-1">
     <TicketHeader :viewers="viewers" />
     <div class="h-full flex overflow-hidden">
@@ -85,6 +86,8 @@ const { startViewing, stopViewing } = viewerComposable.value;
 watch(
   () => route.params.ticketId,
   (newTicketId, oldTicketId) => {
+
+
     if (newTicketId === oldTicketId) return;
 
     if (oldTicketId) stopViewing(oldTicketId as string);
@@ -100,6 +103,9 @@ type TicketUpdateData = {
   value: string;
 };
 
+
+
+
 onMounted(() => {
   // startViewing(props.ticketId);
 
@@ -110,7 +116,7 @@ onMounted(() => {
     },
   });
   ticketsToNavigate.reload();
-  ticket.value.markSeen.reload();
+  //ticket.value.markSeen.reload();
 
   $socket.on("ticket_update", (data: TicketUpdateData) => {
     if (data.ticket_id === ticket.value?.name) {
