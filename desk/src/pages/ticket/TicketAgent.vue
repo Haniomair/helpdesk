@@ -1,5 +1,4 @@
 <template>
-  {{ ticket }}
   <div v-if="ticket.doc?.name" class="flex-1">
     <TicketHeader :viewers="viewers" />
     <div class="h-full flex overflow-hidden">
@@ -76,7 +75,7 @@ provide(
   computed(() => ticketComposable.value.activities)
 );
 
-const viewerComposable = computed(() => useActiveViewers(ticket.value.name));
+const viewerComposable = computed(() => useActiveViewers(props.ticketId));
 const viewers = computed(
   () => viewerComposable.value.currentViewers[props.ticketId] || []
 );

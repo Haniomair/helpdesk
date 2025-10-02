@@ -5,7 +5,6 @@
 
 
     <div class="flex flex-1 flex-col overflow-hidden overflow-y-auto">
-
       <TicketField v-for="field in default_fields" :key="field.fieldname" :field="field" :value="values[field.fieldname]"
         @change="(e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)" />
       <hr v-if="default_fields.length" class="mb-2 mt-2" />
@@ -48,8 +47,6 @@ const isSaving = ref(false);
 onMounted(() => {
 
 
-  console.log('TicketAgentFields mounted');
-  console.log('ticket', props.ticket);
   
   // template fields
   props.ticket.template.fields.sort((a,b)=> a.idx - b.idx).forEach(f => {

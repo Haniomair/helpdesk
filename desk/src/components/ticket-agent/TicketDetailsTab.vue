@@ -1,7 +1,6 @@
 <template>
-  <div 
-  v-if="fieldsInitialized == true"
-  class="h-full overflow-y-hidden flex flex-1 flex-col  overflow-hidden max-h-full">
+  <div v-if="fieldsInitialized == true"
+    class="h-full overflow-y-hidden flex flex-1 flex-col  overflow-hidden max-h-full">
     <!-- User avatar and core fields -->
     <div class="px-5 pb-4 flex flex-col">
       <!-- User avatar with buttons -->
@@ -28,17 +27,39 @@
     </div>
 
     <!-- Additional Fields -->
-    <div class="border-t flex flex-col flex-grow pb-3 overflow-y-hidden">
+    <div class="border-t flex flex-col flex-grow pb-3 gap-4 p-3 overflow-y-auto h-[60%]">
+
+      <div class="flex items-center text-base leading-5" v-for="field in customFields">
+        <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
+        <span :dir="getDirection() == 'rtl' && field.fieldtype == 'Phone' ? 'ltr' : ''"
+          :class="'text-base text-gray-800 flex-1 ' + (field.fieldtype === 'Phone' && getDirection() == 'rtl' ? 'text-end ' : '') + (!field.value && ' text-ink-gray-4')">
+          {{ __(field.value) || "-" }}
+        </span>
+      </div>
+
+
+
+
+
       <!-- TODO: Hack of 85 % for now, will refactor -->
-      <div class="overflow-y-scroll" :class="!hasChanges ? 'h-[85%]' : ''">
+      <!--   <div class="overflow-y-scroll" :class="!hasChanges ? 'h-[85%]' : ''">
         <template v-for="field in customFields">
           <TicketField v-if="field.display_via_depends_on" :key="field.fieldname" :field="field" :value="field.value" @change="
               ({ fieldname, value }) => handleFieldUpdate(fieldname, value)
             " />
         </template>
-      </div>
+      </div> -->
     </div>
 
+    <div class="border-t px-3 h-[97px] py-4 md:py-2.5">
+
+      <button
+        class="px-4 h-[30px] w-full leading-none rounded font-medium border-0 border-gray-300 bg-transparent text-gray-800 hover:bg-gray-100 transition-colors shadow-none"
+        @click="updateTicket(ticket.value)">
+        {{ __('Update') }}
+      </button>
+
+    </div>
 
     <div class="border-t flex gap-2 justify-end p-2 pb-5 mb-[31px]" v-if="hasChanges && !isCoreFieldBeingUpdated">
       <button
@@ -47,7 +68,7 @@
       <button
         class="bg-gray-100 text-gray-800 px-4 h-[35px] leading-none py-2 rounded hover:bg-gray-200 transition-colors font-medium border border-gray-300"
         @click="discardChanges">{{ __('Cancel') }}</button>
-       <ConfirmationDialog v-if="showConfirmationDialog" :message="confirmationMessage" @confirm="handleConfirmation"
+      <ConfirmationDialog v-if="showConfirmationDialog" :message="confirmationMessage" @confirm="handleConfirmation"
         @cancel="cancelConfirmation" />
     </div>
 
@@ -61,13 +82,14 @@
 import { Link } from "@/components";
 import { parseField } from "@/composables/formCustomisation";
 import { useNotifyTicketUpdate } from "@/composables/realtime";
+import { getDirection } from "@/languages";
 import {
-  //AssigneeSymbol,
-  //CustomizationSymbol,
+  AssigneeSymbol,
+  CustomizationSymbol,
   FieldValue,
   TicketSymbol,
 } from "@/types";
-import { inject, ref, watch } from "vue";
+import { inject, ref, isRef } from "vue";
 import TicketField from "../TicketField.vue";
 import AssignTo from "./AssignTo.vue";
 import TicketContact from "./TicketContact.vue";
@@ -77,28 +99,10 @@ import {
 } from "frappe-ui";
 import { __ } from "@/translation";
 const ticket = inject(TicketSymbol);
-//const assignees = inject(AssigneeSymbol);
-//const customizations = inject(CustomizationSymbol);
+const assignees = inject(AssigneeSymbol);
+const customizations = inject(CustomizationSymbol);
 //let getFields, getField;
 const { notifyTicketUpdate } = useNotifyTicketUpdate(ticket.value?.name);
-
-watch(
-  () => ticket.value?.name,
-  async (newTicketId, oldTicketId) => {
-    if (!newTicketId) return;
-    // Reset state
-    originalDoc.value = JSON.parse(JSON.stringify(ticket.value.doc));
-    hasChanges.value = false;
-    isCoreFieldBeingUpdated.value = false;
-    // Reload fields
-    fieldsInitialized.value = false;
-    coreFields.value = [];
-    customFields.value = [];
-    await initializedCoreFields();
-    await initializeCustomFields();
-  },
-  { immediate: false }
-);
 
 
 const template = createResource({
@@ -124,7 +128,7 @@ const template = createResource({
     visibleFields.push(...generateVisibleFields()); */
     await initializedCoreFields();
     await initializeCustomFields()
-    //fieldsInitialized.value = true;
+    fieldsInitialized.value = true;
   },
 });
 
@@ -172,6 +176,7 @@ const customFields = ref([]);
 
 async function initializeCustomFields() {
 
+  console.log(ticket.value.doc);
 
 /*   const fieldsMeta = await getFields();
   if (!fieldsMeta || fieldsMeta.length === 0) {
@@ -205,7 +210,6 @@ async function initializeCustomFields() {
     //return getFieldInFormat(f, fieldMeta);
   });
   customFields.value = _customFields;
-  fieldsInitialized.value = true;
 };
 
 function getFieldInFormat(fieldTemplate, fieldMeta) {
@@ -317,6 +321,18 @@ function cancelConfirmation() {
   customFields.value.forEach((f) => {
     f.value = originalDoc.value[f.fieldname];
   });
+}
+
+function updateTicket(ticket) {
+
+  // open UpdateTicketDialog
+ /*  const dialog = createDialog(UpdateTicketDialog, {
+    props: {
+      ticket,
+    },
+  });
+  dialog.show(); */
+
 }
 </script>
 

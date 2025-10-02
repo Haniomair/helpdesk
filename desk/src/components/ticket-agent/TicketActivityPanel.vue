@@ -23,6 +23,7 @@
     </TabPanel>
   </Tabs>
   <!-- Comm Area -->
+   
   <CommunicationArea
     ref="communicationAreaRef"
     :ticketId="String(ticket.doc?.name)"

@@ -7,6 +7,7 @@ import type {
 } from "@/types";
 import type { HDTicket } from "@/types/doctypes";
 import { call, createDocumentResource, createResource, toast } from "frappe-ui";
+import { createDocResource } from '@/utils/resources'
 import { reactive,ref } from "vue";
 
 interface MapValue {
@@ -25,15 +26,15 @@ export const useTicket = (ticketId: string): MapValue => {
 
     ticketMap[ticketId] =
       {
-        ticket: ref((()=> {
-            call("helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_for_agent", { name: ticketId })
-            .then((res) => {
-              if (res && res.status === "Open") {
-                call("helpdesk.helpdesk.doctype.hd_ticket.hd_ticket.api.mark_seen", { ticket: ticketId });
-              }
-              return { name: ticketId, doc: res };
-            })
-        })()),
+        ticket: 
+        createDocResource({
+          url: "/api/method/helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_for_agent",
+          params: { name: ticketId },
+          auto: true,
+          transform: (data) => {
+            console.log("Transform",data);
+          }
+        }),
       /* ticket: createDocumentResource<HDTicket>({
         doctype: "HD Ticket",
         name: ticketId,
