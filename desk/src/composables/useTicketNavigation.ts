@@ -62,6 +62,7 @@ export function useTicketNavigation() {
     if (view) {
       routeToNavigate["query"] = { view };
     }
+    console.log("Navigating to", routeToNavigate);
     router.push(routeToNavigate);
   }
 

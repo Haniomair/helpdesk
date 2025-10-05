@@ -40,7 +40,7 @@
         v-show="isOpen"
         v-model="assignees.data"
         doctype="HD Ticket"
-        :docname="ticket.name"
+        :docname="ticket.doc.name"
         :open="isOpen"
         :onUpdate="saveAssignees"
       />

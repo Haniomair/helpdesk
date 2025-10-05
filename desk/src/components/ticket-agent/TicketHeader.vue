@@ -135,8 +135,8 @@ const customizations = inject(CustomizationSymbol);
 const activities = inject(ActivitiesSymbol);
 
 const showSubjectDialog = ref(false);
-
-const { notifyTicketUpdate } = useNotifyTicketUpdate(ticket.value?.name);
+console.log(ticket)
+const { notifyTicketUpdate } = useNotifyTicketUpdate(ticket.name);
 const statusDropdown = computed(() => {
   const statuses =
     ticketStatusStore.statuses.data?.filter((s) => s.enabled) || [];

@@ -1,11 +1,27 @@
 import { Dayjs } from "dayjs";
-import { Component, ComputedRef, InjectionKey } from "vue";
+import { Component, ComputedRef, InjectionKey, Ref } from "vue";
 import type { HDTicket } from "./types/doctypes";
 
 export interface Resource<T = unknown> {
   auto: boolean;
   loading: boolean;
   data: T;
+  pageLength: number;
+  totalCount: number;
+  hasNextPage: boolean;
+  promise: Promise<void> | null;
+  list: {
+    loading: boolean;
+  };
+  next: () => void;
+  reload: () => void;
+  update: (r: unknown) => void;
+}
+
+export interface ResourceDoc<T = unknown> {
+  auto: boolean;
+  loading: boolean;
+  doc: T;
   pageLength: number;
   totalCount: number;
   hasNextPage: boolean;
@@ -502,7 +518,7 @@ export interface TicketActivities {
 
 // symbols
 export const TicketSymbol: InjectionKey<
-  ComputedRef<DocumentResource<HDTicket>>
+  Ref<ResourceDoc<any>>
 > = Symbol("ticket");
 export const AssigneeSymbol: InjectionKey<
   ComputedRef<Resource<Record<"name", string>[]>>

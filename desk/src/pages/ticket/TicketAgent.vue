@@ -32,7 +32,7 @@ import {
   TicketSymbol,
 } from "@/types";
 import { createResource, toast } from "frappe-ui";
-import { computed, onBeforeUnmount, onMounted, provide, watch } from "vue";
+import { computed, isRef, onBeforeUnmount, onMounted, provide, watch } from "vue";
 import { useRoute } from "vue-router";
 const { $socket } = globalStore();
 
@@ -53,7 +53,6 @@ const customizations: Resource<Customizations> = createResource({
 });
 
 provide(TicketSymbol, ticket);
-
 provide(
   AssigneeSymbol,
   computed(() => ticketComposable.value.assignees)
@@ -86,6 +85,10 @@ watch(
   () => route.params.ticketId,
   (newTicketId, oldTicketId) => {
 
+    //console.log({ newTicketId, oldTicketId });
+    
+    // reprovide the ticket when ticketId changes
+    //provide(TicketSymbol, useTicket(newTicketId as string).ticket);
 
     if (newTicketId === oldTicketId) return;
 

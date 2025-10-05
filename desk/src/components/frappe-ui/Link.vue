@@ -12,9 +12,9 @@
     </label>
 
 
-
     <div
-      v-show="(!options.loading || (options.loading && props.noSearchingMessage === true)) && (options.fetched === true || modelValue == '')">
+      v-show="(!options.loading || (options.loading && props.noSearchingMessage === true))">
+      
       <Autocomplete ref="autocomplete" :options="data" v-model="value" :size="attrs.size || 'sm'"
         :variant="attrs.variant" :placeholder="attrs.placeholder" :disabled="attrs.disabled" :filterable="true">
         <template #target="{ open, togglePopover }">
@@ -178,11 +178,11 @@ watchDebounced(
   { debounce: 300, immediate: true }
 );
 
-watchDebounced(
+/* watchDebounced(
   () => props.doctype,
   () => { if (!props.ignore_reloading_on_filters_change) reload("") },
   { debounce: 300, immediate: true }
-);
+); */
 
 
 watch(
@@ -295,12 +295,10 @@ var options = createResource({
 
 async function reload(val = "") {
 
-  console.log("cacheKey", cacheKey.value);
   if (cacheKey.value != null) {
   const cache = await get(cacheKey.value);
   if (cache) {
     data.value = cache;
-    console.log("cache", cache);
     return;
   }
   }

@@ -34,7 +34,6 @@ def new(doc, attachments=[]):
 
 @frappe.whitelist()
 def get_one(name, is_customer_portal=False, include_default_fields=False):
-    frappe.throw("Fetching ticket details", include_default_fields)
     check_permissions("HD Ticket", None, doc=name)
     
     QBContact = frappe.qb.DocType("Contact")
@@ -257,9 +256,10 @@ def get_ticket_for_agent(name: str):
         if field.get("fieldtype") == "Link" and field.get("options"):
             meta = frappe.get_meta(field.get("options"))
             if meta.title_field:
-                ticket[field.get("fieldname")] = frappe.db.get_value(
+                ticket[field.get("fieldname") + "@title"] = frappe.db.get_value(
                 meta.name, ticket.get(field.get("fieldname")), meta.title_field
                 )
+            
 
 
     return ticket

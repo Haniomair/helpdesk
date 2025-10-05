@@ -13,7 +13,8 @@
   "required",
   "hide_from_customer",
   "read_only",
-  "link_hide_from_customer_field"
+  "link_hide_from_customer_field",
+  "is_core"
  ],
  "fields": [
   {
@@ -59,12 +60,18 @@
    "fieldtype": "Data",
    "label": "Link Hide from Customer Field",
    "placeholder": "Enter field name eg. hide_from_customer"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_core",
+   "fieldtype": "Check",
+   "label": "Is Core"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-23 19:17:11.806193",
+ "modified": "2025-10-04 19:15:05.432778",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket Template Field",

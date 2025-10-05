@@ -56,13 +56,12 @@ import {
   TicketTab,
 } from "@/types";
 import { LoadingIndicator, TabList, TabPanel, Tabs } from "frappe-ui";
-import { computed, ComputedRef, inject, ref } from "vue";
+import { computed, ComputedRef, inject, ref, watch } from "vue";
 import TicketAgentActivities from "../ticket/TicketAgentActivities.vue";
 import { useTelephonyStore } from "@/stores/telephony";
 import { storeToRefs } from "pinia";
 
 const ticket = inject(TicketSymbol);
-console.log(ticket);
 const activities = inject(ActivitiesSymbol);
 
 const tabIndex = ref(0);
@@ -99,6 +98,8 @@ const tabs: ComputedRef<TabObject[]> = computed(() => {
   }
   return _tabs;
 });
+
+
 
 // TODO: refactor for pagination
 // can be done once we sort out the backend

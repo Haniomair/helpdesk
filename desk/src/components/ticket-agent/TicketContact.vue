@@ -16,7 +16,7 @@
           />
         </div>
       </Tooltip>
-      <div class="flex gap-1.5">
+      <div class="flex gap-1.5 mt-2">
         <Tooltip :text="contact.data.email_id">
           <!-- Email Button -->
           <Button size="sm" @click="toggleEmailBox()">

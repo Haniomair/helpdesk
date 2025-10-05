@@ -2,16 +2,17 @@ import type {
   DocumentResource,
   RecentSimilarTicket,
   Resource,
+  ResourceDoc,
   TicketActivities,
   TicketContact,
 } from "@/types";
 import type { HDTicket } from "@/types/doctypes";
-import { call, createDocumentResource, createResource, toast } from "frappe-ui";
+import { createResource } from "frappe-ui";
 import { createDocResource } from '@/utils/resources'
-import { reactive,ref } from "vue";
+import { reactive } from "vue";
 
 interface MapValue {
-  ticket: DocumentResource<HDTicket> | any;
+  ticket: ResourceDoc<HDTicket>;
   assignees: Resource<Record<"name", string>[]>;
   contact: Resource<TicketContact>;
   recentSimilarTickets: Resource<RecentSimilarTicket>;
@@ -31,8 +32,8 @@ export const useTicket = (ticketId: string): MapValue => {
           url: "/api/method/helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_for_agent",
           params: { name: ticketId },
           auto: true,
-          transform: (data) => {
-            console.log("Transform",data);
+          onSuccess: (doc) => {
+            console.log("Ticket loaded", doc);
           }
         }),
       /* ticket: createDocumentResource<HDTicket>({
@@ -86,7 +87,8 @@ export const useTicket = (ticketId: string): MapValue => {
       }),
     };
   } else {
-    // reload the resources
+
+
   }
 
   return ticketMap[ticketId];
