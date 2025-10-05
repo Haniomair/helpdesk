@@ -107,6 +107,7 @@ watch(rating, (r) => {
   options.update({
     filters: {
       rating: r,
+      disabled: 0,
     },
   });
   options.reload();

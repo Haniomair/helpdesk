@@ -83,6 +83,9 @@ import { useNotifyTicketUpdate } from "@/composables/realtime";
 import { getDirection } from "@/languages";
 import { EditIcon } from "@/components/icons/";
 import {
+  ActivitiesSymbol,
+  AssigneeSymbol,
+  CustomizationSymbol,
   FieldValue,
   TicketSymbol,
 } from "@/types";
@@ -94,9 +97,10 @@ import UpdateTicketDialog from "../UpdateTicketDialog.vue";
 import { Button } from "frappe-ui";
 import { __ } from "@/translation";
 const ticket = inject(TicketSymbol);
-//const assignees = inject(AssigneeSymbol);
-//const customizations = inject(CustomizationSymbol);
-//let getFields, getField;
+const assignees = inject(AssigneeSymbol);
+const customizations = inject(CustomizationSymbol);
+const activities = inject(ActivitiesSymbol);
+const { getFields, getField } = getMeta("HD Ticket");
 const { notifyTicketUpdate } = useNotifyTicketUpdate(ticket.value?.name);
 
 import { useTicketTemplate } from "@/composables/useTicketTemplate";
@@ -231,9 +235,9 @@ async function initializeCustomFields() {
     options: fieldMeta?.options || "",
     placeholder:
       fieldTemplate.placeholder ||
-      `${__('Enter')} ${fieldMeta?.label || fieldTemplate.fieldname}`,
-    readonly: Boolean(fieldMeta.readonly),
-    disabled: Boolean(fieldMeta.readonly),
+      `Enter ${fieldMeta?.label || fieldTemplate.fieldname}`,
+    readonly: Boolean(fieldMeta.read_only),
+    disabled: Boolean(fieldMeta.read_only),
     url_method: fieldTemplate.url_method || "",
     fieldname: fieldTemplate.fieldname,
     required: fieldTemplate.required || fieldMeta?.required || false,

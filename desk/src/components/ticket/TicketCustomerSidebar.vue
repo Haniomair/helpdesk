@@ -51,7 +51,7 @@
     </div>
     <!-- feedback component -->
     <TicketFeedback v-if="ticket.data.feedback_rating" class="border-b text-base text-gray-600" :ticket="ticket.data" />
-    <div class="flex flex-col gap-4 pt-0 px-5 py-3  overflow-y-auto">
+    <div class="flex flex-col gap-4 pt-0 px-5 py-3  overflow-y-scroll">
       <div class="flex items-center text-base leading-5" v-for="field in ticketAdditionalInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ __(field.label) }}</span>
         <span

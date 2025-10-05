@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: frappe\n"
 "Report-Msgid-Bugs-To: hello@frappe.io\n"
-"POT-Creation-Date: 2025-09-07 10:34+0000\n"
-"PO-Revision-Date: 2025-09-10 18:21\n"
+"POT-Creation-Date: 2025-09-28 10:35+0000\n"
+"PO-Revision-Date: 2025-10-01 23:08\n"
 "Last-Translator: hello@frappe.io\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -188,6 +188,10 @@ msgstr ""
 msgid "Agent Name"
 msgstr ""
 
+#: desk/src/components/Settings/Telephony/Telephony.vue:39
+msgid "Agent settings"
+msgstr ""
+
 #: desk/src/components/Settings/Agents.vue:5
 msgid "Agents"
 msgstr ""
@@ -247,7 +251,7 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
-#: desk/src/components/Settings/SettingsModal.vue:44
+#: desk/src/components/Settings/SettingsModal.vue:52
 msgid "Are you sure you want to change tabs? Unsaved changes will be lost."
 msgstr ""
 
@@ -266,9 +270,14 @@ msgstr ""
 
 #. Label of the assign_to_section (Section Break) field in DocType 'HD
 #. Escalation Rule'
+#: desk/src/components/ticket-agent/AssignToBody.vue:5
 #: helpdesk/helpdesk/doctype/hd_escalation_rule/hd_escalation_rule.json
 msgid "Assign to"
 msgstr ""
+
+#: desk/src/components/ticket-agent/AssignToBody.vue:64
+msgid "Assign to me"
+msgstr "Назначить меня"
 
 #: helpdesk/helpdesk/report/ticket_analytics/ticket_analytics.js:62
 #: helpdesk/helpdesk/report/ticket_summary/ticket_summary.js:49
@@ -329,6 +338,10 @@ msgstr ""
 
 #: helpdesk/helpdesk/doctype/hd_ticket_status/hd_ticket_status.py:73
 msgid "At least one enabled status for <u>{0}</u> category must be enabled."
+msgstr ""
+
+#: helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.py:38
+msgid "At least one feedback option must be enabled for rating {0}"
 msgstr ""
 
 #: helpdesk/helpdesk/doctype/hd_escalation_rule/hd_escalation_rule.py:28
@@ -419,7 +432,11 @@ msgstr ""
 msgid "Button"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:596
+#: desk/src/pages/call-logs/CallLogDetailModal.vue:8
+msgid "Call Details"
+msgstr ""
+
+#: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:607
 msgid "Can not send email. No sender email set up!"
 msgstr ""
 
@@ -489,6 +506,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:328
 msgid "Closed or rated tickets cannot be updated by non-agents"
 msgstr ""
 
@@ -519,6 +537,10 @@ msgstr ""
 #. Agreement'
 #: helpdesk/helpdesk/doctype/hd_service_level_agreement/hd_service_level_agreement.json
 msgid "Condition"
+msgstr ""
+
+#: desk/src/components/Settings/Telephony/Telephony.vue:42
+msgid "Configure your agent’s telephony details."
 msgstr ""
 
 #. Label of the contact (Link) field in DocType 'HD Organization Contact Item'
@@ -567,14 +589,7 @@ msgstr ""
 msgid "Could not send an acknowledgement email due to: {0}"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:626
-msgid "Could not an email due to: {0}"
-msgstr ""
-
-#: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:786
-msgid "Could not send an acknowledgement email due to: {0}"
-msgstr ""
-
+#: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:162
 msgid "Could not send feedback email,due to: {0}"
 msgstr ""
 
@@ -696,6 +711,11 @@ msgstr ""
 #: helpdesk/helpdesk/doctype/hd_notification/hd_notification.json
 #: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.json
 msgid "Details"
+msgstr ""
+
+#. Label of the disabled (Check) field in DocType 'HD Ticket Feedback Option'
+#: helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.json
+msgid "Disabled"
 msgstr ""
 
 #. Description of the 'Ignore Restrictions' (Check) field in DocType 'HD Team'
@@ -1310,12 +1330,16 @@ msgstr ""
 msgid "Images"
 msgstr ""
 
+#: desk/src/components/CallArea.vue:36
+msgid "Inbound Call"
+msgstr ""
+
 #. Label of the instantly_send_email (Check) field in DocType 'HD Settings'
 #: helpdesk/helpdesk/doctype/hd_settings/hd_settings.json
 msgid "Instantly send e-mail"
 msgstr ""
 
-#: helpdesk/utils.py:26
+#: helpdesk/utils.py:32
 msgid "Insufficient Permission for {0}"
 msgstr "Недостаточное разрешение для {0}"
 
@@ -1366,6 +1390,10 @@ msgstr ""
 #. Label of the setup_complete (Check) field in DocType 'HD Settings'
 #: helpdesk/helpdesk/doctype/hd_settings/hd_settings.json
 msgid "Is setup complete"
+msgstr ""
+
+#: desk/src/components/ticket-agent/AssignToBody.vue:11
+msgid "John Doe"
 msgstr ""
 
 #. Label of the key (Data) field in DocType 'HD Email Feedback'
@@ -1427,6 +1455,10 @@ msgstr ""
 #: helpdesk/helpdesk/doctype/hd_form_script/hd_form_script.json
 #: helpdesk/helpdesk/doctype/hd_view/hd_view.json
 msgid "List"
+msgstr ""
+
+#: desk/src/components/CallArea.vue:72
+msgid "Listen"
 msgstr ""
 
 #. Label of the load_default_columns (Check) field in DocType 'HD View'
@@ -1508,6 +1540,10 @@ msgstr ""
 msgid "New Assignment Rule Name"
 msgstr ""
 
+#: desk/src/components/ticket-agent/AssignTo.vue:12
+msgid "No assignees"
+msgstr ""
+
 #: desk/src/components/Settings/Assignment Rules/AssignmentRulesListView.vue:14
 msgid "No items in the list"
 msgstr ""
@@ -1516,7 +1552,7 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#: helpdesk/utils.py:159
+#: helpdesk/utils.py:165
 msgid "Not Allowed"
 msgstr ""
 
@@ -1594,6 +1630,10 @@ msgstr ""
 #. Label of the order_by (Code) field in DocType 'HD View'
 #: helpdesk/helpdesk/doctype/hd_view/hd_view.json
 msgid "Order By"
+msgstr ""
+
+#: desk/src/components/CallArea.vue:37
+msgid "Outbound Call"
 msgstr ""
 
 #: helpdesk/api/settings/field_dependency.py:59
@@ -1737,11 +1777,11 @@ msgstr ""
 msgid "Rating"
 msgstr "Рейтинг"
 
-#: helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.py:22
+#: helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.py:23
 msgid "Rating must be between 0.2 and 1.0"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.py:18
+#: helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.py:19
 msgid "Rating {0} is not allowed"
 msgstr ""
 
@@ -1812,6 +1852,10 @@ msgstr "Ключ запроса"
 #. Label of the required (Check) field in DocType 'HD Ticket Template Field'
 #: helpdesk/helpdesk/doctype/hd_ticket_template_field/hd_ticket_template_field.json
 msgid "Required"
+msgstr ""
+
+#: desk/src/components/Settings/Telephony/Telephony.vue:90
+msgid "Required for exotel integration"
 msgstr ""
 
 #: desk/src/components/Settings/EmailNotifications/Notification.vue:102
@@ -1992,6 +2036,14 @@ msgstr ""
 msgid "Search Term Param Name"
 msgstr ""
 
+#: helpdesk/api/search.py:38
+msgid "Search index not available. Please contact administrator."
+msgstr ""
+
+#: helpdesk/api/search.py:15
+msgid "Search query must be at least 2 characters"
+msgstr ""
+
 #: helpdesk/helpdesk/doctype/hd_service_level_agreement/hd_service_level_agreement.py:157
 msgid "Select a Default Priority."
 msgstr ""
@@ -2094,11 +2146,11 @@ msgstr ""
 msgid "Source and target category cannot be same"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/api.py:249
+#: helpdesk/helpdesk/doctype/hd_ticket/api.py:324
 msgid "Source and target ticket cannot be same"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/api.py:245
+#: helpdesk/helpdesk/doctype/hd_ticket/api.py:320
 msgid "Source ticket does not exist"
 msgstr ""
 
@@ -2274,7 +2326,7 @@ msgstr ""
 msgid "Tampered Access"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/api.py:247
+#: helpdesk/helpdesk/doctype/hd_ticket/api.py:322
 msgid "Target ticket does not exist"
 msgstr ""
 
@@ -2346,11 +2398,11 @@ msgstr ""
 msgid "This method is only meant for developer mode"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/api.py:283
+#: helpdesk/helpdesk/doctype/hd_ticket/api.py:358
 msgid "This ticket (#{0}) has been merged with ticket <a href = '/helpdesk/tickets/{1}'>#{1}</a>."
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/api.py:425
+#: helpdesk/helpdesk/doctype/hd_ticket/api.py:499
 msgid "This ticket has been split to a new ticket. Please follow up on ticket <a href={0}>#{1}</a>."
 msgstr ""
 
@@ -2443,7 +2495,7 @@ msgstr ""
 msgid "Ticket must be resolved with a feedback"
 msgstr ""
 
-#: helpdesk/helpdesk/doctype/hd_ticket/api.py:45
+#: helpdesk/helpdesk/doctype/hd_ticket/api.py:55
 msgid "Ticket not found"
 msgstr ""
 
@@ -2562,8 +2614,12 @@ msgid "Unsaved"
 msgstr ""
 
 #: desk/src/components/Settings/EmailNotifications/Notification.vue:112
-#: desk/src/components/Settings/SettingsModal.vue:42
+#: desk/src/components/Settings/SettingsModal.vue:50
 msgid "Unsaved changes"
+msgstr ""
+
+#: desk/src/pages/call-logs/CallLogModal.vue:8
+msgid "Untitled"
 msgstr ""
 
 #. Label of the update_status_to (Link) field in DocType 'HD Settings'
@@ -2690,12 +2746,16 @@ msgstr ""
 msgid "You are not allowed to view this dashboard data."
 msgstr ""
 
-#: helpdesk/utils.py:158
+#: helpdesk/utils.py:164
 msgid "You are not permitted to access this resource."
 msgstr ""
 
 #: helpdesk/helpdesk/doctype/hd_ticket/hd_ticket.py:530
 msgid "You are not permitted to add a comment"
+msgstr ""
+
+#: desk/src/components/telephony/CallUI.vue:35
+msgid "You can change the default calling medium from the settings"
 msgstr ""
 
 #: helpdesk/helpdesk/doctype/hd_service_level_agreement/hd_service_level_agreement.py:137
@@ -2725,6 +2785,14 @@ msgstr ""
 #. Option for the 'Type' (Select) field in DocType 'HD View'
 #: helpdesk/helpdesk/doctype/hd_view/hd_view.json
 msgid "group_by"
+msgstr ""
+
+#: desk/src/components/CallArea.vue:16
+msgid "has made a call"
+msgstr ""
+
+#: desk/src/components/CallArea.vue:15
+msgid "has reached out"
 msgstr ""
 
 #: desk/src/components/Settings/EmailNotifications/Notification.vue:91

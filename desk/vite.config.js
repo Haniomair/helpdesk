@@ -78,6 +78,9 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    allowedHosts: true,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -94,6 +97,7 @@ export default defineConfig({
       "lowlight",
       "element-resize-detector",
       "grid-layout-plus"
+      "interactjs",
     ],
   },
 });
