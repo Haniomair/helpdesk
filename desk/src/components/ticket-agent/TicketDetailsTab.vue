@@ -265,14 +265,11 @@ function handleFieldUpdate(
   if (ticket.value.doc[fieldname] === value) return;
 
   ticket.value.doc[fieldname] = value;
-  console.log("is ref", isRef(ticket.value.doc))
-  console.log(ticket.value.doc[fieldname]);
 
   let f = coreFields.value.find(f => f.fieldname === fieldname);
   f.value = value;
 
   //return;
-  console.log(ticket.value.doc);
 
   if (isCoreFieldUpdated) {
     
@@ -293,6 +290,12 @@ function handleFieldUpdate(
         if (data.data) {
           ticket.value.doc[fieldname] = value;
         }
+
+        if (fieldname === "agent_group") {
+          assignees.value.reload();
+        }
+        activities.value.reload();
+
       })
       .catch((error) => {
         console.error("Error:", error);
