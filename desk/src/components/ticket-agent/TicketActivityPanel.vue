@@ -55,6 +55,8 @@ import {
   PhoneIcon,
 } from "@/components/icons";
 import { useTelephonyStore } from "@/stores/telephony";
+import { storeToRefs } from "pinia";
+
 import {
   ActivitiesSymbol,
   FeedbackActivity,

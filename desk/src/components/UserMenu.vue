@@ -1,6 +1,7 @@
 <template>
   <Dropdown :options="options" placement="bottom">
     <template #default="{ open }">
+      
       <button
         class="flex h-12 items-center rounded-md py-2 duration-300 ease-in-out"
         :class="
@@ -65,3 +66,14 @@ defineProps({
 const authStore = useAuthStore();
 const sidebarStore = useSidebarStore();
 </script>
+
+
+
+<style>
+
+[dir="rtl"]
+[data-reka-popper-content-wrapper]>div {
+  direction: rtl !important;
+}
+
+</style>

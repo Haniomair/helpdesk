@@ -100,7 +100,7 @@ const ticket = inject(TicketSymbol);
 const assignees = inject(AssigneeSymbol);
 const customizations = inject(CustomizationSymbol);
 const activities = inject(ActivitiesSymbol);
-const { getFields, getField } = getMeta("HD Ticket");
+//const { getFields, getField } = getMeta("HD Ticket");
 const { notifyTicketUpdate } = useNotifyTicketUpdate(ticket.value?.name);
 
 import { useTicketTemplate } from "@/composables/useTicketTemplate";

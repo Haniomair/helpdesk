@@ -3,13 +3,13 @@
     <Tooltip
       :text="
         getPreviousTicket()
-          ? `Go to previous ticket: #${getPreviousTicket()}`
-          : 'No previous ticket'
+          ? `${__('Go to previous ticket')}: #${getPreviousTicket()}`
+          : __('No previous ticket')
       "
       :disabled="disableLeftCondition"
     >
       <Button
-        :icon="LucideChevronLeft"
+        :icon="getDirection() == 'rtl' ? LucideChevronRight : LucideChevronLeft"
         variant="ghost"
         :disabled="disableLeftCondition"
         @click="goToPreviousTicket()"
@@ -18,13 +18,13 @@
     <Tooltip
       :text="
         getNextTicket()
-          ? `Go to next ticket: #${getNextTicket()}`
-          : 'No next ticket'
+          ? `${__('Go to next ticket')}: #${getNextTicket()}`
+          : __('No next ticket')
       "
       :disabled="disableRightCondition"
     >
       <Button
-        :icon="LucideChevronRight"
+        :icon="getDirection() == 'rtl' ? LucideChevronLeft : LucideChevronRight"
         variant="ghost"
         :disabled="disableRightCondition"
         @click="goToNextTicket()"
@@ -41,6 +41,7 @@ import {
 import { computed } from "vue";
 import LucideChevronLeft from "~icons/lucide/chevron-left";
 import LucideChevronRight from "~icons/lucide/chevron-right";
+import { getDirection } from "@/languages"
 
 const {
   currentTicketIndex,

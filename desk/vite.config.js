@@ -96,8 +96,8 @@ export default defineConfig({
       "prosemirror-view",
       "lowlight",
       "element-resize-detector",
-      "grid-layout-plus"
-      "interactjs",
+      "grid-layout-plus",
+      "interactjs"
     ],
-  },
+  }
 });
